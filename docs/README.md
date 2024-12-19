@@ -21,9 +21,36 @@
 
    yaml 데이터 검증 테스트 코드
 
-### Camera Model Type Description
+### Camera Type Description
 
 ```
+interface Intrinsic {
+    fx: number;
+    fy: number;
+    cx: number;
+    cy: number;
+    k1: number;
+    k2: number;
+    k3: number;
+    k4: number;
+    k5: number;
+    k6: number;
+    p1: number;
+    p2: number;
+}
+
+interface Extrinsic {
+    frame_from: string;
+    frame_to: string;
+    qw: number;
+    qx: number;
+    qy: number;
+    qz: number;
+    tx: number;
+    ty: number;
+    tz: number;
+}
+
 class Camera {
     channel: string;
     sensor: string;
@@ -31,52 +58,9 @@ class Camera {
     hfov: number;
     height: number;
     width: number;
-    intrinsic_params: {
-        [fx: number]: param,
-        [fy: number]: param,
-        [cx: number]: param,
-        [cy: number]: param,
-        [k1: number]: param,
-        [k2: number]: param,
-        [k3: number]: param,
-        [k4: number]: param,
-        [k5: number]: param,
-        [k6: number]: param,
-        [p1: number]: param,
-        [p2: number]: param,
-    },
-    vcs_extrinsic: {
-        [frame_from: string]: param,
-        [frame_to: string]: param,
-        [qw: number]: param,
-        [qx: number]: param,
-        [qy: number]: param,
-        [qz: number]: param,
-        [tx: number]: param,
-        [ty: number]: param,
-        [tz: number]: param
-    },
-    lcs_extrinsic: {
-        [frame_from: string]: param,
-        [frame_to: string]: param,
-        [qw: number]: param,
-        [qx: number]: param,
-        [qy: number]: param,
-        [qz: number]: param,
-        [tx: number]: param,
-        [ty: number]: param,
-        [tz: number]: param
-    },
-    mvcs_extrinsic: {
-        [frame_from: string]: param,
-        [frame_to: string]: param,
-        [qw: number]: param,
-        [qx: number]: param,
-        [qy: number]: param,
-        [qz: number]: param,
-        [tx: number]: param,
-        [ty: number]: param,
-        [tz: number]: param
-    }
+    intrinsic: Intrinsic;
+    vcs_extrinsic: Extrinsic;
+    lcs_extrinsic: Extrinsic;
+    mvcs_extrinsic: Extrinsic;
 }
 ```
