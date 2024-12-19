@@ -20,3 +20,63 @@
    class 초기화 테스트 코드
 
    yaml 데이터 검증 테스트 코드
+
+### Camera Model Type Description
+
+```
+class Camera {
+    channel: string;
+    sensor: string;
+    distortion_model: string;
+    hfov: number;
+    height: number;
+    width: number;
+    intrinsic_params: {
+        [fx: number]: param,
+        [fy: number]: param,
+        [cx: number]: param,
+        [cy: number]: param,
+        [k1: number]: param,
+        [k2: number]: param,
+        [k3: number]: param,
+        [k4: number]: param,
+        [k5: number]: param,
+        [k6: number]: param,
+        [p1: number]: param,
+        [p2: number]: param,
+    },
+    vcs_extrinsic: {
+        [frame_from: string]: param,
+        [frame_to: string]: param,
+        [qw: number]: param,
+        [qx: number]: param,
+        [qy: number]: param,
+        [qz: number]: param,
+        [tx: number]: param,
+        [ty: number]: param,
+        [tz: number]: param
+    },
+    lcs_extrinsic: {
+        [frame_from: string]: param,
+        [frame_to: string]: param,
+        [qw: number]: param,
+        [qx: number]: param,
+        [qy: number]: param,
+        [qz: number]: param,
+        [tx: number]: param,
+        [ty: number]: param,
+        [tz: number]: param
+    },
+    mvcs_extrinsic: {
+        [frame_from: string]: param,
+        [frame_to: string]: param,
+        [qw: number]: param,
+        [qx: number]: param,
+        [qy: number]: param,
+        [qz: number]: param,
+        [tx: number]: param,
+        [ty: number]: param,
+        [tz: number]: param
+    }
+}
+```
