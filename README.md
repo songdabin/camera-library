@@ -10,11 +10,11 @@
 
 ```
 .
+├── config                  # Configuration Files
 ├── docs                    # Documentation files
 ├── src                     # Source files
     ├── lib                 # Library Source Code Files
     └── web                 # Front Files
-├── config                # Configuration Files
 └── README.md
 ```
 
