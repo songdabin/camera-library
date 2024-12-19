@@ -23,4 +23,4 @@
 - TypeScript 5.5.4
 - Prettier 3.2.5
 - Turborepo 2.3.3
-- eslint 9.15.0
+- ESLint 9.15.0
