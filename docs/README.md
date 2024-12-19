@@ -40,8 +40,8 @@ interface Intrinsic {
 }
 
 interface Extrinsic {
-    frame_from: string;
-    frame_to: string;
+    frameFrom: string;
+    frameTo: string;
     qw: number;
     qx: number;
     qy: number;
@@ -54,13 +54,13 @@ interface Extrinsic {
 class Camera {
     channel: string;
     sensor: string;
-    distortion_model: string;
+    distortionModel: string;
     hfov: number;
     height: number;
     width: number;
     intrinsic: Intrinsic;
-    vcs_extrinsic: Extrinsic;
-    lcs_extrinsic: Extrinsic;
-    mvcs_extrinsic: Extrinsic;
+    vcsExtrinsic: Extrinsic;
+    lcsExtrinsic: Extrinsic;
+    mvcsExtrinsic: Extrinsic;
 }
 ```
