@@ -1,6 +1,6 @@
-import { read_yaml } from "./read_yaml";
+import { readYaml } from "./readYaml";
 
-let data = await read_yaml("./resources/svc_front.yaml");
+let data = await readYaml("./resources/svc_front.yaml");
 
 console.log(data);
 
