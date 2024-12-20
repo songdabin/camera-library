@@ -1,7 +1,7 @@
 import { Camera } from "./cameraModel";
 import { readYaml } from "./readYaml";
 
-let data: Camera = await readYaml("./resources/svc_front.yaml");
+const data: Camera = await readYaml("./resources/svc_front.yaml");
 
 /*
 // 파라미터를 통한 접근 확인

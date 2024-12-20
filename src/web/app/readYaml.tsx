@@ -4,7 +4,7 @@ import { Camera } from "./cameraModel";
 async function readYaml(fileName: string) {
   const lData: any = await loadYamlFileSync(fileName);
 
-  var rtnVal: Camera = new Camera(
+  const rtnVal: Camera = new Camera(
     lData.channel,
     lData.sensor,
     lData.distortion_model,
