@@ -3,13 +3,6 @@ import { readYaml } from "./readYaml";
 
 const data: Camera = await readYaml("./resources/svc_front.yaml");
 
-/*
-// 파라미터를 통한 접근 확인
-console.log(data.channel);
-console.log(data.distortion_model);
-console.log(data.lcs_extrinsic.frame_from);
-*/
-
 export default function Home() {
   return (
     <html>
