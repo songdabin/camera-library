@@ -10,11 +10,11 @@
 
 ```
 .
+├── app                     # Test Application Files
 ├── config                  # Configuration Files
 ├── docs                    # Documentation Files
 ├── lib                     # Library Source Files
-    ├── app                 # Application Files
-    ├── assets              # Static Files For a Specific Feature
+    ├── assets              # Static Files for a Specific Feature
     ├── services            # Library Service Implementation Files
     └── models              # Model Files
 └── README.md
