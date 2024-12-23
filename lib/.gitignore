@@ -35,5 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# yaml file from resources folder
-resources/*.yaml
+# yaml file from assets folder
+assets/*.yaml
