@@ -17,7 +17,7 @@
   },
   "packageManager": "npm@10.9.0",
   "workspaces": [
-    "src/*",
+    "*",
     "config/*"
   ],
   "dependencies": {
