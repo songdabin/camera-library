@@ -1,4 +1,4 @@
-import { readYaml } from "../services/readYaml";
+import { readYaml } from "../services/read_yaml";
 
 let data = await readYaml("./assets/svc_front.yaml");
 
