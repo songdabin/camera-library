@@ -23,6 +23,7 @@
   "dependencies": {
     "@repo/eslint-config": "^0.0.0",
     "@repo/typescript-config": "^0.0.0",
-    "load-yaml-file": "^1.0.0"
+    "load-yaml-file": "^1.0.0",
+    "zod": "^3.24.1"
   }
 }
