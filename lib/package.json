@@ -1,8 +1,12 @@
 {
-  "name": "lib",
-  "version": "0.1.0",
-  "type": "module",
-  "private": true,
+  "name": "camera-library",
+  "version": "1.0.0",
+  "description": "read yaml file",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -11,7 +15,6 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

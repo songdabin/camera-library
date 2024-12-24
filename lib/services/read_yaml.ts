@@ -1,9 +1,5 @@
-import { loadYamlFileSync } from "load-yaml-file";
-
-async function readYaml(fileName: string) {
-  const lData: any = await loadYamlFileSync(fileName);
+export function readYaml(fileName: string) {
+  const lData = "hi";
 
   return lData;
 }
-
-export { readYaml };
