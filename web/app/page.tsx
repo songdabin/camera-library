@@ -1,4 +1,4 @@
-import { readYaml } from "camera-library";
+import { readYaml } from "camera-library/dist/read_yaml.js";
 
 let data = readYaml("../../lib/assets/svc_front.yaml");
 
