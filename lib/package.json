@@ -1,6 +1,6 @@
 {
   "name": "camera-library",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "read yaml file",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
