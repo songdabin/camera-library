@@ -2,19 +2,26 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
   "dependencies": {
+    "next": "15.1.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.1.2"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "camera-library": "1.0.0",
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "camera-library": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.2",
-    "@eslint/eslintrc": "^3"
+    "typescript": "^5"
   }
 }
