@@ -3,9 +3,9 @@ import { parseYaml } from "./parse_yaml";
 import { CameraModel } from "../models/camera_model";
 
 export function readYaml(fileName: string) {
-  let fileContent = fs.readFileSync(fileName, "utf8");
+  const fileContent = fs.readFileSync(fileName, "utf8");
 
-  let parsedYaml = parseYaml(fileContent);
+  const parsedYaml = parseYaml(fileContent);
 
   const camera = new CameraModel(
     parsedYaml.channel,
