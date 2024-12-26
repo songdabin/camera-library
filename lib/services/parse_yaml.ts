@@ -1,5 +1,6 @@
 import { parse } from "yaml";
 import { cameraSchema } from "../models/camera_schema";
+import { z } from "zod";
 
 export function parseYaml(fileContent: string) {
   const parsedContent = parse(fileContent);
@@ -39,6 +40,29 @@ export function parseYaml(fileContent: string) {
     ty: parsedContent.mvcs_extrinsic.ty,
     tz: parsedContent.mvcs_extrinsic.tz,
   };
+
+  try {
+    cameraSchema.parse({
+      channel: parsedContent.channel,
+      sensor: parsedContent.sensor,
+      distortionModel: parsedContent.distortion_model,
+      hfov: parsedContent.hfov,
+      height: parsedContent.height,
+      width: parsedContent.width,
+      intrinsic: parsedContent.intrinsic,
+      vcsExtrinsic: vcsExtrinsic,
+      lcsExtrinsic: lcsExtrinsic,
+      mvcsExtrinsic: mvcsExtrinsic,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const errorMessage = error.errors.map(
+        (e) => `${e.code} error generated from ${e.path}: ${e.message}`
+      );
+
+      console.error("Validation Error:", errorMessage);
+    }
+  }
 
   return cameraSchema.parse({
     channel: parsedContent.channel,
