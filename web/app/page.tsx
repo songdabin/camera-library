@@ -8,7 +8,14 @@ export default function Home() {
   return (
     <html>
       <body>
-        <div>Home</div>
+        <div>
+          <h2>Camera Model Parameter</h2>
+          <ul>
+            <li>channel : {data.channel}</li>
+            <li>sensor : {data.sensor}</li>
+            <li>distortionModel : {data.distortionModel}</li>
+          </ul>
+        </div>
       </body>
     </html>
   );
