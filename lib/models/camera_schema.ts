@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 const extrinsicSchema = z.object({
-  frame_from: z.string(),
-  frame_to: z.string(),
+  frameFrom: z.string(),
+  frameTo: z.string(),
   qw: z.number(),
   qx: z.number(),
   qy: z.number(),
@@ -27,15 +27,15 @@ const intrinsicSchema = z.object({
   p2: z.number(),
 });
 
-const cameraSchema = z.object({
+export const cameraSchema = z.object({
   channel: z.string(),
   sensor: z.string(),
-  distortion_model: z.string(),
+  distortionModel: z.string(),
   hfov: z.number(),
   height: z.number(),
   width: z.number(),
   intrinsic: intrinsicSchema,
-  vcs_extrinsic: extrinsicSchema,
-  lcs_extrinsic: extrinsicSchema,
-  mvcs_extrinsic: extrinsicSchema,
+  vcsExtrinsic: extrinsicSchema,
+  lcsExtrinsic: extrinsicSchema,
+  mvcsExtrinsic: extrinsicSchema,
 });
