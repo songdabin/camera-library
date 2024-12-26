@@ -1,6 +1,6 @@
-import { readYaml } from "./readYaml";
+import { readYaml } from "camera-library";
 
-let data = await readYaml("./resources/svc_front.yaml");
+let data = readYaml("./assets/svc_front.yaml");
 
 console.log(data);
 

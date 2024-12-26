@@ -17,12 +17,14 @@
   },
   "packageManager": "npm@10.9.0",
   "workspaces": [
-    "src/*",
-    "config/*"
+    "app/*",
+    "config/*",
+    "lib/*"
   ],
   "dependencies": {
     "@repo/eslint-config": "^0.0.0",
     "@repo/typescript-config": "^0.0.0",
+    "@types/react": "^19.0.2",
     "load-yaml-file": "^1.0.0"
   }
 }

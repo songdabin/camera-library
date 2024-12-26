@@ -11,10 +11,12 @@
 ```
 .
 ├── config                  # Configuration Files
-├── docs                    # Documentation files
-├── src                     # Source files
-    ├── lib                 # Library Source Code Files
-    └── web                 # Front Files
+├── docs                    # Documentation Files
+├── lib                     # Library Source Files
+    ├── assets              # Static Files for a Specific Feature
+    ├── services            # Library Service Implementation Files
+    └── models              # Model Files
+├── web                     # Test Application Files
 └── README.md
 ```
 
