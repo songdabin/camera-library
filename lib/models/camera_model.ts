@@ -1,4 +1,4 @@
-interface Extrinsic {
+export interface Extrinsic {
   frameFrom: string;
   frameTo: string;
   qw: number;
@@ -10,7 +10,7 @@ interface Extrinsic {
   tz: number;
 }
 
-interface Intrinsic {
+export interface Intrinsic {
   fx: number;
   fy: number;
   cx: number;

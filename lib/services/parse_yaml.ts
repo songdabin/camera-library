@@ -1,9 +1,12 @@
 import { parse } from "yaml";
 import { cameraSchema } from "../models/camera_schema";
 import { z } from "zod";
+import { splitData } from "./split_data";
 
 export function parseYaml(fileContent: string) {
   const parsedContent = parse(fileContent);
+
+  const data = splitData(fileContent);
 
   const vcsExtrinsic = {
     frameFrom: parsedContent.vcs_extrinsic.frame_from,
