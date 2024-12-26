@@ -1,58 +1,55 @@
-import { parse } from "yaml";
 import { cameraSchema } from "../models/camera_schema";
 import { z } from "zod";
 import { splitData } from "./split_data";
 
 export function parseYaml(fileContent: string) {
-  const parsedContent = parse(fileContent);
-
-  const data = splitData(fileContent);
+  const parsedData = splitData(fileContent);
 
   const vcsExtrinsic = {
-    frameFrom: parsedContent.vcs_extrinsic.frame_from,
-    frameTo: parsedContent.vcs_extrinsic.frame_to,
-    qw: parsedContent.vcs_extrinsic.qw,
-    qx: parsedContent.vcs_extrinsic.qx,
-    qy: parsedContent.vcs_extrinsic.qy,
-    qz: parsedContent.vcs_extrinsic.qz,
-    tx: parsedContent.vcs_extrinsic.tx,
-    ty: parsedContent.vcs_extrinsic.ty,
-    tz: parsedContent.vcs_extrinsic.tz,
+    frameFrom: parsedData?.vcsExtrinsic.frameFrom,
+    frameTo: parsedData?.vcsExtrinsic.frameTo,
+    qw: parsedData?.vcsExtrinsic.qw,
+    qx: parsedData?.vcsExtrinsic.qx,
+    qy: parsedData?.vcsExtrinsic.qy,
+    qz: parsedData?.vcsExtrinsic.qz,
+    tx: parsedData?.vcsExtrinsic.tx,
+    ty: parsedData?.vcsExtrinsic.ty,
+    tz: parsedData?.vcsExtrinsic.tz,
   };
 
   const lcsExtrinsic = {
-    frameFrom: parsedContent.lcs_extrinsic.frame_from,
-    frameTo: parsedContent.lcs_extrinsic.frame_to,
-    qw: parsedContent.lcs_extrinsic.qw,
-    qx: parsedContent.lcs_extrinsic.qx,
-    qy: parsedContent.lcs_extrinsic.qy,
-    qz: parsedContent.lcs_extrinsic.qz,
-    tx: parsedContent.lcs_extrinsic.tx,
-    ty: parsedContent.lcs_extrinsic.ty,
-    tz: parsedContent.lcs_extrinsic.tz,
+    frameFrom: parsedData?.lcsExtrinsic.frameFrom,
+    frameTo: parsedData?.lcsExtrinsic.frameTo,
+    qw: parsedData?.lcsExtrinsic.qw,
+    qx: parsedData?.lcsExtrinsic.qx,
+    qy: parsedData?.lcsExtrinsic.qy,
+    qz: parsedData?.lcsExtrinsic.qz,
+    tx: parsedData?.lcsExtrinsic.tx,
+    ty: parsedData?.lcsExtrinsic.ty,
+    tz: parsedData?.lcsExtrinsic.tz,
   };
 
   const mvcsExtrinsic = {
-    frameFrom: parsedContent.mvcs_extrinsic.frame_from,
-    frameTo: parsedContent.mvcs_extrinsic.frame_to,
-    qw: parsedContent.mvcs_extrinsic.qw,
-    qx: parsedContent.mvcs_extrinsic.qx,
-    qy: parsedContent.mvcs_extrinsic.qy,
-    qz: parsedContent.mvcs_extrinsic.qz,
-    tx: parsedContent.mvcs_extrinsic.tx,
-    ty: parsedContent.mvcs_extrinsic.ty,
-    tz: parsedContent.mvcs_extrinsic.tz,
+    frameFrom: parsedData?.mvcsExtrinsic.frameFrom,
+    frameTo: parsedData?.mvcsExtrinsic.frameTo,
+    qw: parsedData?.mvcsExtrinsic.qw,
+    qx: parsedData?.mvcsExtrinsic.qx,
+    qy: parsedData?.mvcsExtrinsic.qy,
+    qz: parsedData?.mvcsExtrinsic.qz,
+    tx: parsedData?.mvcsExtrinsic.tx,
+    ty: parsedData?.mvcsExtrinsic.ty,
+    tz: parsedData?.mvcsExtrinsic.tz,
   };
 
   try {
     cameraSchema.parse({
-      channel: parsedContent.channel,
-      sensor: parsedContent.sensor,
-      distortionModel: parsedContent.distortion_model,
-      hfov: parsedContent.hfov,
-      height: parsedContent.height,
-      width: parsedContent.width,
-      intrinsic: parsedContent.intrinsic,
+      channel: parsedData?.channel,
+      sensor: parsedData?.sensor,
+      distortionModel: parsedData?.distortionModel,
+      hfov: parsedData?.hfov,
+      height: parsedData?.height,
+      width: parsedData?.width,
+      intrinsic: parsedData?.intrinsic,
       vcsExtrinsic: vcsExtrinsic,
       lcsExtrinsic: lcsExtrinsic,
       mvcsExtrinsic: mvcsExtrinsic,
@@ -68,13 +65,13 @@ export function parseYaml(fileContent: string) {
   }
 
   return cameraSchema.parse({
-    channel: parsedContent.channel,
-    sensor: parsedContent.sensor,
-    distortionModel: parsedContent.distortion_model,
-    hfov: parsedContent.hfov,
-    height: parsedContent.height,
-    width: parsedContent.width,
-    intrinsic: parsedContent.intrinsic,
+    channel: parsedData?.channel,
+    sensor: parsedData?.sensor,
+    distortionModel: parsedData?.distortionModel,
+    hfov: parsedData?.hfov,
+    height: parsedData?.height,
+    width: parsedData?.width,
+    intrinsic: parsedData?.intrinsic,
     vcsExtrinsic: vcsExtrinsic,
     lcsExtrinsic: lcsExtrinsic,
     mvcsExtrinsic: mvcsExtrinsic,
