@@ -1,29 +1,9 @@
-export interface Extrinsic {
-  frameFrom: string;
-  frameTo: string;
-  qw: number;
-  qx: number;
-  qy: number;
-  qz: number;
-  tx: number;
-  ty: number;
-  tz: number;
-}
+import { z } from "zod";
+import { extrinsicSchema, intrinsicSchema } from "./camera_schema";
 
-export interface Intrinsic {
-  fx: number;
-  fy: number;
-  cx: number;
-  cy: number;
-  k1: number;
-  k2: number;
-  k3: number;
-  k4: number;
-  k5?: number;
-  k6?: number;
-  p1: number;
-  p2: number;
-}
+export type Extrinsic = z.infer<typeof extrinsicSchema>;
+
+export type Intrinsic = z.infer<typeof intrinsicSchema>;
 
 export class CameraModel {
   channel: string;
