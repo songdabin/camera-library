@@ -7,47 +7,92 @@ export default function Home() {
 
   return (
     <html>
+      <head>
+        <style>
+          {`
+            body {
+              background-color: #f4f7fa;
+              margin: 5vh 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+
+            .container {
+              max-width: 70vw;
+              margin: 0 auto;
+              padding: 40px;
+              background-color: #fff;
+              border-radius: 8px;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+              text-align: center;
+              color: #333;
+              font-size: 2.5rem;
+              margin-bottom: 30px;
+              font-weight: 600;
+            }
+
+            .grid {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              grid-gap: 40px;
+              margin-top: 20px;
+            }
+
+            .card {
+              background-color: #fafafa;
+              padding: 10px 20px;
+              border-radius: 8px;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
+
+            .card h3 {
+              color: #4b4f58;
+              font-size: 1.5rem;
+              margin-bottom: 15px;
+            }
+
+            .card ul {
+              list-style-type: none;
+              padding: 0;
+            }
+
+            .card li {
+              margin-bottom: 10px;
+            }
+
+            .card ul li:last-child {
+              margin-bottom: 0;
+            }
+
+            @media (max-width: 768px) {
+              .grid {
+                grid-template-columns: 1fr;
+              }
+            }
+          `}
+        </style>
+      </head>
       <body>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <h2>Camera Model Parameter</h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
-              gridAutoRows: 400,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+        <div className="container">
+          <h2>Camera Model Parameters</h2>
+
+          <div className="grid">
+            <div className="card">
               <h3>Parameters</h3>
               <ul>
-                <li>channel : {data.channel}</li>
-                <li>sensor : {data.sensor}</li>
-                <li>distortionModel : {data.distortionModel}</li>
+                <li>channel: {data.channel}</li>
+                <li>sensor: {data.sensor}</li>
+                <li>distortion_model: {data.distortionModel}</li>
                 <li>hfov: {data.hfov}</li>
                 <li>height: {data.height}</li>
                 <li>width: {data.width}</li>
               </ul>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+            <div className="card">
               <h3>Intrinsic Parameters</h3>
               <ul>
                 <li>fx: {data.intrinsic.fx}</li>
@@ -65,13 +110,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+            <div className="card">
               <h3>VCS Extrinsic Parameters</h3>
               <ul>
                 <li>frame_from: {data.vcsExtrinsic.frameFrom}</li>
@@ -86,13 +125,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+            <div className="card">
               <h3>LCS Extrinsic Parameters</h3>
               <ul>
                 <li>frame_from: {data.lcsExtrinsic.frameFrom}</li>
@@ -107,13 +140,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+            <div className="card">
               <h3>MVCS Extrinsic Parameters</h3>
               <ul>
                 <li>frame_from: {data.mvcsExtrinsic.frameFrom}</li>
