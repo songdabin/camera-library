@@ -73,7 +73,7 @@ function cameraModelParser(data: any) {
     !data.lcs_extrinsic ||
     !data.mvcs_extrinsic
   ) {
-    console.error("필수 항목이 누락되었습니다.");
+    console.error("필수 항목이 모두 입력되지 않았습니다.");
     return null;
   }
 

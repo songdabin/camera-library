@@ -1,4 +1,4 @@
-import { readYaml } from "camera-library/dist/services/read_yaml.js";
+import { readYaml } from "camera-library";
 import path from "path";
 
 export default function Home() {
