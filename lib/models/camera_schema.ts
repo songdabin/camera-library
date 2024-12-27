@@ -1,6 +1,17 @@
 import { z } from "zod";
 
-const extrinsicSchema = z.object({
+export const channelOrFrameToEnum = z.enum([
+  "svc_front",
+  "svc_rear",
+  "svc_left",
+  "svc_right",
+  "mvc_front",
+  "mvc_rear",
+]);
+
+export const frameFromEnum = z.enum(["vcs", "lidar", "mvcs"]);
+
+export const extrinsicSchema = z.object({
   frameFrom: z.string(),
   frameTo: z.string(),
   qw: z.number(),
@@ -12,7 +23,7 @@ const extrinsicSchema = z.object({
   tz: z.number(),
 });
 
-const intrinsicSchema = z.object({
+export const intrinsicSchema = z.object({
   fx: z.number(),
   fy: z.number(),
   cx: z.number(),
@@ -29,8 +40,8 @@ const intrinsicSchema = z.object({
 
 export const cameraSchema = z.object({
   channel: z.string(),
-  sensor: z.string(),
-  distortionModel: z.string(),
+  sensor: z.string().regex(/^[a-zA-Z]*$/),
+  distortionModel: z.string().regex(/^[a-zA-Z]*$/),
   hfov: z.number(),
   height: z.number(),
   width: z.number(),
