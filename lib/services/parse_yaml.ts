@@ -11,12 +11,12 @@ export function parseYaml(fileContent: string) {
   const parsedData = splitData(fileContent);
 
   const validateYaml = function (
-    enumInput: { parse: (arg0: string | CameraModel) => void },
+    validateInput: { parse: (arg0: string | CameraModel) => void },
     testData: string | CameraModel,
     testKey?: string
   ) {
     try {
-      enumInput.parse(testData);
+      validateInput.parse(testData);
     } catch (validateError) {
       if (validateError instanceof z.ZodError) {
         const errorMessage = validateError.errors.map(
