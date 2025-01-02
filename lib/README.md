@@ -36,15 +36,29 @@ console.log(data.channel);
 #### Input Data Sample Format
 
 ```
-channel: [channel_name]
-sensor: [sensor_name]
-distortion_model: [distortion_model_name]
-hfov: [hfov_value]
-height: [height_value]
-width: [width_value]
-intrinsic:
-  fx: [fx_value]
+channel: "mvc_front"        # (string) Camera Channel Name
+sensor: "abcd"              # (string) Camera Sensor Name
+distortion_model: "kbm"     # (string) Distortion Model Type
+hfov: 90.0                  # (float) Horizontal Field of View (degrees, 0.0 - 360.0)
+height: 1080                # (int) Image Height in Pixels
+width: 1920                 # (int) Image Width in Pixels
+intrinsic:                  # (object) Intrinsic Camera Parameters
+  fx: 1200.0                # (float) Focal Length in Pixels (X-axis)
+  fy: 1200.0                # (float) Focal Length in Pixels (Y-axis)
+  cx: 960.0                 # (float) Principal Point X-coordinate (pixels)
+  cy: 540.0                 # (float) Principal Point Y-coordinate (pixels)
   ...
+vcs_extrinsic:              # (object) VCS Extrinsic Camera Parameters
+  frame_from: "vcs"         # (string) Source Coordinate Frame
+  frame_to: "svc_front"     # (string) Target Coordinate Frame
+  qw: -0.457830327784499    # (float) Real Part of Quaternion
+  qx: 0.5430736515642708    # (float) Imaginary Part of Quaternion
+  qy: -0.5354141965576975   # (float) Imaginary Part of Quaternion
+  qz: 0.4569398626316843    # (float) Imaginary Part of Quaternion
+  tx: 3.104786876325451     # (float) Translation Parameter (X-axis)
+  ty: 0.016295622111088     # (float) Translation Parameter (Y-axis)
+  tz: -1.6926350132369008   # (float) Translation Parameter (Z-axis)
+...
 ```
 
 ## Release Notes
