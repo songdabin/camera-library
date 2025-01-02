@@ -32,8 +32,8 @@ export const intrinsicSchema = z.object({
   k2: z.number(),
   k3: z.number(),
   k4: z.number(),
-  k5: z.number().optional(),
-  k6: z.number().optional(),
+  k5: z.number().default(0),
+  k6: z.number().default(0),
   p1: z.number(),
   p2: z.number(),
 });
