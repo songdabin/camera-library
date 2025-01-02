@@ -15,7 +15,7 @@ export function splitData(yamlData: string) {
   const data: any = {};
 
   let objectKey: string | null = null;
-  let objectData: any = {};
+  let objectData: Record<string, string | number | null> = {};
 
   lines.map((line) => {
     if (line.endsWith(":")) {
@@ -45,8 +45,6 @@ export function splitData(yamlData: string) {
 
 function typeParser(value: string) {
   if (value === "null") return null;
-  if (value === "true") return true;
-  if (value === "false") return false;
 
   const numberValue = parseFloat(value);
   if (!isNaN(numberValue)) {
