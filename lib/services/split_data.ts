@@ -55,21 +55,6 @@ function typeParser(value: string) {
 }
 
 function cameraModelParser(data: any) {
-  if (
-    !data.channel ||
-    !data.sensor ||
-    !data.distortion_model ||
-    !data.hfov ||
-    !data.height ||
-    !data.width ||
-    !data.intrinsic ||
-    !data.vcs_extrinsic ||
-    !data.lcs_extrinsic ||
-    !data.mvcs_extrinsic
-  ) {
-    console.error("필수 항목이 모두 입력되지 않았습니다.");
-    return null;
-  }
 
   const intrinsic: Intrinsic = {
     fx: data.intrinsic.fx,
