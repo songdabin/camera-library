@@ -1,40 +1,36 @@
 import { Extrinsic, Intrinsic } from "../models/camera_model";
 
 export function splitData(yamlData: string) {
-  // 줄바꿈을 기준으로 split한 뒤, #으로 시작하는 줄(주석) 삭제
+  /*
+    YAML 데이터를 파싱하여 key-value 구조로 변환하는 함수
+    Steps:
+    1. YAML 파일의 주석 제거
+    2. intrinsic과 extrinsic을 구분하여 데이터 정리
+      objectKey: intrinsic, extrinsic 정보
+      objectData: 객체의 모든 key:value 정보
+    3. key-value 데이터를 typeParser를 통해 파싱
+    4. 파싱된 모든 정보를 data에 저장해서 리턴
+   */
   const lines = yamlData.split("\n").filter((line) => !line.startsWith("#"));
   const data: any = {};
 
-  // objectKey는 intrinsic, extrinsic 정보를 가지고,
-  // objectData는 해당 객체의 모든 key:value 정보를 가진다
   let objectKey: string | null = null;
   let objectData: any = {};
 
   lines.map((line) => {
-    // intrinsic, extrinsic case
-    // key:로 이루어진 line
     if (line.endsWith(":")) {
-      // 지금까지 처리하던 객체 정보를 data에 저장하고,
       if (objectKey) {
         data[objectKey] = objectData;
       }
 
-      // 새로운 객체 생성
       objectKey = line.slice(0, -1).trim();
       objectData = {};
-    }
-    // key: value로 구성된 line
-    else {
-      // key: value 분리
+    } else {
       const [key, value] = line.split(":").map((part) => part.trim());
 
-      // 객체 안의 key: value인 경우 objectData에 추가
       if (objectKey) {
         objectData[key] = typeParser(value);
-      }
-      // 객체 안에 속해있지 않고, key: value만 가지고 있는 경우 (channel, sensor, etc.)
-      // data에 바로 저장
-      else {
+      } else {
         data[key] = typeParser(value);
       }
     }
