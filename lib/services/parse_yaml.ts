@@ -54,18 +54,7 @@ export function parseYaml(fileContent: string) {
   }
 
   try {
-    cameraSchema.parse({
-      channel: parsedData.channel,
-      sensor: parsedData.sensor,
-      distortionModel: parsedData.distortionModel,
-      hfov: parsedData.hfov,
-      height: parsedData.height,
-      width: parsedData.width,
-      intrinsic: parsedData.intrinsic,
-      vcsExtrinsic: parsedData.vcsExtrinsic,
-      lcsExtrinsic: parsedData.lcsExtrinsic,
-      mvcsExtrinsic: parsedData.mvcsExtrinsic,
-    });
+    cameraSchema.parse(parsedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
       const errorMessage = error.errors.map(
@@ -76,16 +65,5 @@ export function parseYaml(fileContent: string) {
     }
   }
 
-  return cameraSchema.parse({
-    channel: parsedData.channel,
-    sensor: parsedData.sensor,
-    distortionModel: parsedData.distortionModel,
-    hfov: parsedData.hfov,
-    height: parsedData.height,
-    width: parsedData.width,
-    intrinsic: parsedData.intrinsic,
-    vcsExtrinsic: parsedData.vcsExtrinsic,
-    lcsExtrinsic: parsedData.lcsExtrinsic,
-    mvcsExtrinsic: parsedData.mvcsExtrinsic,
-  });
+  return cameraSchema.parse(parsedData);
 }
