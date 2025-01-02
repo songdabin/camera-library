@@ -1,5 +1,4 @@
-import { Extrinsic, Intrinsic } from "../models/camera_model";
-
+import { CameraModel, Extrinsic } from "../models/camera_model";
 export function splitData(yamlData: string) {
   /*
     YAML 데이터를 파싱하여 key-value 구조로 변환하는 함수
@@ -12,7 +11,7 @@ export function splitData(yamlData: string) {
     4. 파싱된 모든 정보를 data에 저장해서 리턴
    */
   const lines = yamlData.split("\n").filter((line) => !line.startsWith("#"));
-  const data: any = {};
+  const data: Record<string, any> = {};
 
   let objectKey: string | null = null;
   let objectData: Record<string, string | number | null> = {};
@@ -54,57 +53,23 @@ function typeParser(value: string) {
   return value;
 }
 
-function cameraModelParser(data: any) {
-
-  const intrinsic: Intrinsic = {
-    fx: data.intrinsic.fx,
-    fy: data.intrinsic.fy,
-    cx: data.intrinsic.cx,
-    cy: data.intrinsic.cy,
-    k1: data.intrinsic.k1,
-    k2: data.intrinsic.k2,
-    k3: data.intrinsic.k3,
-    k4: data.intrinsic.k4,
-    k5: data.intrinsic.k5 ?? 0,
-    k6: data.intrinsic.k6 ?? 0,
-    p1: data.intrinsic.p1,
-    p2: data.intrinsic.p2,
-  };
-
+function cameraModelParser(data: Record<string, any>): CameraModel {
   const vcsExtrinsic: Extrinsic = {
+    ...data.vcs_extrinsic,
     frameFrom: data.vcs_extrinsic.frame_from,
     frameTo: data.vcs_extrinsic.frame_to,
-    qw: data.vcs_extrinsic.qw,
-    qx: data.vcs_extrinsic.qx,
-    qy: data.vcs_extrinsic.qy,
-    qz: data.vcs_extrinsic.qz,
-    tx: data.vcs_extrinsic.tx,
-    ty: data.vcs_extrinsic.ty,
-    tz: data.vcs_extrinsic.tz,
   };
 
   const lcsExtrinsic: Extrinsic = {
+    ...data.lcs_extrinsic,
     frameFrom: data.lcs_extrinsic.frame_from,
     frameTo: data.lcs_extrinsic.frame_to,
-    qw: data.lcs_extrinsic.qw,
-    qx: data.lcs_extrinsic.qx,
-    qy: data.lcs_extrinsic.qy,
-    qz: data.lcs_extrinsic.qz,
-    tx: data.lcs_extrinsic.tx,
-    ty: data.lcs_extrinsic.ty,
-    tz: data.lcs_extrinsic.tz,
   };
 
   const mvcsExtrinsic: Extrinsic = {
+    ...data.mvcs_extrinsic,
     frameFrom: data.mvcs_extrinsic.frame_from,
     frameTo: data.mvcs_extrinsic.frame_to,
-    qw: data.mvcs_extrinsic.qw,
-    qx: data.mvcs_extrinsic.qx,
-    qy: data.mvcs_extrinsic.qy,
-    qz: data.mvcs_extrinsic.qz,
-    tx: data.mvcs_extrinsic.tx,
-    ty: data.mvcs_extrinsic.ty,
-    tz: data.mvcs_extrinsic.tz,
   };
 
   return {
@@ -114,7 +79,7 @@ function cameraModelParser(data: any) {
     hfov: data.hfov,
     height: data.height,
     width: data.width,
-    intrinsic,
+    intrinsic: data.intrinsic,
     vcsExtrinsic,
     lcsExtrinsic,
     mvcsExtrinsic,
