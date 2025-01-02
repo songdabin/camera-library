@@ -54,22 +54,12 @@ function typeParser(value: string) {
 }
 
 function cameraModelParser(data: Record<string, any>): CameraModel {
-  const vcsExtrinsic: Extrinsic = {
-    ...data.vcs_extrinsic,
-    frameFrom: data.vcs_extrinsic.frame_from,
-    frameTo: data.vcs_extrinsic.frame_to,
-  };
-
-  const lcsExtrinsic: Extrinsic = {
-    ...data.lcs_extrinsic,
-    frameFrom: data.lcs_extrinsic.frame_from,
-    frameTo: data.lcs_extrinsic.frame_to,
-  };
-
-  const mvcsExtrinsic: Extrinsic = {
-    ...data.mvcs_extrinsic,
-    frameFrom: data.mvcs_extrinsic.frame_from,
-    frameTo: data.mvcs_extrinsic.frame_to,
+  const makeExtrinsic = function (inputExtrinsic: any) {
+    return {
+      ...inputExtrinsic,
+      frameFrom: inputExtrinsic.frame_from,
+      frameTo: inputExtrinsic.frame_to,
+    };
   };
 
   return {
@@ -80,8 +70,8 @@ function cameraModelParser(data: Record<string, any>): CameraModel {
     height: data.height,
     width: data.width,
     intrinsic: data.intrinsic,
-    vcsExtrinsic,
-    lcsExtrinsic,
-    mvcsExtrinsic,
+    vcsExtrinsic: makeExtrinsic(data.vcs_extrinsic),
+    lcsExtrinsic: makeExtrinsic(data.lcs_extrinsic),
+    mvcsExtrinsic: makeExtrinsic(data.mvcs_extrinsic),
   };
 }
