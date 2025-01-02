@@ -17,7 +17,7 @@ export function splitData(yamlData: string) {
   let objectKey: string | null = null;
   let objectData: Record<string, string | number | null> = {};
 
-  lines.map((line) => {
+  lines.forEach((line) => {
     if (line.endsWith(":")) {
       if (objectKey) {
         data[objectKey] = objectData;
