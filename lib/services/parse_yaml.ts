@@ -17,7 +17,7 @@ export function parseYaml(fileContent: string) {
         (e) => `${e.code} error generated from channel: ${e.message}`
       );
 
-      console.error("Validation Error:", errorMessage);
+      throw new Error("Validation Error:" + errorMessage);
     }
   }
 
@@ -30,10 +30,10 @@ export function parseYaml(fileContent: string) {
   } catch (frameToEnumError) {
     if (frameToEnumError instanceof z.ZodError) {
       const errorMessage = frameToEnumError.errors.map(
-        (e) => `${e.code} error generated from channel: ${e.message}`
+        (e) => `${e.code} error generated from frame_to: ${e.message}`
       );
 
-      console.error("Validation Error:", errorMessage);
+      throw new Error("Validation Error:" + errorMessage);
     }
   }
 
@@ -46,10 +46,10 @@ export function parseYaml(fileContent: string) {
   } catch (frameFromEnumError) {
     if (frameFromEnumError instanceof z.ZodError) {
       const errorMessage = frameFromEnumError.errors.map(
-        (e) => `${e.code} error generated from channel: ${e.message}`
+        (e) => `${e.code} error generated from frame_from: ${e.message}`
       );
 
-      console.error("Validation Error:", errorMessage);
+      throw new Error("Validation Error:" + errorMessage);
     }
   }
 
@@ -61,7 +61,7 @@ export function parseYaml(fileContent: string) {
         (e) => `${e.code} error generated from ${e.path}: ${e.message}`
       );
 
-      console.error("Validation Error:", errorMessage);
+      throw new Error("Validation Error:" + errorMessage);
     }
   }
 
