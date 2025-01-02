@@ -5,65 +5,51 @@ import {
 } from "../models/camera_schema";
 import { z } from "zod";
 import { splitData } from "./split_data";
+import { CameraModel } from "../models/camera_model";
 
 export function parseYaml(fileContent: string) {
   const parsedData = splitData(fileContent);
 
-  try {
-    channelOrFrameToEnum.parse(parsedData.channel);
-  } catch (channelEnumError) {
-    if (channelEnumError instanceof z.ZodError) {
-      const errorMessage = channelEnumError.errors.map(
-        (e) => `${e.code} error generated from channel: ${e.message}`
-      );
+  const validateYaml = function (
+    enumInput: { parse: (arg0: string | CameraModel) => void },
+    testData: string | CameraModel,
+    testKey?: string
+  ) {
+    try {
+      enumInput.parse(testData);
+    } catch (validateError) {
+      if (validateError instanceof z.ZodError) {
+        const errorMessage = validateError.errors.map(
+          (e) =>
+            `${e.code} error generated from '${testKey ?? e.path}':\n${e.message}\n`
+        );
 
-      throw new Error("Validation Error:" + errorMessage);
+        throw new Error(
+          "\n\n---------------Validation Error---------------\n\n" +
+            errorMessage +
+            "\n----------------------------------------------\n"
+        );
+      }
     }
-  }
+  };
 
-  try {
-    channelOrFrameToEnum.parse(
-      parsedData.vcsExtrinsic.frameTo ||
-        parsedData.lcsExtrinsic.frameTo ||
-        parsedData.mvcsExtrinsic.frameTo
-    );
-  } catch (frameToEnumError) {
-    if (frameToEnumError instanceof z.ZodError) {
-      const errorMessage = frameToEnumError.errors.map(
-        (e) => `${e.code} error generated from frame_to: ${e.message}`
-      );
+  validateYaml(channelOrFrameToEnum, parsedData.channel, "channel");
 
-      throw new Error("Validation Error:" + errorMessage);
-    }
-  }
+  const extrinsicList = [
+    parsedData.vcsExtrinsic,
+    parsedData.lcsExtrinsic,
+    parsedData.mvcsExtrinsic,
+  ];
 
-  try {
-    frameFromEnum.parse(
-      parsedData.vcsExtrinsic.frameFrom ||
-        parsedData.lcsExtrinsic.frameFrom ||
-        parsedData.mvcsExtrinsic.frameFrom
-    );
-  } catch (frameFromEnumError) {
-    if (frameFromEnumError instanceof z.ZodError) {
-      const errorMessage = frameFromEnumError.errors.map(
-        (e) => `${e.code} error generated from frame_from: ${e.message}`
-      );
+  extrinsicList.forEach((extrinsic) =>
+    validateYaml(channelOrFrameToEnum, extrinsic.frameTo, "frame_to")
+  );
 
-      throw new Error("Validation Error:" + errorMessage);
-    }
-  }
+  extrinsicList.forEach((extrinsic) =>
+    validateYaml(frameFromEnum, extrinsic.frameFrom, "frame_from")
+  );
 
-  try {
-    cameraSchema.parse(parsedData);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const errorMessage = error.errors.map(
-        (e) => `${e.code} error generated from ${e.path}: ${e.message}`
-      );
-
-      throw new Error("Validation Error:" + errorMessage);
-    }
-  }
+  validateYaml(cameraSchema, parsedData);
 
   return cameraSchema.parse(parsedData);
 }
