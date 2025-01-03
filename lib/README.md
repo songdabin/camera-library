@@ -67,4 +67,8 @@ vcs_extrinsic:              # (object) VCS Extrinsic Camera Parameters
 
 1.0.9 - create README.md
 
+1.0.10 - YAML 파일을 읽고, 유효성 검사를 실행
+
+1.0.11 - 유효하지 않은 정보가 있을 때 전달하는 에러 메시지 포맷 변경
+
 ### End
