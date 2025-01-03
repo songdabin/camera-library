@@ -1,6 +1,7 @@
 import { readYaml } from "camera-library";
 import path from "path";
 import "./style.css";
+import { redirect } from "next/navigation";
 
 const Card = ({ title, parameters }) => (
   <div className="card">
@@ -17,7 +18,14 @@ const Card = ({ title, parameters }) => (
 
 export default function Home() {
   const filePath = path.join(process.cwd(), "assets", "svc_front.yaml");
-  const data = readYaml(filePath);
+
+  let data;
+
+  try {
+    data = readYaml(filePath);
+  } catch (error) {
+    redirect("/validationError");
+  }
 
   const parameterSections = [
     {
