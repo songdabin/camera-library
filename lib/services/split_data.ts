@@ -73,5 +73,8 @@ function cameraModelParser(data: Record<string, any>): CameraModel {
     vcsExtrinsic: makeExtrinsic(data.vcs_extrinsic),
     lcsExtrinsic: makeExtrinsic(data.lcs_extrinsic),
     mvcsExtrinsic: makeExtrinsic(data.mvcs_extrinsic),
+    projectCCSToICS: (vec3) => {
+      return { x: 3, y: 3, isInImage: true };
+    },
   };
 }
