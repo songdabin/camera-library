@@ -5,7 +5,7 @@ export type Extrinsic = z.infer<typeof extrinsicSchema>;
 
 export type Intrinsic = z.infer<typeof intrinsicSchema>;
 
-export class CameraModel {
+export abstract class CameraModel {
   channel: string;
   sensor: string;
   distortionModel: string;
