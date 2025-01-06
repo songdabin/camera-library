@@ -1,7 +1,7 @@
 import { FisheyeModel } from "../models/fisheye_model";
 import { RectilinearModel } from "../models/rectilinear_model";
 
-function CreateModel(modelType: string) {
+export function CreateModel(modelType: string) {
   const intrinsic_ex = {
     fx: 510.5319068115689,
     fy: 510.19984934242643,
