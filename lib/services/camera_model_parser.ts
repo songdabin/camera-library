@@ -7,9 +7,15 @@ export function cameraModelParser(
 ): [CameraType, FisheyeModel | RectilinearModel] {
   const makeExtrinsic = function (inputExtrinsic: any) {
     return {
-      ...inputExtrinsic,
       frameFrom: inputExtrinsic.frame_from,
       frameTo: inputExtrinsic.frame_to,
+      qw: inputExtrinsic.qw,
+      qx: inputExtrinsic.qx,
+      qy: inputExtrinsic.qy,
+      qz: inputExtrinsic.qz,
+      tx: inputExtrinsic.tx,
+      ty: inputExtrinsic.ty,
+      tz: inputExtrinsic.tz,
     };
   };
 
