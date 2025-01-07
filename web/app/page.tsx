@@ -1,4 +1,4 @@
-import { readYaml } from "camera-library";
+import { createModel, readFile, readYaml, splitData } from "camera-library";
 import path from "path";
 import "./style.css";
 import { redirect } from "next/navigation";
@@ -18,6 +18,10 @@ const Card = ({ title, parameters }) => (
 
 export default function Home() {
   const filePath = path.join(process.cwd(), "assets", "svc_front.yaml");
+  const fileContent = readFile(filePath);
+  const [cameraType, cameraParams] = splitData(fileContent);
+
+  const cameraModel = createModel(cameraType, cameraParams);
 
   let data;
 
