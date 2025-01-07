@@ -1,21 +1,4 @@
-import { z } from "zod";
-import { extrinsicSchema, intrinsicSchema } from "./camera_schema";
-
-export interface IParam {
-  x: number;
-  y: number;
-  z: number;
-}
-
-export interface IReturn {
-  x: number;
-  y: number;
-  isInImage: boolean;
-}
-
-export type Extrinsic = z.infer<typeof extrinsicSchema>;
-
-export type Intrinsic = z.infer<typeof intrinsicSchema>;
+import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
 
 export abstract class CameraModel {
   channel: string;
@@ -58,5 +41,5 @@ export abstract class CameraModel {
     this.mvcsExtrinsic = mvcsExtrinsic;
   }
 
-  abstract projectCCSToICS(vec3: IParam): IReturn;
+  abstract projectCCSToICS(vec3: Vector3Like): ICSPoint;
 }
