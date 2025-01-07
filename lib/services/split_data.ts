@@ -1,4 +1,4 @@
-import { CameraModel, Extrinsic } from "../models/camera_model";
+import { CameraModel } from "../models/camera_model";
 export function splitData(yamlData: string) {
   /*
     YAML 데이터를 파싱하여 key-value 구조로 변환하는 함수
