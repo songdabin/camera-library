@@ -1,4 +1,6 @@
-import { CameraModel } from "../models/camera_model";
+import { FisheyeModel } from "../models/fisheye_model";
+import { RectilinearModel } from "../models/rectilinear_model";
+
 export function splitData(yamlData: string) {
   /*
     YAML 데이터를 파싱하여 key-value 구조로 변환하는 함수
@@ -53,7 +55,9 @@ function typeParser(value: string) {
   return value;
 }
 
-function cameraModelParser(data: Record<string, any>): CameraModel {
+function cameraModelParser(
+  data: Record<string, any>
+): [string, FisheyeModel | RectilinearModel] {
   const makeExtrinsic = function (inputExtrinsic: any) {
     return {
       ...inputExtrinsic,
@@ -62,19 +66,22 @@ function cameraModelParser(data: Record<string, any>): CameraModel {
     };
   };
 
-  return {
-    channel: data.channel,
-    sensor: data.sensor,
-    distortionModel: data.distortion_model,
-    hfov: data.hfov,
-    height: data.height,
-    width: data.width,
-    intrinsic: data.intrinsic,
-    vcsExtrinsic: makeExtrinsic(data.vcs_extrinsic),
-    lcsExtrinsic: makeExtrinsic(data.lcs_extrinsic),
-    mvcsExtrinsic: makeExtrinsic(data.mvcs_extrinsic),
-    projectCCSToICS: (vec3) => {
-      return { x: 3, y: 3, isInImage: true };
+  return [
+    data.type,
+    {
+      channel: data.channel,
+      sensor: data.sensor,
+      distortionModel: data.distortion_model,
+      hfov: data.hfov,
+      height: data.height,
+      width: data.width,
+      intrinsic: data.intrinsic,
+      vcsExtrinsic: makeExtrinsic(data.vcs_extrinsic),
+      lcsExtrinsic: makeExtrinsic(data.lcs_extrinsic),
+      mvcsExtrinsic: makeExtrinsic(data.mvcs_extrinsic),
+      projectCCSToICS: (vec3) => {
+        return { x: 3, y: 3, isInImage: true };
+      },
     },
-  };
+  ];
 }
