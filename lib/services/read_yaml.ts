@@ -1,8 +1,11 @@
-import * as fs from "fs";
 import { parseYaml } from "./parse_yaml";
+import { readFile } from "./read_file";
+import { splitData } from "./split_data";
 
 export function readYaml(fileName: string) {
-  const fileContent = fs.readFileSync(fileName, "utf8");
+  const fileContent = readFile(fileName);
 
-  return parseYaml(fileContent);
+  const [cameraType, cameraParams] = splitData(fileContent);
+
+  return parseYaml(cameraParams);
 }
