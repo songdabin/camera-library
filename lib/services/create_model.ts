@@ -1,59 +1,40 @@
+import * as fs from "fs";
+import path = require("path");
 import { FisheyeModel } from "../models/fisheye_model";
 import { RectilinearModel } from "../models/rectilinear_model";
+import { splitData } from "./split_data";
 
-export function CreateModel(modelType: string) {
-  const intrinsic_ex = {
-    fx: 510.5319068115689,
-    fy: 510.19984934242643,
-    cx: 959.0319617867203,
-    cy: 767.0990841439,
-    k1: 0.13535565583898965,
-    k2: -0.03627517425195722,
-    k3: 6.687170273551911e-5,
-    k4: 0.0004943406139128694,
-    k5: 1,
-    k6: 3,
-    p1: 0.0,
-    p2: 0.0,
-  };
+export function CreateModel(fileName: string) {
+  const filePath = path.join(process.cwd(), "assets", `${fileName}`);
+  const fileContent = fs.readFileSync(filePath, "utf8");
+  // const type = fileContent.split("type: ")[1];
+  const data = splitData(fileContent);
 
-  const extrinsic_ex = {
-    frameFrom: "vcs",
-    frameTo: "svc_front",
-    qw: 0.45318990639291945,
-    qx: -0.5412997983614972,
-    qy: 0.5420231651667693,
-    qz: -0.45587753340121573,
-    tx: 3.6900000000000004,
-    ty: -4.1199519888546195e-18,
-    tz: 0.6249999999999999,
-  };
-
-  if (modelType === "standard") {
+  if (data[0].startsWith("standard")) {
     return new RectilinearModel(
-      "channel",
-      "sensor",
-      "distortionm",
-      1,
-      1,
-      1,
-      intrinsic_ex,
-      extrinsic_ex,
-      extrinsic_ex,
-      extrinsic_ex
+      data[1].channel,
+      data[1].sensor,
+      data[1].distortionModel,
+      data[1].hfov,
+      data[1].height,
+      data[1].width,
+      data[1].intrinsic,
+      data[1].vcsExtrinsic,
+      data[1].lcsExtrinsic,
+      data[1].mvcsExtrinsic
     );
-  } else if (modelType === "fisheye") {
+  } else if (data[0].startsWith("fisheye")) {
     return new FisheyeModel(
-      "channel",
-      "sensor",
-      "distortionm",
-      1,
-      1,
-      1,
-      intrinsic_ex,
-      extrinsic_ex,
-      extrinsic_ex,
-      extrinsic_ex
+      data[1].channel,
+      data[1].sensor,
+      data[1].distortionModel,
+      data[1].hfov,
+      data[1].height,
+      data[1].width,
+      data[1].intrinsic,
+      data[1].vcsExtrinsic,
+      data[1].lcsExtrinsic,
+      data[1].mvcsExtrinsic
     );
   }
 }
