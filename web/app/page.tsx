@@ -21,8 +21,6 @@ export default function Home() {
   const fileContent = readFile(filePath);
   const [cameraType, cameraParams] = splitData(fileContent);
 
-  const cameraModel = createModel(cameraType, cameraParams);
-
   let data;
 
   try {

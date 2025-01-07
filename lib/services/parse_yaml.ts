@@ -48,5 +48,5 @@ export function parseYaml(cameraParams: FisheyeModel | RectilinearModel) {
     throw new ValidationError(cameraSchemaValidationError);
   }
 
-  return cameraSchema.parse(cameraParams);
+  return cameraParams;
 }
