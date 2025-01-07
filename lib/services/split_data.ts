@@ -1,13 +1,11 @@
-import * as fs from "fs";
 import { FisheyeModel } from "../models/fisheye_model";
 import { RectilinearModel } from "../models/rectilinear_model";
 import { cameraModelParser } from "./camera_model_parser";
 import { CameraType } from "../types/type";
 
 export function splitData(
-  filePath: string
+  yamlData: string
 ): [cameraType: CameraType, cameraParams: FisheyeModel | RectilinearModel] {
-  const yamlData = fs.readFileSync(filePath, "utf8");
   const lines = yamlData.split("\n").filter((line) => !line.startsWith("#"));
   const data: Record<string, any> = {};
 
