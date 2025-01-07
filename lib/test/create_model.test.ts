@@ -3,9 +3,9 @@ import { RectilinearModel } from "../models/rectilinear_model";
 import { CreateModel } from "../services/create_model";
 
 test("Fisheye Model Create Test", () => {
-  expect(CreateModel("fisheye")).toBeInstanceOf(FisheyeModel);
+  expect(CreateModel("svc_front.yaml")).toBeInstanceOf(FisheyeModel);
 });
 
 test("Rectilinear Model Create Test", () => {
-  expect(CreateModel("standard")).toBeInstanceOf(RectilinearModel);
+  expect(CreateModel("svc_rear.yaml")).toBeInstanceOf(RectilinearModel);
 });
