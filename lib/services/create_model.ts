@@ -7,7 +7,6 @@ import { splitData } from "./split_data";
 export function CreateModel(fileName: string) {
   const filePath = path.join(process.cwd(), "assets", `${fileName}`);
   const fileContent = fs.readFileSync(filePath, "utf8");
-  // const type = fileContent.split("type: ")[1];
   const data = splitData(fileContent);
 
   if (data[0].startsWith("standard")) {
