@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { CameraModel } from "../models/camera_model";
 
 export function validateYaml(

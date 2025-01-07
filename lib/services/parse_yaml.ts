@@ -1,37 +1,14 @@
-import {
-  cameraSchema,
-  channelOrFrameToEnum,
-  frameFromEnum,
-} from "../models/camera_schema";
-import { z } from "zod";
-import { splitData } from "./split_data";
-import { CameraModel } from "../models/camera_model";
+import { cameraSchema } from "../types/camera_schema";
 import { ValidationError } from "../models/validation_error";
+import { channelOrFrameToEnum, frameFromEnum } from "../types/schema";
+import { FisheyeModel } from "../models/fisheye_model";
+import { RectilinearModel } from "../models/rectilinear_model";
+import { validateYaml } from "./validate_yaml";
 
-export function parseYaml(fileContent: string) {
-  const parsedData = splitData(fileContent);
-
-  const validateYaml = function (
-    validateInput: { parse: (arg0: string | CameraModel) => void },
-    testData: string | CameraModel,
-    testKey?: string
-  ) {
-    try {
-      validateInput.parse(testData);
-    } catch (validateError) {
-      if (validateError instanceof z.ZodError) {
-        const errorMessage = validateError.errors.map(
-          (e) => `${e.code}/ ${testKey ?? e.path}/ ${e.message}`
-        );
-
-        return "[Validation Error] " + errorMessage;
-      }
-    }
-  };
-
+export function parseYaml(cameraParams: FisheyeModel | RectilinearModel) {
   const channelValidationError = validateYaml(
     channelOrFrameToEnum,
-    parsedData.channel,
+    cameraParams.channel,
     "channel"
   );
   if (channelValidationError) {
@@ -39,9 +16,9 @@ export function parseYaml(fileContent: string) {
   }
 
   const extrinsicList = [
-    parsedData.vcsExtrinsic,
-    parsedData.lcsExtrinsic,
-    parsedData.mvcsExtrinsic,
+    cameraParams.vcsExtrinsic,
+    cameraParams.lcsExtrinsic,
+    cameraParams.mvcsExtrinsic,
   ];
 
   for (const extrinsic of extrinsicList) {
@@ -66,10 +43,10 @@ export function parseYaml(fileContent: string) {
     }
   }
 
-  const cameraSchemaValidationError = validateYaml(cameraSchema, parsedData);
+  const cameraSchemaValidationError = validateYaml(cameraSchema, cameraParams);
   if (cameraSchemaValidationError) {
     throw new ValidationError(cameraSchemaValidationError);
   }
 
-  return cameraSchema.parse(parsedData);
+  return cameraSchema.parse(cameraParams);
 }
