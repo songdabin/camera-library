@@ -2,6 +2,8 @@
 
 ### Requirements
 
+#### Step 1
+
 1. yaml format 불러오기
 2. yaml format 검증
 
@@ -20,6 +22,20 @@
    class 초기화 테스트 코드
 
    yaml 데이터 검증 테스트 코드
+
+#### Step 2
+
+1. 구조 변경
+
+2. projectCCSToICS 함수 정의
+
+3. Factory Method Design Pattern 적용
+
+4. 모델별 CCSToICS 코드
+
+5. Testing with input & output
+
+---
 
 ### Camera Type Description
 
