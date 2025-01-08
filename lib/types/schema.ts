@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const channelOrFrameToEnum = z.enum([
+export const channelOrFrameToSchema = z.enum([
   "svc_front",
   "svc_rear",
   "svc_left",
@@ -9,6 +9,6 @@ export const channelOrFrameToEnum = z.enum([
   "mvc_rear",
 ]);
 
-export const frameFromEnum = z.enum(["vcs", "lidar", "mvcs"]);
+export const frameFromSchema = z.enum(["vcs", "lidar", "mvcs"]);
 
 export const CameraTypeSchema = z.enum(["standard", "fisheye"]);

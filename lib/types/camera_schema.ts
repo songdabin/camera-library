@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { channelOrFrameToSchema, frameFromSchema } from "./schema";
 
 export const extrinsicSchema = z.object({
-  frameFrom: z.string(),
-  frameTo: z.string(),
+  frameFrom: frameFromSchema,
+  frameTo: channelOrFrameToSchema,
   qw: z.number(),
   qx: z.number(),
   qy: z.number(),
@@ -28,7 +29,7 @@ export const intrinsicSchema = z.object({
 });
 
 export const cameraSchema = z.object({
-  channel: z.string(),
+  channel: channelOrFrameToSchema,
   sensor: z.string().regex(/^[a-zA-Z]*$/),
   distortionModel: z.string().regex(/^[a-zA-Z]*$/),
   hfov: z.number(),
