@@ -19,8 +19,6 @@ export class RectilinearModel extends CameraModel {
   public projectCcsToIcs(vec3: THREE.Vector3): ICSPoint {
     const normalizedPoint = vec3.clone().normalize();
 
-    // if (!calibration.isDistorted()) return points;
-
     const { fx, fy, cx, cy, k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
     const distortionParams = [k1, k2, k3, k4, k5, k6, p1, p2];
 
