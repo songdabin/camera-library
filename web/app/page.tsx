@@ -47,6 +47,9 @@ export default function Home() {
 
   return (
     <html>
+      <head>
+        <title>Camera Parameters</title>
+      </head>
       <body>
         <div className="container">
           <h2>Camera Model Parameters</h2>
