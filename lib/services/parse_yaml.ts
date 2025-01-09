@@ -1,10 +1,9 @@
 import { z } from "zod";
 import { cameraSchema } from "../types/camera_schema";
-import { FisheyeModel } from "../models/fisheye_model";
-import { RectilinearModel } from "../models/rectilinear_model";
 import { ValidationError } from "../models/validation_error";
+import { CameraModelType } from "../types/type";
 
-export function parseYaml(cameraParams: FisheyeModel | RectilinearModel) {
+export function parseYaml(cameraParams: CameraModelType) {
   try {
     cameraSchema.parse(cameraParams);
   } catch (validateError) {

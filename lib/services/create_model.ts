@@ -1,11 +1,10 @@
 import { FisheyeModel } from "../models/fisheye_model";
 import { RectilinearModel } from "../models/rectilinear_model";
-import { CameraModel } from "../models/camera_model";
-import { CameraType } from "../types/type";
+import { CameraModelType, CameraType } from "../types/type";
 
 export function createModel(
   cameraTypeName: CameraType,
-  cameraParams: CameraModel
+  cameraParams: CameraModelType
 ) {
   if (cameraTypeName === "standard") {
     return new RectilinearModel(
