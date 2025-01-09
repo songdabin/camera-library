@@ -41,5 +41,5 @@ export abstract class CameraModel {
     this.mvcsExtrinsic = mvcsExtrinsic;
   }
 
-  abstract projectCCSToICS(vec3: Vector3Like): ICSPoint;
+  abstract projectCcsToIcs(vec3: Vector3Like): ICSPoint;
 }
