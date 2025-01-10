@@ -17,15 +17,14 @@ export class RectilinearModel extends CameraModel {
   }
 
   public projectCcsToIcs(vec3: THREE.Vector3): ICSPoint {
-    const normalizedPoint = vec3.clone().normalize();
+    const normalizedPoint = vec3.clone().divideScalar(vec3.getComponent(2));
 
     const { fx, fy, cx, cy, k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
-    const distortionParams = [k1, k2, k3, k4, k5, k6, p1, p2];
 
     const x = (normalizedPoint.x - cx) / fx;
     const y = (normalizedPoint.y - cy) / fy;
-    const z = normalizedPoint.z;
 
+    const distortionParams = [k1, k2, k3, k4, k5, k6, p1, p2];
     const [distortedX, distortedY] = this.distortVec3(x, y, distortionParams);
 
     const distortedPoint: ICSPoint = {
