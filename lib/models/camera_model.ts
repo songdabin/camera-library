@@ -1,11 +1,6 @@
-import { z } from "zod";
-import { extrinsicSchema, intrinsicSchema } from "./camera_schema";
+import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
 
-export type Extrinsic = z.infer<typeof extrinsicSchema>;
-
-export type Intrinsic = z.infer<typeof intrinsicSchema>;
-
-export class CameraModel {
+export abstract class CameraModel {
   channel: string;
   sensor: string;
   distortionModel: string;
@@ -45,4 +40,6 @@ export class CameraModel {
     this.lcsExtrinsic = lcsExtrinsic;
     this.mvcsExtrinsic = mvcsExtrinsic;
   }
+
+  abstract projectCCSToICS(vec3: Vector3Like): ICSPoint;
 }
