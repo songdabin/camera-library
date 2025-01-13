@@ -2,6 +2,7 @@ import { readYaml } from "camera-library";
 import Link from "next/link";
 import path from "path";
 import React from "react";
+import * as z from "zod";
 
 export default function Modal() {
   const filePath = path.join(process.cwd(), "assets", "svc_front.yaml");
@@ -10,7 +11,10 @@ export default function Modal() {
   try {
     data = readYaml(filePath);
   } catch (error) {
-    data = String(error).split("] ")[1].split("/ ");
+    if (error instanceof Error) {
+      data = error;
+      data = data.issues[0];
+    }
   }
 
   const errorBlock = (infoName, inputData) => {
@@ -37,9 +41,9 @@ export default function Modal() {
           }}
         >
           <h2 style={{ marginBottom: "5vh" }}>Validation Error</h2>
-          {errorBlock("에러 코드", data[0])}
-          {errorBlock("확인할 데이터", data[1])}
-          {errorBlock("수정 방향", data[2])}
+          {errorBlock("에러 코드", data.code)}
+          {errorBlock("확인할 데이터", data.path)}
+          {errorBlock("수정 방향", data.message)}
           <Link
             style={{
               backgroundColor: "seagreen",
