@@ -2,7 +2,6 @@ import { readYaml } from "camera-library";
 import Link from "next/link";
 import path from "path";
 import React from "react";
-import * as z from "zod";
 
 export default function Modal() {
   const filePath = path.join(process.cwd(), "assets", "svc_front.yaml");
