@@ -3,8 +3,8 @@ import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 
 export class RectilinearModel extends CameraModel {
-  public distortVec3(x: number, y: number, distortionParams: number[]) {
-    const [k1, k2, k3, k4, k5, k6, p1, p2] = distortionParams;
+  public distortVec3(x: number, y: number) {
+    const { k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
 
     const r2 = x ** 2 + y ** 2;
     const radialD =
@@ -19,13 +19,12 @@ export class RectilinearModel extends CameraModel {
   public projectCcsToIcs(vec3: THREE.Vector3): ICSPoint {
     const normalizedPoint = vec3.clone().divideScalar(vec3.getComponent(2));
 
-    const { fx, fy, cx, cy, k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
+    const { fx, fy, cx, cy } = this.intrinsic;
 
     const x = (normalizedPoint.x - cx) / fx;
     const y = (normalizedPoint.y - cy) / fy;
 
-    const distortionParams = [k1, k2, k3, k4, k5, k6, p1, p2];
-    const [distortedX, distortedY] = this.distortVec3(x, y, distortionParams);
+    const [distortedX, distortedY] = this.distortVec3(x, y);
 
     const distortedPoint: ICSPoint = {
       x: distortedX * fx + cx,
