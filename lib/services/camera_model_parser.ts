@@ -3,7 +3,7 @@ import { CameraModelType, CameraType } from "../types/type";
 export function cameraModelParser(
   data: Record<string, any>
 ): [CameraType, CameraModelType] {
-  const makeExtrinsic = function (inputExtrinsic: any) {
+  const makeExtrinsic = (inputExtrinsic: any) => {
     return {
       frameFrom: inputExtrinsic.frame_from,
       frameTo: inputExtrinsic.frame_to,
