@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const channelOrFrameToSchema = z.enum([
+export const channelSchema = z.enum([
   "svc_front",
   "svc_rear",
   "svc_left",
