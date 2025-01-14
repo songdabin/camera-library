@@ -1,4 +1,11 @@
-import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
+import {
+  CCSPoint,
+  Extrinsic,
+  ICSPoint,
+  Intrinsic,
+  Vector3Like,
+} from "../types/type";
+import * as THREE from "three";
 
 export abstract class CameraModel {
   channel: string;
@@ -39,6 +46,22 @@ export abstract class CameraModel {
     this.vcsExtrinsic = vcsExtrinsic;
     this.lcsExtrinsic = lcsExtrinsic;
     this.mvcsExtrinsic = mvcsExtrinsic;
+  }
+
+  public projectVcsToCcs(vec3: THREE.Vector3): THREE.Vector3 {
+    const { qw, qx, qy, qz } = this.vcsExtrinsic;
+    const quaternion = new THREE.Quaternion(qx, qy, qz, qw);
+
+    const rotationMatrix = new THREE.Matrix4().makeRotationFromQuaternion(
+      quaternion
+    );
+
+    const rotatedVcsPoint = vec3.clone().applyMatrix4(rotationMatrix);
+
+    const { tx, ty, tz } = this.vcsExtrinsic;
+    const translationVector = new THREE.Vector3(tx, ty, tz);
+
+    return rotatedVcsPoint.add(translationVector);
   }
 
   abstract projectCcsToIcs(vec3: Vector3Like): ICSPoint;
