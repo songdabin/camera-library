@@ -61,3 +61,19 @@ test("Rectilinear Model projectCcsToIcs Test", () => {
     isInImage: false,
   });
 });
+
+test("getCcsLinesFromBbox3d Test", () => {
+  const cuboid = {
+    x: 1,
+    y: 1,
+    z: 1,
+    yaw: 1,
+    roll: 1,
+    pitch: 1,
+    width: 1,
+    height: 1,
+    length: 1,
+  };
+
+  rectilinearModel?.getCcsLinesFromBbox3d(cuboid, "zyx");
+});
