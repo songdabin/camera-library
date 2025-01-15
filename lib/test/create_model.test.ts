@@ -62,7 +62,7 @@ test("Rectilinear Model projectCcsToIcs Test", () => {
   });
 });
 
-test("getCcsLinesFromBbox3d Test", () => {
+test("getCcsLinesFromCuboid Test", () => {
   const cuboid = {
     x: 1,
     y: 1,
@@ -75,5 +75,5 @@ test("getCcsLinesFromBbox3d Test", () => {
     length: 1,
   };
 
-  rectilinearModel?.getCcsLinesFromBbox3d(cuboid, "zyx");
+  rectilinearModel?.getCcsLinesFromCuboid(cuboid, "zyx");
 });
