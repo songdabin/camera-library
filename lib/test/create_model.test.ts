@@ -51,13 +51,13 @@ test("Rectilinear Model projectVcsToCcs Test", () => {
 });
 
 test("Rectilinear Model projectCcsToIcs Test", () => {
-  // expect(
-  //   rectilinearModel?.projectCcsToIcs(
-  //     rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1))
-  //   )
-  // ).toEqual({
-  //   x: 1000.9588784876503,
-  //   y: 1006.6784469911012,
-  //   isInImage: true,
-  // });
+  expect(
+    rectilinearModel?.projectCcsToIcs(
+      rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1))
+    )
+  ).toEqual({
+    x: -18.966298472378412,
+    y: -18.293850735727347,
+    isInImage: false,
+  });
 });
