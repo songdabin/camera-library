@@ -23,7 +23,7 @@
 
    yaml 데이터 검증 테스트 코드
 
-#### Step 2
+#### Step 2 projectCcsToIcs
 
 1. [구조 변경](https://github.com/songdabin/camera-library/issues/16)
 
@@ -33,7 +33,13 @@
 
 4. [모델별 CCSToICS 코드](https://github.com/songdabin/camera-library/tree/feat/%2318/lib/models)
 
-5. Testing with input & output
+5. Testing
+
+#### Step 3 projectVcsToCcs
+
+1. VcsToCcs
+
+2. Testing
 
 ---
 
