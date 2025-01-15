@@ -5,6 +5,12 @@ import { RectilinearModel } from "../models/rectilinear_model";
 import { createModel } from "../services/create_model";
 import { splitData } from "../services/split_data";
 import { Vector3 } from "three";
+import {
+  cuboidTestCase,
+  cuboidTestCase2,
+  getCcsLinesFromCuboidResult,
+  getCcsLinesFromCuboidResult2,
+} from "./testcase";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
 const frontFileContent = fs.readFileSync(frontFilePath, "utf8");
@@ -63,17 +69,11 @@ test("Rectilinear Model projectCcsToIcs Test", () => {
 });
 
 test("getCcsLinesFromCuboid Test", () => {
-  const cuboid = {
-    x: 1,
-    y: 1,
-    z: 1,
-    yaw: 1,
-    roll: 1,
-    pitch: 1,
-    width: 1,
-    height: 1,
-    length: 1,
-  };
+  expect(
+    rectilinearModel?.getCcsLinesFromCuboid(cuboidTestCase, "zyx")
+  ).toEqual(getCcsLinesFromCuboidResult);
 
-  rectilinearModel?.getCcsLinesFromCuboid(cuboid, "zyx");
+  expect(
+    rectilinearModel?.getCcsLinesFromCuboid(cuboidTestCase2, "zyx")
+  ).toEqual(getCcsLinesFromCuboidResult2);
 });
