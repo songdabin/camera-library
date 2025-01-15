@@ -23,3 +23,20 @@ export type Intrinsic = z.infer<typeof intrinsicSchema>;
 export type CameraModelType = z.infer<typeof cameraSchema>;
 
 export type CameraType = z.infer<typeof CameraTypeSchema>;
+
+export type Cuboid = {
+  x: number;
+  y: number;
+  z: number;
+  yaw: number;
+  roll: number;
+  pitch: number;
+  width: number;
+  height: number;
+  length: number;
+};
+
+export type VcsCuboidToCcsPointsArgs = {
+  vcsCuboid: Cuboid;
+  order: "zyx";
+};
