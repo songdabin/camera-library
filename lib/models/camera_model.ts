@@ -11,7 +11,7 @@ import {
   getHomogeneousTransformMatrix,
   matrix4to3,
   multiplyMatrix4,
-} from "./LtMatrix4";
+} from "../types/LtMatrix4";
 
 export abstract class CameraModel {
   channel: string;
