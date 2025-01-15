@@ -41,6 +41,14 @@
 
 2. Testing
 
+#### Step 4 vcsToCcsCuboid
+
+1. Cuboid 정의
+
+2. VCS Cubiod to CCS Cuboid Code Refactoring
+
+3. Cuboid Case Test with Original Result
+
 ---
 
 ### Camera Type Description
