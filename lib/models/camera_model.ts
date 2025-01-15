@@ -1,10 +1,4 @@
-import {
-  CCSPoint,
-  Extrinsic,
-  ICSPoint,
-  Intrinsic,
-  Vector3Like,
-} from "../types/type";
+import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
 import * as THREE from "three";
 
 export abstract class CameraModel {
