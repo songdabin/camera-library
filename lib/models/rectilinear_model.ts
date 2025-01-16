@@ -41,12 +41,42 @@ export class RectilinearModel extends CameraModel {
     return icsLines;
   }
 
+  public icsToVcsPoints(icsPoint: number[]) {
+    const icsPointVec = new Vector3(icsPoint[0], icsPoint[1], icsPoint[2]);
+
+    const { tx, ty, tz } = this.vcsExtrinsic;
+    const translationVector = new Vector3(tx, ty, tz);
+
+    const denormalized = icsPointVec.multiplyScalar(icsPoint[2]);
+
+    const { fx, fy, cx, cy } = this.intrinsic;
+
+    const undistorted = new Vector3(
+      (denormalized.x - cx) / fx,
+      (denormalized.y - cy) / fy,
+      denormalized.z
+    );
+
+    const { qw, qx, qy, qz } = this.vcsExtrinsic;
+    const quaternion = new Quaternion(qx, qy, qz, qw);
+
+    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
+
+    const vcsPoint = undistorted.sub(translationVector);
+    // divide vcsPoint by rotation Matrix?
+
+    return vcsPoint;
+  }
+
   private ccsLinesToIcsLines(ccsLines: Line3[]) {
-    /*
+    return [new Line3(new Vector3(0, 0, 0), new Vector3(2, 3, 4))];
+  }
+
+  /*
   private ccsLinesToIcsLines(ccsLines: [Vector3, Vector3][]) {
-    const v1 = new Vector3(...icsToVcsPoitns([0, this.height / 2, 150], this));
+    const v1 = new Vector3(...icsToVcsPoints([0, this.height / 2, 150]));
     const v2 = new Vector3(
-      ...icsToVcsPoitns([this.width, this.height / 2, 150], this)
+      ...icsToVcsPoints([this.width, this.height / 2, 150])
     );
     const dotProduct = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     const angle =
@@ -57,12 +87,7 @@ export class RectilinearModel extends CameraModel {
       this.channel,
       angle
     );
-    */
-    const icsLines: Line3[] = [
-      new Line3(new Vector3(1, 1, 1), new Vector3(1, 1, 1)),
-    ];
 
-    /*
     const icsLines: Line3[] = lines.map((line: Line3, i: number) => {
       if (positiveMask[i]) {
         const icsP1 = this.projectCcsToIcs(line.start);
@@ -75,8 +100,8 @@ export class RectilinearModel extends CameraModel {
         return null;
       }
     });
-    */
 
     return icsLines;
   }
+  */
 }
