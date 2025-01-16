@@ -1,3 +1,89 @@
+import { Vector3 } from "three";
+
+// projectVcsToCcs
+export const projectVcsToCcsTestCase = [
+  {
+    input: new Vector3(1, 1, 1),
+    output: {
+      x: -1.4145389551447445,
+      y: 1.0768898730919398,
+      z: -0.6845925113704362,
+    },
+  },
+  {
+    input: new Vector3(0, 0, 0),
+    output: {
+      x: -1.064,
+      y: 0.06,
+      z: 0.6730000000000004,
+    },
+  },
+  {
+    input: new Vector3(3.333333, 5.5555555, 7.7777777),
+    output: {
+      x: -5.08435304361224,
+      y: 3.593355822545187,
+      z: -7.918931668087819,
+    },
+  },
+  {
+    input: new Vector3(1000, 10, -1),
+    output: {
+      x: 58.60172693741744,
+      y: 998.2691003808712,
+      z: -10.262855972042429,
+    },
+  },
+  {
+    input: new Vector3(1, 1, -191),
+    output: {
+      x: 167.3086011263463,
+      y: -7.816678366158933,
+      z: 90.51522352471228,
+    },
+  },
+];
+
+// fisheye project ccs to ics
+export const fisheyeProjectCcsToIcsTestCase = [
+  {
+    input: new Vector3(10000, 10000, 10),
+    output: { x: 1600.9286588735288, y: 1408.5782821677863, isInImage: true },
+  },
+  {
+    input: new Vector3(1, 1, 1),
+    output: {
+      x: 1336.2195702701756,
+      y: 1144.0413642531755,
+      isInImage: true,
+    },
+  },
+  {
+    input: new Vector3(3.333333, 5.5555555, 7.7777777),
+    output: { x: 1151.84156807861, y: 1088.239446521656, isInImage: true },
+  },
+  {
+    input: new Vector3(0, 0, 0),
+    output: { x: 1867.1972009568562, y: 767.0990841439, isInImage: true },
+  },
+];
+
+// rectilinear project ccs to ics
+export const rectilinearProjectCcsToIcsTestCase = [
+  {
+    input: new Vector3(1, 1, 1),
+    output: { x: 1543.106710453001, y: 1340.48787091835, isInImage: true },
+  },
+  {
+    input: new Vector3(10000, 1000, 100),
+    output: { x: -911978279005498, y: -90989372227315.56, isInImage: false },
+  },
+  {
+    input: new Vector3(3.333333, 5.5555555, 7.7777777),
+    output: { x: 1200.2838883148725, y: 1154.1131530339776, isInImage: true },
+  },
+];
+
 export const cuboidTestCase = {
   x: 1,
   y: 1,
