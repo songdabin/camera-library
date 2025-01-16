@@ -9,8 +9,10 @@ import {
 import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import {
   getHomogeneousTransformMatrix,
+  LtMatrix4,
   matrix4to3,
   multiplyMatrix4,
+  toHomogeneous,
 } from "../types/LtMatrix4";
 
 export abstract class CameraModel {
@@ -87,21 +89,17 @@ export abstract class CameraModel {
     const rrt: Vector3 = ccsPoints[6]; // rear right top
     const rlt: Vector3 = ccsPoints[7]; // rear left top
 
+    // prettier-ignore
     // Left -> Right, Front -> Rear, Bottom -> Top
-    const lines: Line3[] = [
-      new Line3(flt, frt),
-      new Line3(flt, rlt),
-      new Line3(rlt, rrt),
-      new Line3(frt, rrt),
-      new Line3(flb, frb),
-      new Line3(rlb, rrb),
-      new Line3(flb, rlb),
-      new Line3(frb, rrb),
-      new Line3(flb, flt),
-      new Line3(frb, frt),
-      new Line3(rlb, rlt),
-      new Line3(rrb, rrt),
+    const lineLists = [
+      [flt, frt], [flt, rlt], [rlt, rrt], [frt, rrt],
+      [flb, frb], [rlb, rrb], [flb, rlb], [frb, rrb],
+      [flb, flt], [frb, frt], [rlb, rlt], [rrb, rrt],
     ];
+
+    const lines: Line3[] = lineLists.map(
+      ([start, end]) => new Line3(start, end)
+    );
 
     return lines;
   }
