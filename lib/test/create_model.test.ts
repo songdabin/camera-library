@@ -8,13 +8,22 @@ import { Vector3 } from "three";
 import {
   cuboidTestCase,
   cuboidTestCase2,
+  fisheyeProjectCcsToIcsTestCase,
   getCcsLinesFromCuboidResult,
   getCcsLinesFromCuboidResult2,
+  projectVcsToCcsTestCase,
+  rectilinearProjectCcsToIcsTestCase,
 } from "./testcase";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
 const frontFileContent = fs.readFileSync(frontFilePath, "utf8");
 const [frontCameraType, frontCameraParams] = splitData(frontFileContent);
+const fisheyeModel = createModel(frontCameraType, frontCameraParams);
+
+const rearFilePath = path.join(process.cwd(), "assets", "svc_rear.yaml");
+const rearFileContent = fs.readFileSync(rearFilePath, "utf8");
+const [rearCameraType, rearCameraParams] = splitData(rearFileContent);
+const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
 test("Fisheye Model Create Test", () => {
   expect(createModel(frontCameraType, frontCameraParams)).toBeInstanceOf(
@@ -22,19 +31,11 @@ test("Fisheye Model Create Test", () => {
   );
 });
 
-test("Fisheye Model projectCcsToIcs Test", () => {
-  const fisheyeModel = createModel(frontCameraType, frontCameraParams);
-
-  expect(fisheyeModel?.projectCcsToIcs(new Vector3(10000, 10000, 10))).toEqual({
-    x: 1600.9286588735288,
-    y: 1408.5782821677863,
-    isInImage: true,
+fisheyeProjectCcsToIcsTestCase.forEach(({ input, output }) => {
+  test("Fisheye Model projectCcsToIcs Test", () => {
+    expect(fisheyeModel?.projectCcsToIcs(input)).toEqual(output);
   });
 });
-
-const rearFilePath = path.join(process.cwd(), "assets", "svc_rear.yaml");
-const rearFileContent = fs.readFileSync(rearFilePath, "utf8");
-const [rearCameraType, rearCameraParams] = splitData(rearFileContent);
 
 test("Rectilinear Model Create Test", () => {
   expect(createModel(rearCameraType, rearCameraParams)).toBeInstanceOf(
@@ -42,29 +43,15 @@ test("Rectilinear Model Create Test", () => {
   );
 });
 
-const rectilinearModel = createModel(rearCameraType, rearCameraParams);
-
-const ccsPoint = rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1));
-
-test("Rectilinear Model projectVcsToCcs Test", () => {
-  rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1));
-
-  expect(ccsPoint).toEqual({
-    x: -1.4145389551447445,
-    y: 1.0768898730919398,
-    z: -0.6845925113704362,
+projectVcsToCcsTestCase.forEach(({ input, output }) => {
+  test("Rectilinear Model projectVcsToCcs Test", () => {
+    expect(rectilinearModel?.projectVcsToCcs(input)).toEqual(output);
   });
 });
 
-test("Rectilinear Model projectCcsToIcs Test", () => {
-  expect(
-    rectilinearModel?.projectCcsToIcs(
-      rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1))
-    )
-  ).toEqual({
-    x: -18.966298472378412,
-    y: -18.293850735727347,
-    isInImage: false,
+rectilinearProjectCcsToIcsTestCase.forEach(({ input, output }) => {
+  test("Rectilinear Model projectCcsToIcs Test", () => {
+    expect(rectilinearModel?.projectCcsToIcs(input)).toEqual(output);
   });
 });
 
@@ -77,3 +64,7 @@ test("getCcsLinesFromCuboid Test", () => {
     rectilinearModel?.getCcsLinesFromCuboid(cuboidTestCase2, "zyx")
   ).toEqual(getCcsLinesFromCuboidResult2);
 });
+
+// test("icsToVcsPoint Test", () => {
+//   console.log(rectilinearModel?.icsToVcsPoints([1, 2, 3]));
+// });
