@@ -9,7 +9,6 @@ import {
 import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import {
   getHomogeneousTransformMatrix,
-  LtMatrix4,
   matrix4to3,
   multiplyMatrix4,
   toHomogeneous,

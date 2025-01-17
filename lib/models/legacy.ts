@@ -1,4 +1,4 @@
-import { Line3, Matrix4, Quaternion, Vector3, Vector3Tuple } from "three";
+import { Matrix4, Quaternion, Vector3, Vector3Tuple } from "three";
 import {
   getHomogeneousTransformMatrix,
   matrix4to3,
