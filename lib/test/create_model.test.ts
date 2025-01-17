@@ -4,13 +4,8 @@ import { FisheyeModel } from "../models/fisheye_model";
 import { RectilinearModel } from "../models/rectilinear_model";
 import { createModel } from "../services/create_model";
 import { splitData } from "../services/split_data";
-import { Vector3 } from "three";
 import {
-  cuboidTestCase,
-  cuboidTestCase2,
   fisheyeProjectCcsToIcsTestCase,
-  getCcsLinesFromCuboidResult,
-  getCcsLinesFromCuboidResult2,
   projectVcsToCcsTestCase,
   rectilinearProjectCcsToIcsTestCase,
 } from "./testcase";
@@ -53,16 +48,6 @@ rectilinearProjectCcsToIcsTestCase.forEach(({ input, output }) => {
   test("Rectilinear Model projectCcsToIcs Test", () => {
     expect(rectilinearModel?.projectCcsToIcs(input)).toEqual(output);
   });
-});
-
-test("getCcsLinesFromCuboid Test", () => {
-  expect(
-    rectilinearModel?.getCcsLinesFromCuboid(cuboidTestCase, "zyx")
-  ).toEqual(getCcsLinesFromCuboidResult);
-
-  expect(
-    rectilinearModel?.getCcsLinesFromCuboid(cuboidTestCase2, "zyx")
-  ).toEqual(getCcsLinesFromCuboidResult2);
 });
 
 // test("icsToVcsPoint Test", () => {

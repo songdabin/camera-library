@@ -84,30 +84,6 @@ export const rectilinearProjectCcsToIcsTestCase = [
   },
 ];
 
-export const cuboidTestCase = {
-  x: 1,
-  y: 1,
-  z: 1,
-  yaw: 1,
-  roll: 1,
-  pitch: 1,
-  width: 1,
-  height: 1,
-  length: 1,
-};
-
-export const cuboidTestCase2 = {
-  x: 10,
-  y: 10,
-  z: 10,
-  yaw: 10,
-  roll: 10,
-  pitch: 10,
-  width: 10,
-  height: 10,
-  length: 10,
-};
-
 export const getCcsLinesFromCuboidResult = [
   {
     start: {
@@ -399,5 +375,37 @@ export const getCcsLinesFromCuboidResult2 = [
       y: 9.967724443505308,
       z: -4.698914416254838,
     },
+  },
+];
+
+// cuboid getCcsLinesFromCuboidTestCase
+export const getCcsLinesFromCuboidTestCase = [
+  {
+    input: {
+      x: 1,
+      y: 1,
+      z: 1,
+      yaw: 1,
+      roll: 1,
+      pitch: 1,
+      width: 1,
+      height: 1,
+      length: 1,
+    },
+    output: getCcsLinesFromCuboidResult,
+  },
+  {
+    input: {
+      x: 10,
+      y: 10,
+      z: 10,
+      yaw: 10,
+      roll: 10,
+      pitch: 10,
+      width: 10,
+      height: 10,
+      length: 10,
+    },
+    output: getCcsLinesFromCuboidResult2,
   },
 ];
