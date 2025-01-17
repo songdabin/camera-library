@@ -1,3 +1,4 @@
+import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import { Cuboid, ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 import {
@@ -92,43 +93,10 @@ export class RectilinearModel extends CameraModel {
     const vcsPoint = undistorted.sub(translationVector);
     // divide vcsPoint by rotation Matrix?
 
-    return vcsPoint;
+    return icsPoint;
   }
 
   private ccsLinesToIcsLines(ccsLines: Line3[]) {
     return [new Line3(new Vector3(0, 0, 0), new Vector3(2, 3, 4))];
   }
-
-  /*
-  private ccsLinesToIcsLines(ccsLines: [Vector3, Vector3][]) {
-    const v1 = new Vector3(...icsToVcsPoints([0, this.height / 2, 150]));
-    const v2 = new Vector3(
-      ...icsToVcsPoints([this.width, this.height / 2, 150])
-    );
-    const dotProduct = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-    const angle =
-      Math.acos(dotProduct / (v1.length() * v2.length())) * (180 / Math.PI);
-
-    const { lines, positiveMask } = getTruncatedLinesInCameraFov(
-      ccsLines,
-      this.channel,
-      angle
-    );
-
-    const icsLines: Line3[] = lines.map((line: Line3, i: number) => {
-      if (positiveMask[i]) {
-        const icsP1 = this.projectCcsToIcs(line.start);
-        const icsP2 = this.projectCcsToIcs(line.end);
-        return [
-          { x: icsP1.x, y: icsP1.y },
-          { x: icsP2.x, y: icsP2.y },
-        ];
-      } else {
-        return null;
-      }
-    });
-
-    return icsLines;
-  }
-  */
 }
