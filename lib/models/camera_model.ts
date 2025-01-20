@@ -1,17 +1,13 @@
 import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
 import { Line3, Matrix4, Quaternion, Vector3 } from "three";
-import {
-  getHomogeneousTransformMatrix,
-  matrix4to3,
-  multiplyMatrix4,
-  toHomogeneous,
-} from "../types/LtMatrix4";
+import { multiplyMatrix4, toHomogeneous } from "../types/LtMatrix4";
 import {
   createCuboidLines,
   createCuboidPoints,
   Cuboid,
   CuboidPoints,
   VcsCuboidToCcsPointsArgs,
+  vcsCuboidToVcsPoints,
 } from "../types/Cuboid";
 
 export abstract class CameraModel {
@@ -90,7 +86,7 @@ export abstract class CameraModel {
     vcsCuboid,
     order = "zyx",
   }: VcsCuboidToCcsPointsArgs) {
-    const vcsPoints = this.vcsCuboidToVcsPoints(vcsCuboid, order);
+    const vcsPoints = vcsCuboidToVcsPoints(vcsCuboid, order);
 
     const ccsPointArray = [];
     for (let i = 0; i < 24; i += 3) {
@@ -103,39 +99,5 @@ export abstract class CameraModel {
     }
 
     return createCuboidPoints(ccsPointArray);
-  }
-
-  public vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
-    // prettier-ignore
-    const {
-        x: tx, y: ty, z: tz,
-        yaw, roll, pitch,
-        width, height, length,
-      } = cuboid;
-    const transformMatrix = getHomogeneousTransformMatrix({
-      angle: { yaw, roll, pitch },
-      translation: { tx, ty, tz },
-      order,
-    });
-
-    const [y, z, x] = [width / 2, height / 2, length / 2];
-    // prettier-ignore
-    const points = [
-      x, y, -z, 1, // front left bottom
-      x, -y, -z, 1, // front right bottom
-      x, -y, z, 1, // front right top
-      x, y, z, 1, // front left top
-      
-      -x, y, -z, 1, // rear left bottom
-      -x, -y, -z, 1, // rear right bottom
-      -x, -y, z, 1, // rear right top
-      -x, y, z, 1, // rear left top
-    ];
-    const vcsPoints = multiplyMatrix4(
-      points,
-      transformMatrix.transpose().elements()
-    );
-
-    return matrix4to3(vcsPoints);
   }
 }

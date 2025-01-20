@@ -1,4 +1,9 @@
 import { Line3, Vector3 } from "three";
+import {
+  getHomogeneousTransformMatrix,
+  matrix4to3,
+  multiplyMatrix4,
+} from "./LtMatrix4";
 
 export type VcsCuboidToCcsPointsArgs = {
   vcsCuboid: Cuboid;
@@ -59,4 +64,38 @@ export function createCuboidLines(ccsPoints: CuboidPoints) {
   const lines: Line3[] = lineLists.map(([start, end]) => new Line3(start, end));
 
   return lines;
+}
+
+export function vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
+  // prettier-ignore
+  const {
+      x: tx, y: ty, z: tz,
+      yaw, roll, pitch,
+      width, height, length,
+    } = cuboid;
+  const transformMatrix = getHomogeneousTransformMatrix({
+    angle: { yaw, roll, pitch },
+    translation: { tx, ty, tz },
+    order,
+  });
+
+  const [y, z, x] = [width / 2, height / 2, length / 2];
+  // prettier-ignore
+  const points = [
+    x, y, -z, 1, // front left bottom
+    x, -y, -z, 1, // front right bottom
+    x, -y, z, 1, // front right top
+    x, y, z, 1, // front left top
+    
+    -x, y, -z, 1, // rear left bottom
+    -x, -y, -z, 1, // rear right bottom
+    -x, -y, z, 1, // rear right top
+    -x, y, z, 1, // rear left top
+  ];
+  const vcsPoints = multiplyMatrix4(
+    points,
+    transformMatrix.transpose().elements()
+  );
+
+  return matrix4to3(vcsPoints);
 }
