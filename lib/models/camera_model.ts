@@ -1,11 +1,4 @@
-import {
-  Cuboid,
-  Extrinsic,
-  ICSPoint,
-  Intrinsic,
-  VcsCuboidToCcsPointsArgs,
-  Vector3Like,
-} from "../types/type";
+import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
 import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import {
   getHomogeneousTransformMatrix,
@@ -13,6 +6,13 @@ import {
   multiplyMatrix4,
   toHomogeneous,
 } from "../types/LtMatrix4";
+import {
+  createCuboidLines,
+  createCuboidPoints,
+  Cuboid,
+  CuboidPoints,
+  VcsCuboidToCcsPointsArgs,
+} from "../types/Cuboid";
 
 export abstract class CameraModel {
   channel: string;
@@ -78,33 +78,12 @@ export abstract class CameraModel {
   abstract vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[];
 
   public getCcsLinesFromCuboid(cuboid: Cuboid, order: "zyx"): Line3[] {
-    const ccsPoints = this.vcsCuboidToCcsPoints({
+    const ccsPoints: CuboidPoints = this.vcsCuboidToCcsPoints({
       vcsCuboid: cuboid,
       order,
     });
 
-    const flb: Vector3 = ccsPoints[0]; // front left bottom
-    const frb: Vector3 = ccsPoints[1]; // front right bottom
-    const frt: Vector3 = ccsPoints[2]; // front right top
-    const flt: Vector3 = ccsPoints[3]; // front left top
-    const rlb: Vector3 = ccsPoints[4]; // rear left bottom
-    const rrb: Vector3 = ccsPoints[5]; // rear right bottom
-    const rrt: Vector3 = ccsPoints[6]; // rear right top
-    const rlt: Vector3 = ccsPoints[7]; // rear left top
-
-    // prettier-ignore
-    // Left -> Right, Front -> Rear, Bottom -> Top
-    const lineLists = [
-      [flt, frt], [flt, rlt], [rlt, rrt], [frt, rrt],
-      [flb, frb], [rlb, rrb], [flb, rlb], [frb, rrb],
-      [flb, flt], [frb, frt], [rlb, rlt], [rrb, rrt],
-    ];
-
-    const lines: Line3[] = lineLists.map(
-      ([start, end]) => new Line3(start, end)
-    );
-
-    return lines;
+    return createCuboidLines(ccsPoints);
   }
 
   private vcsCuboidToCcsPoints({
@@ -113,21 +92,17 @@ export abstract class CameraModel {
   }: VcsCuboidToCcsPointsArgs) {
     const vcsPoints = this.vcsCuboidToVcsPoints(vcsCuboid, order);
 
-    const vcsPointArray = [];
-
+    const ccsPointArray = [];
     for (let i = 0; i < 24; i += 3) {
-      vcsPointArray.push(
-        new Vector3(vcsPoints[i], vcsPoints[i + 1], vcsPoints[i + 2])
+      const vcsPointVector = new Vector3(
+        vcsPoints[i],
+        vcsPoints[i + 1],
+        vcsPoints[i + 2]
       );
+      ccsPointArray.push(this.projectVcsToCcs(vcsPointVector));
     }
 
-    const ccsPointsArray: Vector3[] = [];
-
-    vcsPointArray.forEach((vcsPoint) => {
-      ccsPointsArray.push(this.projectVcsToCcs(vcsPoint));
-    });
-
-    return ccsPointsArray;
+    return createCuboidPoints(ccsPointArray);
   }
 
   public vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
