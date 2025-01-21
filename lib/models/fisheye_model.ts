@@ -43,7 +43,9 @@ export class FisheyeModel extends CameraModel {
     const y = fy * dny + cy;
     const isInImage = x >= 0 && x < this.width && y >= 0 && y < this.height;
 
-    return { x, y, isInImage };
+    const icsPoint = new Vector3(x, y);
+
+    return { point: icsPoint, isInImage };
   }
 
   public icsToVcsPoints(icsPoint: number[]) {}
@@ -61,12 +63,7 @@ export class FisheyeModel extends CameraModel {
       const icsP1 = this.projectCcsToIcs(new Vector3(...ccsLine.start));
       const icsP2 = this.projectCcsToIcs(new Vector3(...ccsLine.end));
       if (icsP1.isInImage && icsP2.isInImage)
-        icsLines.push(
-          new Line3(
-            new Vector3(icsP1.x, icsP1.y),
-            new Vector3(icsP2.x, icsP2.y)
-          )
-        );
+        icsLines.push(new Line3(icsP1.point, icsP2.point));
       // else if (icsP1.isInImage || icsP2.isInImage)
       //   icsLines.push(clipInImage([icsP1, icsP2], calibration));
       // else icsLines.push(null);

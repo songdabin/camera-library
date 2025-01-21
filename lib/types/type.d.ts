@@ -7,14 +7,7 @@ import {
   intrinsicSchema,
 } from "./camera_schema";
 
-export type ICSPoint = { x: number; y: number; isInImage: boolean };
-
-export type CCSPoint = { x: number; y: number; z: number };
-
-export type Vector3Like =
-  | [x: number, y: number, z: number]
-  | { x: number; y: number; z: number }
-  | Vector3;
+export type ICSPoint = { point: Vector3; isInImage: boolean };
 
 export type Extrinsic = z.infer<typeof extrinsicSchema>;
 

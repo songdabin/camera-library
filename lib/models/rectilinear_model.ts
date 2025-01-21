@@ -40,13 +40,12 @@ export class RectilinearModel extends CameraModel {
 
     const [projectedX, projectedY] = this.project(distortedX, distortedY);
 
-    const icsPoint: ICSPoint = {
-      x: projectedX,
-      y: projectedY,
+    const icsPoint = new Vector3(projectedX, projectedY);
+
+    return {
+      point: icsPoint,
       isInImage: this.isInImageCheck(projectedX, projectedY),
     };
-
-    return icsPoint;
   }
 
   public vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[] {
@@ -55,13 +54,11 @@ export class RectilinearModel extends CameraModel {
     return icsLines;
   }
 
-  public icsToVcsPoints(icsPoint: number[]) {
-    const icsPointVec = new Vector3(icsPoint[0], icsPoint[1], icsPoint[2]);
-
+  public icsToVcsPoints(icsPoint: Vector3) {
     const { tx, ty, tz } = this.vcsExtrinsic;
     const translationVector = new Vector3(tx, ty, tz);
 
-    const denormalized = icsPointVec.multiplyScalar(icsPoint[2]);
+    const denormalized = icsPoint.clone().multiplyScalar(icsPoint.z);
 
     const { fx, fy, cx, cy } = this.intrinsic;
 
