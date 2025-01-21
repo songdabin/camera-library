@@ -1,6 +1,7 @@
 import { Line3, Vector3 } from "three";
-import { Cuboid, ICSPoint } from "../types/type";
+import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
+import { Cuboid } from "../types/Cuboid";
 
 export type CcsToIcsPointsArgs = {
   ccsPoint: Vector3;

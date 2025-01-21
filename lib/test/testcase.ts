@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 
-// projectVcsToCcs - confirmed
+// projectVcsToCcs
 export const projectVcsToCcsTestCase = [
   {
     input: new Vector3(1, 1, 1),
@@ -28,7 +28,7 @@ export const projectVcsToCcsTestCase = [
   },
 ];
 
-// fisheye project ccs to ics - confirmed
+// fisheye project ccs to ics
 export const fisheyeProjectCcsToIcsTestCase = [
   {
     input: new Vector3(10000, 10000, 10),
@@ -52,7 +52,7 @@ export const fisheyeProjectCcsToIcsTestCase = [
   },
 ];
 
-// rectilinear project ccs to ics - confirmed
+// rectilinear project ccs to ics
 export const rectilinearProjectCcsToIcsTestCase = [
   {
     input: new Vector3(1, 1, 1),
@@ -362,7 +362,7 @@ export const getCcsLinesFromCuboidResult2 = [
   },
 ];
 
-// cuboid getCcsLinesFromCuboidTestCase - confirmed
+// cuboid getCcsLinesFromCuboidTestCase
 export const getCcsLinesFromCuboidTestCase = [
   {
     input: {
@@ -391,5 +391,48 @@ export const getCcsLinesFromCuboidTestCase = [
       length: 10,
     },
     output: getCcsLinesFromCuboidResult2,
+  },
+];
+
+export const vcsCuboidToCcsPointsTestCase = [
+  {
+    x: 19.02820202947152,
+    y: -5.675748483243908,
+    z: -13.762949345390467,
+  },
+  {
+    x: 13.998656587319363,
+    y: 1.8350469745605125,
+    z: -18.039820191739576,
+  },
+  {
+    x: 6.895516395900466,
+    y: -4.576081676983544,
+    z: -20.945474822696323,
+  },
+  {
+    x: 11.92506183805262,
+    y: -12.086877134787965,
+    z: -16.668603976347214,
+  },
+  {
+    x: 14.10386734685946,
+    y: -4.099239363582579,
+    z: -5.20341974796231,
+  },
+  {
+    x: 9.074321904707308,
+    y: 3.411556094221842,
+    z: -9.48029059431142,
+  },
+  {
+    x: 1.9711817132884095,
+    y: -2.999572557322214,
+    z: -12.385945225268166,
+  },
+  {
+    x: 7.000727155440565,
+    y: -10.510368015126636,
+    z: -8.109074378919056,
   },
 ];

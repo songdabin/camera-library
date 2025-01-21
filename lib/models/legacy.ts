@@ -1,4 +1,4 @@
-import { Matrix4, Quaternion, Vector3, Vector3Tuple } from "three";
+import { Matrix4, Quaternion, Vector3 } from "three";
 import {
   getHomogeneousTransformMatrix,
   matrix4to3,
@@ -7,7 +7,8 @@ import {
   toHomogeneous,
   transpose,
 } from "../types/LtMatrix4";
-import { CameraModelType, Cuboid, Extrinsic, Intrinsic } from "../types/type";
+import { CameraModelType, Extrinsic, Intrinsic } from "../types/type";
+import { Cuboid } from "../types/Cuboid";
 
 export function legacyProjectVcsToCcs(
   vcsPoints: number[],
@@ -48,12 +49,6 @@ export function legacyFisheyeDistortThetas(
   return thetaD;
 }
 
-// Question
-// r 대신 fov? theta?
-// https://carstart.tistory.com/181
-// x_corrected = x(1 + k1*r^2 + k2*r^2 + k3*r^6)
-// x -> distorted_point(original)
-
 export function legacyFisheyeProjectCcsToIcs(
   point: Vector3,
   hfov: number,
@@ -73,14 +68,11 @@ export function legacyFisheyeProjectCcsToIcs(
     intrinsic.k3 * fov ** 6 +
     intrinsic.k4 * fov ** 8;
 
-  // theta가 fov보다 크면 fov 사용 (fov의 범위를 theta가 넘어갈 수 없음)
   const distScale =
     theta < fov
       ? legacyFisheyeDistortThetas(theta, intrinsic)
       : theta * thetaSlope;
 
-  // Question
-  // ?
   const dnx = distScale * Math.cos(phi);
   const dny = distScale * Math.sin(phi);
 
@@ -120,9 +112,7 @@ export function legacyRectiliniearProjectCcsToIcs(
   const normalizedIcsPoints = [];
   for (let i = 0; i < icsPoints.length; i += 3) {
     let z = icsPoints[i + 2];
-    // Question
-    // EPS?
-    // if (Math.abs(icsPoints[i + 2]) < EPS) z = EPS;
+    if (Math.abs(icsPoints[i + 2]) < Number.EPSILON) z = Number.EPSILON;
     const x = icsPoints[i] / z;
     const y = icsPoints[i + 1] / z;
 
@@ -188,4 +178,64 @@ export function distortPointStandardCam(
   const distortedY = radialD * y + p1 * (r2 + 2 * y ** 2) + 2 * p2 * (x * y);
 
   return [distortedX, distortedY];
+}
+
+export function legacyVcsCuboidToCcsPoints(
+  vcsCuboid: Cuboid,
+  order: "zyx",
+  extrinsic: Extrinsic
+) {
+  const vcsPoints = legacyVcsCuboidToVcsPoints(vcsCuboid, order);
+
+  const vcsPointArray: Vector3[] = [];
+
+  for (let i = 0; i < 24; i += 3) {
+    vcsPointArray.push(
+      new Vector3(vcsPoints[i], vcsPoints[i + 1], vcsPoints[i + 2])
+    );
+  }
+
+  const ccsPointsArray: Vector3[] = [];
+
+  vcsPointArray.forEach((vcsPoint) => {
+    const numberArray: number[] = vcsPoint.toArray();
+    const ccsPoints = legacyProjectVcsToCcs(numberArray, extrinsic);
+    ccsPointsArray.push(new Vector3(ccsPoints[0], ccsPoints[1], ccsPoints[2]));
+  });
+
+  return ccsPointsArray;
+}
+
+export function legacyVcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
+  // prettier-ignore
+  const {
+        x: tx, y: ty, z: tz,
+        yaw, roll, pitch,
+        width, height, length,
+      } = cuboid;
+  const transformMatrix = getHomogeneousTransformMatrix({
+    angle: { yaw, roll, pitch },
+    translation: { tx, ty, tz },
+    order,
+  });
+
+  const [y, z, x] = [width / 2, height / 2, length / 2];
+  // prettier-ignore
+  const points = [
+      x, y, -z, 1, // front left bottom
+      x, -y, -z, 1, // front right bottom
+      x, -y, z, 1, // front right top
+      x, y, z, 1, // front left top
+      
+      -x, y, -z, 1, // rear left bottom
+      -x, -y, -z, 1, // rear right bottom
+      -x, -y, z, 1, // rear right top
+      -x, y, z, 1, // rear left top
+    ];
+  const vcsPoints = multiplyMatrix4(
+    points,
+    transformMatrix.transpose().elements()
+  );
+
+  return matrix4to3(vcsPoints);
 }
