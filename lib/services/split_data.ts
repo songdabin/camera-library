@@ -1,11 +1,9 @@
-import { FisheyeModel } from "../models/fisheye_model";
-import { RectilinearModel } from "../models/rectilinear_model";
 import { cameraModelParser } from "./camera_model_parser";
-import { CameraType } from "../types/type";
+import { CameraModelType, CameraType } from "../types/type";
 
 export function splitData(
   yamlData: string
-): [cameraType: CameraType, cameraParams: FisheyeModel | RectilinearModel] {
+): [cameraType: CameraType, cameraParams: CameraModelType] {
   const lines = yamlData.split("\n").filter((line) => !line.startsWith("#"));
   const data: Record<string, any> = {};
 

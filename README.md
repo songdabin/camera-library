@@ -22,7 +22,10 @@
 
 ### Tech Stack
 
-- TypeScript 5.5.4
-- Prettier 3.2.5
-- Turborepo 2.3.3
-- ESLint 9.15.0
+- [TypeScript](https://www.typescriptlang.org/) 5.5.4
+- [Prettier](https://prettier.io/) 3.2.5
+- [Turborepo](https://turbo.build/repo/docs) 2.3.3
+- [ESLint](https://eslint.org/) 9.15.0
+- [Zod](https://zod.dev/) 3.24.1
+- [Jest](https://jestjs.io/) 29.7.0
+- [Three](https://threejs.org/) 0.172.0

@@ -1,24 +1,8 @@
-import { FisheyeModel } from "../models/fisheye_model";
-import { RectilinearModel } from "../models/rectilinear_model";
-import { CameraType, Vector3Like } from "../types/type";
+import { CameraModelType, CameraType } from "../types/type";
 
 export function cameraModelParser(
   data: Record<string, any>
-): [CameraType, FisheyeModel | RectilinearModel] {
-  const makeExtrinsic = function (inputExtrinsic: any) {
-    return {
-      frameFrom: inputExtrinsic.frame_from,
-      frameTo: inputExtrinsic.frame_to,
-      qw: inputExtrinsic.qw,
-      qx: inputExtrinsic.qx,
-      qy: inputExtrinsic.qy,
-      qz: inputExtrinsic.qz,
-      tx: inputExtrinsic.tx,
-      ty: inputExtrinsic.ty,
-      tz: inputExtrinsic.tz,
-    };
-  };
-
+): [CameraType, CameraModelType] {
   return [
     data.type,
     {
@@ -29,11 +13,38 @@ export function cameraModelParser(
       height: data.height,
       width: data.width,
       intrinsic: data.intrinsic,
-      vcsExtrinsic: makeExtrinsic(data.vcs_extrinsic),
-      lcsExtrinsic: makeExtrinsic(data.lcs_extrinsic),
-      mvcsExtrinsic: makeExtrinsic(data.mvcs_extrinsic),
-      projectCCSToICS: (vec3: Vector3Like) => {
-        return { x: 3, y: 3, isInImage: true };
+      vcsExtrinsic: {
+        frameFrom: data.vcs_extrinsic.frame_from,
+        frameTo: data.vcs_extrinsic.frame_to,
+        qw: data.vcs_extrinsic.qw,
+        qx: data.vcs_extrinsic.qx,
+        qy: data.vcs_extrinsic.qy,
+        qz: data.vcs_extrinsic.qz,
+        tx: data.vcs_extrinsic.tx,
+        ty: data.vcs_extrinsic.ty,
+        tz: data.vcs_extrinsic.tz,
+      },
+      lcsExtrinsic: {
+        frameFrom: data.lcs_extrinsic.frame_from,
+        frameTo: data.lcs_extrinsic.frame_to,
+        qw: data.lcs_extrinsic.qw,
+        qx: data.lcs_extrinsic.qx,
+        qy: data.lcs_extrinsic.qy,
+        qz: data.lcs_extrinsic.qz,
+        tx: data.lcs_extrinsic.tx,
+        ty: data.lcs_extrinsic.ty,
+        tz: data.lcs_extrinsic.tz,
+      },
+      mvcsExtrinsic: {
+        frameFrom: data.mvcs_extrinsic.frame_from,
+        frameTo: data.mvcs_extrinsic.frame_to,
+        qw: data.mvcs_extrinsic.qw,
+        qx: data.mvcs_extrinsic.qx,
+        qy: data.mvcs_extrinsic.qy,
+        qz: data.mvcs_extrinsic.qz,
+        tx: data.mvcs_extrinsic.tx,
+        ty: data.mvcs_extrinsic.ty,
+        tz: data.mvcs_extrinsic.tz,
       },
     },
   ];

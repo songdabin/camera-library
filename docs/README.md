@@ -25,13 +25,13 @@
 
 #### Step 2
 
-1. 구조 변경
+1. [구조 변경](https://github.com/songdabin/camera-library/issues/16)
 
-2. projectCCSToICS 함수 정의
+2. [projectCCSToICS 함수 정의](https://github.com/songdabin/camera-library/commit/e0be2f6175261eebf2b440c5e93b73855ec56d19)
 
-3. Factory Method Design Pattern 적용
+3. [Factory Method Design Pattern 적용](https://github.com/songdabin/camera-library/commit/debcfd2abf131a47a7ac0b1423af297d14775af6)
 
-4. 모델별 CCSToICS 코드
+4. [모델별 CCSToICS 코드](https://github.com/songdabin/camera-library/tree/feat/%2318/lib/models)
 
 5. Testing with input & output
 
