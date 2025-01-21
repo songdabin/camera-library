@@ -1,4 +1,4 @@
-import { Line3, Matrix4, Quaternion, Vector3 } from "three";
+import { Line3, Vector3 } from "three";
 import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
@@ -71,10 +71,7 @@ export class RectilinearModel extends CameraModel {
       denormalized.z
     );
 
-    const { qw, qx, qy, qz } = this.vcsExtrinsic;
-    const quaternion = new Quaternion(qx, qy, qz, qw);
-
-    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
+    const rotationMatrix = this.getRotationMatrix();
 
     const vcsPoint = undistorted.sub(translationVector);
     // divide vcsPoint by rotation Matrix?

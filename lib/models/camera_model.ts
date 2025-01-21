@@ -48,19 +48,24 @@ export abstract class CameraModel {
     this.mvcsExtrinsic = mvcsExtrinsic;
   }
 
+  public getRotationMatrix(): Matrix4 {
+    const { qw, qx, qy, qz } = this.vcsExtrinsic;
+
+    const quaternion = new Quaternion(qx, qy, qz, qw);
+
+    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
+
+    return rotationMatrix;
+  }
+
   public projectVcsToCcs(vec3: Vector3): Vector3 {
     const homoVcsPoint = toHomogeneous(vec3.toArray());
 
-    const { qw, qx, qy, qz, tx, ty, tz } = this.vcsExtrinsic;
-    const quaternion = new Quaternion(qx, qy, qz, qw);
-
-    const rotationMatrix = new Matrix4()
-      .makeRotationFromQuaternion(quaternion)
-      .setPosition(tx, ty, tz);
+    const { tx, ty, tz } = this.vcsExtrinsic;
 
     const ccsPoint = multiplyMatrix4(
       homoVcsPoint,
-      rotationMatrix.transpose().toArray()
+      this.getRotationMatrix().setPosition(tx, ty, tz).transpose().toArray()
     );
 
     return new Vector3(ccsPoint[0], ccsPoint[1], ccsPoint[2]);
