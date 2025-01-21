@@ -1,4 +1,4 @@
-import { Extrinsic, ICSPoint, Intrinsic, Vector3Like } from "../types/type";
+import { Extrinsic, ICSPoint, Intrinsic } from "../types/type";
 import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import { multiplyMatrix4, toHomogeneous } from "../types/LtMatrix4";
 import {
@@ -71,7 +71,7 @@ export abstract class CameraModel {
     return new Vector3(ccsPoint[0], ccsPoint[1], ccsPoint[2]);
   }
 
-  abstract projectCcsToIcs(vec3: Vector3Like): ICSPoint;
+  abstract projectCcsToIcs(vec3: Vector3): ICSPoint;
 
   abstract vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[];
 
