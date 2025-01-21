@@ -1,14 +1,9 @@
 import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import { Cuboid, ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
-import {
-  multiplyMatrix4byIntrinsicTranspose,
-  toHomogeneous,
-  transpose,
-} from "../types/LtMatrix4";
 
 export class RectilinearModel extends CameraModel {
-  private distortVec3(x: number, y: number) {
+  private distort(x: number, y: number) {
     const { k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
 
     const r2 = x ** 2 + y ** 2;
@@ -21,46 +16,36 @@ export class RectilinearModel extends CameraModel {
     return [distortedX, distortedY];
   }
 
-  public projectCcsToIcs(vec3: Vector3): ICSPoint {
+  private project(x: number, y: number) {
     const { fx, fy, cx, cy } = this.intrinsic;
 
-    const homoCcsPoints = toHomogeneous(vec3.toArray());
+    const projectedX = x * fx + cx;
+    const projectedY = y * fy + cy;
 
-    // prettier-ignore
-    const intrinsicArray = [
-      fx, 0, cx, 0,
-      0, fy, cy, 0,
-      0, 0, 1, 0,
-    ];
-    const intrinsicT = transpose(intrinsicArray, 4);
-    const icsPoints = multiplyMatrix4byIntrinsicTranspose(
-      homoCcsPoints,
-      intrinsicT
+    return [projectedX, projectedY];
+  }
+
+  private isInImageCheck(x: number, y: number) {
+    return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  }
+
+  public projectCcsToIcs(vec3: Vector3): ICSPoint {
+    const normalized = vec3.clone().divideScalar(vec3.getComponent(2));
+
+    const [distortedX, distortedY] = this.distort(
+      normalized.getComponent(0),
+      normalized.getComponent(1)
     );
 
-    const icsPointVec = new Vector3(icsPoints[0], icsPoints[1], icsPoints[2]);
+    const [projectedX, projectedY] = this.project(distortedX, distortedY);
 
-    const normalizedPoint = icsPointVec.clone().divideScalar(icsPoints[2]);
-
-    const x = (normalizedPoint.x - cx) / fx;
-    const y = (normalizedPoint.y - cy) / fy;
-
-    const [distortedX, distortedY] = this.distortVec3(x, y);
-
-    const result_x = distortedX * fx + cx;
-    const result_y = distortedY * fy + cy;
-
-    const distortedPoint: ICSPoint = {
-      x: result_x,
-      y: result_y,
-      isInImage:
-        result_x >= 0 &&
-        result_x < this.width &&
-        result_y >= 0 &&
-        result_y < this.height,
+    const icsPoint: ICSPoint = {
+      x: projectedX,
+      y: projectedY,
+      isInImage: this.isInImageCheck(projectedX, projectedY),
     };
 
-    return distortedPoint;
+    return icsPoint;
   }
 
   public vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[] {

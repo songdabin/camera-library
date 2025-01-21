@@ -11,6 +11,7 @@ import {
   getHomogeneousTransformMatrix,
   matrix4to3,
   multiplyMatrix4,
+  toHomogeneous,
 } from "../types/LtMatrix4";
 
 export abstract class CameraModel {
@@ -55,17 +56,21 @@ export abstract class CameraModel {
   }
 
   public projectVcsToCcs(vec3: Vector3): Vector3 {
-    const { qw, qx, qy, qz } = this.vcsExtrinsic;
+    const homoVcsPoint = toHomogeneous(vec3.toArray());
+
+    const { qw, qx, qy, qz, tx, ty, tz } = this.vcsExtrinsic;
     const quaternion = new Quaternion(qx, qy, qz, qw);
 
-    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
+    const rotationMatrix = new Matrix4()
+      .makeRotationFromQuaternion(quaternion)
+      .setPosition(tx, ty, tz);
 
-    const rotatedVcsPoint = vec3.clone().applyMatrix4(rotationMatrix);
+    const ccsPoint = multiplyMatrix4(
+      homoVcsPoint,
+      rotationMatrix.transpose().toArray()
+    );
 
-    const { tx, ty, tz } = this.vcsExtrinsic;
-    const translationVector = new Vector3(tx, ty, tz);
-
-    return rotatedVcsPoint.add(translationVector);
+    return new Vector3(ccsPoint[0], ccsPoint[1], ccsPoint[2]);
   }
 
   abstract projectCcsToIcs(vec3: Vector3Like): ICSPoint;
