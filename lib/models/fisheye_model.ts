@@ -60,8 +60,8 @@ export class FisheyeModel extends CameraModel {
     const icsLines: Line3[] = [];
 
     ccsLines.forEach((ccsLine) => {
-      const icsP1 = this.projectCcsToIcs(new Vector3(...ccsLine.start));
-      const icsP2 = this.projectCcsToIcs(new Vector3(...ccsLine.end));
+      const icsP1 = this.projectCcsToIcs(ccsLine.start);
+      const icsP2 = this.projectCcsToIcs(ccsLine.end);
       if (icsP1.isInImage && icsP2.isInImage)
         icsLines.push(new Line3(icsP1.point, icsP2.point));
       // else if (icsP1.isInImage || icsP2.isInImage)
