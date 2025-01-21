@@ -3,7 +3,7 @@ import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 
 export class RectilinearModel extends CameraModel {
-  public distortVec3(x: number, y: number) {
+  private distortVec3(x: number, y: number) {
     const { k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
 
     const r2 = x ** 2 + y ** 2;

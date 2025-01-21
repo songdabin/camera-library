@@ -7,7 +7,7 @@ export type CcsToIcsPointsArgs = {
 };
 
 export class FisheyeModel extends CameraModel {
-  public distortThetas(theta: number) {
+  private distortThetas(theta: number) {
     const { k1, k2, k3, k4 } = this.intrinsic;
 
     const theta2 = theta ** 2;

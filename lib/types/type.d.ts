@@ -9,6 +9,8 @@ import {
 
 export type ICSPoint = { x: number; y: number; isInImage: boolean };
 
+export type CCSPoint = { x: number; y: number; z: number };
+
 export type Vector3Like =
   | [x: number, y: number, z: number]
   | { x: number; y: number; z: number }

@@ -36,10 +36,28 @@ test("Rectilinear Model Create Test", () => {
   );
 });
 
-test("Rectilinear Model projectCcsToIcs Test", () => {
-  const rectilinearModel = createModel(rearCameraType, rearCameraParams);
+const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
+const ccsPoint = rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1));
+
+test("Rectilinear Model projectVcsToCcs Test", () => {
+  rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1));
+
+  expect(ccsPoint).toEqual({
+    x: -1.4145389551447445,
+    y: 1.0768898730919398,
+    z: -0.6845925113704362,
+  });
+});
+
+test("Rectilinear Model projectCcsToIcs Test", () => {
   expect(
-    rectilinearModel?.projectCcsToIcs(new Vector3(10000, 10000, 10))
-  ).toEqual({ x: 1000.9588784876503, y: 1006.6784469911012, isInImage: true });
+    rectilinearModel?.projectCcsToIcs(
+      rectilinearModel?.projectVcsToCcs(new Vector3(1, 1, 1))
+    )
+  ).toEqual({
+    x: -18.966298472378412,
+    y: -18.293850735727347,
+    isInImage: false,
+  });
 });
