@@ -35,7 +35,7 @@ export type CuboidPoints = {
 
 export type CuboidLine = [start: Vector3, end: Vector3];
 
-export function createCuboidPoints(cuboidPoint: Vector3[]): CuboidPoints {
+export function createCuboidLines(cuboidPoint: Vector3[]): Line3[] {
   const cuboidPoints = {
     flb: cuboidPoint[0],
     frb: cuboidPoint[1],
@@ -47,11 +47,7 @@ export function createCuboidPoints(cuboidPoint: Vector3[]): CuboidPoints {
     rlt: cuboidPoint[7],
   };
 
-  return cuboidPoints;
-}
-
-export function createCuboidLines(ccsPoints: CuboidPoints) {
-  const { flb, frb, frt, flt, rlb, rrb, rrt, rlt } = ccsPoints;
+  const { flb, frb, frt, flt, rlb, rrb, rrt, rlt } = cuboidPoints;
 
   // prettier-ignore
   // Left -> Right, Front -> Rear, Bottom -> Top

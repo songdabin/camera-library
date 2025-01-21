@@ -3,7 +3,6 @@ import { Line3, Matrix4, Quaternion, Vector3 } from "three";
 import { multiplyMatrix4, toHomogeneous } from "../types/LtMatrix4";
 import {
   createCuboidLines,
-  createCuboidPoints,
   Cuboid,
   CuboidPoints,
   VcsCuboidToCcsPointsArgs,
@@ -74,19 +73,7 @@ export abstract class CameraModel {
   abstract vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[];
 
   public getCcsLinesFromCuboid(cuboid: Cuboid, order: "zyx"): Line3[] {
-    const ccsPoints: CuboidPoints = this.vcsCuboidToCcsPoints({
-      vcsCuboid: cuboid,
-      order,
-    });
-
-    return createCuboidLines(ccsPoints);
-  }
-
-  private vcsCuboidToCcsPoints({
-    vcsCuboid,
-    order = "zyx",
-  }: VcsCuboidToCcsPointsArgs) {
-    const vcsPoints = vcsCuboidToVcsPoints(vcsCuboid, order);
+    const vcsPoints = vcsCuboidToVcsPoints(cuboid, order);
 
     const ccsPointArray = [];
     for (let i = 0; i < 24; i += 3) {
@@ -98,6 +85,6 @@ export abstract class CameraModel {
       ccsPointArray.push(this.projectVcsToCcs(vcsPointVector));
     }
 
-    return createCuboidPoints(ccsPointArray);
+    return createCuboidLines(ccsPointArray);
   }
 }
