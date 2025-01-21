@@ -1,6 +1,11 @@
-import * as THREE from "three";
-import { ICSPoint } from "../types/type";
+import { Line3, Matrix4, Quaternion, Vector3 } from "three";
+import { Cuboid, ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
+import {
+  multiplyMatrix4byIntrinsicTranspose,
+  toHomogeneous,
+  transpose,
+} from "../types/LtMatrix4";
 
 export class RectilinearModel extends CameraModel {
   private distortVec3(x: number, y: number) {
@@ -16,22 +21,82 @@ export class RectilinearModel extends CameraModel {
     return [distortedX, distortedY];
   }
 
-  public projectCcsToIcs(vec3: THREE.Vector3): ICSPoint {
-    const normalizedPoint = vec3.clone().divideScalar(vec3.getComponent(2));
-
+  public projectCcsToIcs(vec3: Vector3): ICSPoint {
     const { fx, fy, cx, cy } = this.intrinsic;
+
+    const homoCcsPoints = toHomogeneous(vec3.toArray());
+
+    // prettier-ignore
+    const intrinsicArray = [
+      fx, 0, cx, 0,
+      0, fy, cy, 0,
+      0, 0, 1, 0,
+    ];
+    const intrinsicT = transpose(intrinsicArray, 4);
+    const icsPoints = multiplyMatrix4byIntrinsicTranspose(
+      homoCcsPoints,
+      intrinsicT
+    );
+
+    const icsPointVec = new Vector3(icsPoints[0], icsPoints[1], icsPoints[2]);
+
+    const normalizedPoint = icsPointVec.clone().divideScalar(icsPoints[2]);
 
     const x = (normalizedPoint.x - cx) / fx;
     const y = (normalizedPoint.y - cy) / fy;
 
     const [distortedX, distortedY] = this.distortVec3(x, y);
 
+    const result_x = distortedX * fx + cx;
+    const result_y = distortedY * fy + cy;
+
     const distortedPoint: ICSPoint = {
-      x: distortedX * fx + cx,
-      y: distortedY * fy + cy,
-      isInImage: x >= 0 && x < this.width && y >= 0 && y < this.height,
+      x: result_x,
+      y: result_y,
+      isInImage:
+        result_x >= 0 &&
+        result_x < this.width &&
+        result_y >= 0 &&
+        result_y < this.height,
     };
 
     return distortedPoint;
+  }
+
+  public vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[] {
+    const ccsLines = this.getCcsLinesFromCuboid(vcsCuboid, order);
+    const icsLines = this.ccsLinesToIcsLines(ccsLines);
+    return icsLines;
+  }
+
+  public icsToVcsPoints(icsPoint: number[]) {
+    const icsPointVec = new Vector3(icsPoint[0], icsPoint[1], icsPoint[2]);
+
+    const { tx, ty, tz } = this.vcsExtrinsic;
+    const translationVector = new Vector3(tx, ty, tz);
+
+    const denormalized = icsPointVec.multiplyScalar(icsPoint[2]);
+
+    const { fx, fy, cx, cy } = this.intrinsic;
+
+    const undistorted = new Vector3(
+      (denormalized.x - cx) / fx,
+      (denormalized.y - cy) / fy,
+      denormalized.z
+    );
+
+    const { qw, qx, qy, qz } = this.vcsExtrinsic;
+    const quaternion = new Quaternion(qx, qy, qz, qw);
+
+    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
+
+    const vcsPoint = undistorted.sub(translationVector);
+    // divide vcsPoint by rotation Matrix?
+
+    return icsPoint;
+  }
+
+  private ccsLinesToIcsLines(ccsLines: Line3[]) {
+    return [new Line3(new Vector3(0, 0, 0), new Vector3(2, 3, 4))];
   }
 }

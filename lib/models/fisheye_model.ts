@@ -1,9 +1,9 @@
-import * as THREE from "three";
-import { ICSPoint } from "../types/type";
+import { Line3, Vector3 } from "three";
+import { Cuboid, ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 
 export type CcsToIcsPointsArgs = {
-  ccsPoint: THREE.Vector3;
+  ccsPoint: Vector3;
 };
 
 export class FisheyeModel extends CameraModel {
@@ -21,7 +21,7 @@ export class FisheyeModel extends CameraModel {
     return thetaD;
   }
 
-  public projectCcsToIcs(vec3: THREE.Vector3): ICSPoint {
+  public projectCcsToIcs(vec3: Vector3): ICSPoint {
     const uswPoint = vec3.clone().normalize();
     const theta = Math.acos(uswPoint.z);
     const phi = Math.atan2(uswPoint.y, uswPoint.x);
@@ -43,5 +43,34 @@ export class FisheyeModel extends CameraModel {
     const isInImage = x >= 0 && x < this.width && y >= 0 && y < this.height;
 
     return { x, y, isInImage };
+  }
+
+  public icsToVcsPoints(icsPoint: number[]) {}
+
+  public vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[] {
+    const ccsLines = this.getCcsLinesFromCuboid(vcsCuboid, order);
+    const icsLines = this.ccsLinesToIcsLines(ccsLines);
+    return icsLines;
+  }
+
+  private ccsLinesToIcsLines(ccsLines: Line3[]) {
+    const icsLines: Line3[] = [];
+
+    ccsLines.forEach((ccsLine) => {
+      const icsP1 = this.projectCcsToIcs(new Vector3(...ccsLine.start));
+      const icsP2 = this.projectCcsToIcs(new Vector3(...ccsLine.end));
+      if (icsP1.isInImage && icsP2.isInImage)
+        icsLines.push(
+          new Line3(
+            new Vector3(icsP1.x, icsP1.y),
+            new Vector3(icsP2.x, icsP2.y)
+          )
+        );
+      // else if (icsP1.isInImage || icsP2.isInImage)
+      //   icsLines.push(clipInImage([icsP1, icsP2], calibration));
+      // else icsLines.push(null);
+    });
+
+    return icsLines;
   }
 }
