@@ -28,7 +28,7 @@ export class FisheyeModel extends CameraModel {
     const phi = Math.atan2(uswPoint.y, uswPoint.x);
 
     const { fx, fy, cx, cy, k1, k2, k3, k4, k5, k6 } = this.intrinsic;
-    const fov = this.hfov;
+    const fov = this.hfov / 2;
 
     const thetaSlope =
       1 + k1 * fov ** 2 + k2 * fov ** 4 + k3 * fov ** 6 + k4 * fov ** 8;
