@@ -1,7 +1,6 @@
 import { Line3, Vector3 } from "three";
 import {
   getHomogeneousTransformMatrix,
-  LtMatrix4,
   matrix4to3,
   multiplyMatrix4,
 } from "./LtMatrix4";

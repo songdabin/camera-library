@@ -4,8 +4,6 @@ import { multiplyMatrix4, toHomogeneous } from "../types/LtMatrix4";
 import {
   createCuboidLines,
   Cuboid,
-  CuboidPoints,
-  VcsCuboidToCcsPointsArgs,
   vcsCuboidToVcsPoints,
 } from "../types/Cuboid";
 
