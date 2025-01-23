@@ -1,15 +1,16 @@
-```
+---
 
 Issue No. : #issue
 Title : title
 Labels : label (ex. feat, fix, chore, etc.)
 Assignees : @assignee
 
-```
+---
 
-## 📓 Description
+## 📓 _Description_
 
 description here
 
-## ☑️ TODO
+## ✓ _TODO_
+
 - [ ] to-do here
