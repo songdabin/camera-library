@@ -1,4 +1,11 @@
-import { Euler, Float32BufferAttribute, Line3, Matrix4, Vector3 } from "three";
+import {
+  Euler,
+  Float32BufferAttribute,
+  Line3,
+  Matrix4,
+  Vector3,
+  Vector4,
+} from "three";
 
 export type VcsCuboidToCcsPointsArgs = {
   vcsCuboid: Cuboid;
@@ -115,18 +122,16 @@ export function getHomogeneousTransformMatrix({
  * @returns Vector3[] (Vcs Cuboid Points)
  */
 export function multiplyMatrix4(
-  cuboidPoints: number[],
+  cuboidPoints: Vector4[],
   transformMatrix: Matrix4
 ): Vector3[] {
   const bArray = transformMatrix.toArray();
 
-  const point = new Float32BufferAttribute(cuboidPoints, 4);
-
   const result: Vector3[] = [];
 
-  for (let i = 0; i < point.count; i++) {
+  for (let i = 0; i < cuboidPoints.length; i++) {
     // prettier-ignore
-    const x = point.getX(i), y = point.getY(i), z = point.getZ(i), w = point.getW(i);
+    const x = cuboidPoints[i].x, y = cuboidPoints[i].y, z = cuboidPoints[i].z, w = cuboidPoints[i].w;
 
     result.push(
       new Vector3(
@@ -144,19 +149,18 @@ export function getPoints(
   width: number,
   height: number,
   length: number
-): number[] {
+): Vector4[] {
   const [y, z, x] = [width / 2, height / 2, length / 2];
 
-  // prettier-ignore
   return [
-    x, y, -z, 1, // front left bottom
-    x, -y, -z, 1, // front right bottom
-    x, -y, z, 1, // front right top
-    x, y, z, 1, // front left top
-    
-    -x, y, -z, 1, // rear left bottom
-    -x, -y, -z, 1, // rear right bottom
-    -x, -y, z, 1, // rear right top
-    -x, y, z, 1, // rear left top
+    new Vector4(x, y, -z, 1), // front left bottom
+    new Vector4(x, -y, -z, 1), // front right bottom
+    new Vector4(x, -y, z, 1), // front right top
+    new Vector4(x, y, z, 1), // front left top
+
+    new Vector4(-x, y, -z, 1), // rear left bottom
+    new Vector4(-x, -y, -z, 1), // rear right bottom
+    new Vector4(-x, -y, z, 1), // rear right top
+    new Vector4(-x, y, z, 1), // rear left top
   ];
 }
