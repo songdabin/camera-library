@@ -7,7 +7,7 @@ import {
   toHomogeneous,
   transpose,
 } from "../types/LtMatrix4";
-import { CameraModelType, Extrinsic, Intrinsic } from "../types/type";
+import { Extrinsic, Intrinsic } from "../types/type";
 import { Cuboid } from "../types/Cuboid";
 
 export function legacyProjectVcsToCcs(

@@ -32,23 +32,35 @@ export const projectVcsToCcsTestCase = [
 export const fisheyeProjectCcsToIcsTestCase = [
   {
     input: new Vector3(10000, 10000, 10),
-    output: { x: 1600.9286588735288, y: 1408.5782821677863, isInImage: true },
+    output: {
+      point: { x: 1600.9286588735288, y: 1408.5782821677863, z: 0 },
+      isInImage: true,
+    },
   },
   {
     input: new Vector3(1, 1, 1),
     output: {
-      x: 1336.2195702701756,
-      y: 1144.0413642531755,
+      point: {
+        x: 1336.2195702701756,
+        y: 1144.0413642531755,
+        z: 0,
+      },
       isInImage: true,
     },
   },
   {
     input: new Vector3(3.333333, 5.5555555, 7.7777777),
-    output: { x: 1151.84156807861, y: 1088.239446521656, isInImage: true },
+    output: {
+      point: { x: 1151.84156807861, y: 1088.239446521656, z: 0 },
+      isInImage: true,
+    },
   },
   {
     input: new Vector3(0, 0, 0),
-    output: { x: 1867.1972009568562, y: 767.0990841439, isInImage: true },
+    output: {
+      point: { x: 1867.1972009568562, y: 767.0990841439, z: 0 },
+      isInImage: true,
+    },
   },
 ];
 
@@ -56,15 +68,24 @@ export const fisheyeProjectCcsToIcsTestCase = [
 export const rectilinearProjectCcsToIcsTestCase = [
   {
     input: new Vector3(1, 1, 1),
-    output: { x: 1543.106710453001, y: 1340.48787091835, isInImage: true },
+    output: {
+      point: { x: 1543.106710453001, y: 1340.48787091835, z: 0 },
+      isInImage: true,
+    },
   },
   {
     input: new Vector3(10000, 1000, 100),
-    output: { x: -911978279005498, y: -90989372227315.56, isInImage: false },
+    output: {
+      point: { x: -911978279005498, y: -90989372227315.56, z: 0 },
+      isInImage: false,
+    },
   },
   {
     input: new Vector3(3.333333, 5.5555555, 7.7777777),
-    output: { x: 1200.2838883148725, y: 1154.1131530339776, isInImage: true },
+    output: {
+      point: { x: 1200.2838883148725, y: 1154.1131530339776, z: 0 },
+      isInImage: true,
+    },
   },
 ];
 

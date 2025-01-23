@@ -35,7 +35,7 @@ export type CuboidPoints = {
 
 export type CuboidLine = [start: Vector3, end: Vector3];
 
-export function createCuboidPoints(cuboidPoint: Vector3[]): CuboidPoints {
+export function createCuboidLines(cuboidPoint: Vector3[]): Line3[] {
   const cuboidPoints = {
     flb: cuboidPoint[0],
     frb: cuboidPoint[1],
@@ -47,11 +47,7 @@ export function createCuboidPoints(cuboidPoint: Vector3[]): CuboidPoints {
     rlt: cuboidPoint[7],
   };
 
-  return cuboidPoints;
-}
-
-export function createCuboidLines(ccsPoints: CuboidPoints) {
-  const { flb, frb, frt, flt, rlb, rrb, rrt, rlt } = ccsPoints;
+  const { flb, frb, frt, flt, rlb, rrb, rrt, rlt } = cuboidPoints;
 
   // prettier-ignore
   // Left -> Right, Front -> Rear, Bottom -> Top
@@ -79,9 +75,23 @@ export function vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
     order,
   });
 
+  const vcsPoints = multiplyMatrix4(
+    getPoints(width, height, length),
+    transformMatrix.transpose().elements()
+  );
+
+  return matrix4to3(vcsPoints);
+}
+
+export function getPoints(
+  width: number,
+  height: number,
+  length: number
+): number[] {
   const [y, z, x] = [width / 2, height / 2, length / 2];
+
   // prettier-ignore
-  const points = [
+  return [
     x, y, -z, 1, // front left bottom
     x, -y, -z, 1, // front right bottom
     x, -y, z, 1, // front right top
@@ -92,10 +102,4 @@ export function vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
     -x, -y, z, 1, // rear right top
     -x, y, z, 1, // rear left top
   ];
-  const vcsPoints = multiplyMatrix4(
-    points,
-    transformMatrix.transpose().elements()
-  );
-
-  return matrix4to3(vcsPoints);
 }
