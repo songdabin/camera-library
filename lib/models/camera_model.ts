@@ -54,7 +54,6 @@ export abstract class CameraModel {
     const quaternion = new Quaternion(qx, qy, qz, qw);
 
     const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
-
     return rotationMatrix;
   }
 
@@ -79,13 +78,8 @@ export abstract class CameraModel {
     const vcsPoints = vcsCuboidToVcsPoints(cuboid, order);
 
     const ccsPointArray = [];
-    for (let i = 0; i < 24; i += 3) {
-      const vcsPointVector = new Vector3(
-        vcsPoints[i],
-        vcsPoints[i + 1],
-        vcsPoints[i + 2]
-      );
-      ccsPointArray.push(this.projectVcsToCcs(vcsPointVector));
+    for (let i = 0; i < 8; i++) {
+      ccsPointArray.push(this.projectVcsToCcs(vcsPoints[i]));
     }
 
     return createCuboidLines(ccsPointArray);
