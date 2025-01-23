@@ -107,16 +107,26 @@ export function getHomogeneousTransformMatrix({
   return transformMatrix;
 }
 
-export function multiplyMatrix4(a: number[], b: Matrix4): Vector3[] {
-  const bArray = b.toArray();
+/**
+ * Get a Vcs Cuboid Point Array
+ *
+ * @param cuboidPoints Cuboid Points Array (Homogeneous)
+ * @param transformMatrix Matrix4 that includes rotation and translation parameters (column-major matrix)
+ * @returns Vector3[] (Vcs Cuboid Points)
+ */
+export function multiplyMatrix4(
+  cuboidPoints: number[],
+  transformMatrix: Matrix4
+): Vector3[] {
+  const bArray = transformMatrix.toArray();
 
-  const points = new Float32BufferAttribute(a, 4);
+  const point = new Float32BufferAttribute(cuboidPoints, 4);
 
   const result: Vector3[] = [];
 
-  for (let i = 0; i < points.count; i++) {
+  for (let i = 0; i < point.count; i++) {
     // prettier-ignore
-    const x = points.getX(i), y = points.getY(i), z = points.getZ(i), w = points.getW(i);
+    const x = point.getX(i), y = point.getY(i), z = point.getZ(i), w = point.getW(i);
 
     result.push(
       new Vector3(
