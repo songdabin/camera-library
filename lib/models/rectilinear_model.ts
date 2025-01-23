@@ -55,24 +55,6 @@ export class RectilinearModel extends CameraModel {
   }
 
   public icsToVcsPoints(icsPoint: Vector3) {
-    const { tx, ty, tz } = this.vcsExtrinsic;
-    const translationVector = new Vector3(tx, ty, tz);
-
-    const denormalized = icsPoint.clone().multiplyScalar(icsPoint.z);
-
-    const { fx, fy, cx, cy } = this.intrinsic;
-
-    const undistorted = new Vector3(
-      (denormalized.x - cx) / fx,
-      (denormalized.y - cy) / fy,
-      denormalized.z
-    );
-
-    const rotationMatrix = this.getRotationMatrix();
-
-    const vcsPoint = undistorted.sub(translationVector);
-    // divide vcsPoint by rotation Matrix?
-
     return icsPoint;
   }
 
