@@ -1,6 +1,5 @@
 import { Extrinsic, ICSPoint, Intrinsic } from "../types/type";
-import { Line3, Matrix4, Quaternion, Vector3 } from "three";
-import { multiplyMatrix4, toHomogeneous } from "../types/LtMatrix4";
+import { Line3, Matrix4, Quaternion, Vector3, Vector4 } from "three";
 import {
   createCuboidLines,
   Cuboid,
@@ -58,16 +57,16 @@ export abstract class CameraModel {
   }
 
   public projectVcsToCcs(vec3: Vector3): Vector3 {
-    const homoVcsPoint = toHomogeneous(vec3.toArray());
+    const homoVcsPoint = new Vector4(vec3.x, vec3.y, vec3.z);
 
     const { tx, ty, tz } = this.vcsExtrinsic;
 
-    const ccsPoint = multiplyMatrix4(
+    const ccsPoint = this.multiplyMatrix4(
       homoVcsPoint,
-      this.getRotationMatrix().setPosition(tx, ty, tz).transpose().toArray()
+      this.getRotationMatrix().setPosition(tx, ty, tz).transpose()
     );
 
-    return new Vector3(ccsPoint[0], ccsPoint[1], ccsPoint[2]);
+    return ccsPoint;
   }
 
   abstract projectCcsToIcs(vec3: Vector3): ICSPoint;
@@ -83,5 +82,18 @@ export abstract class CameraModel {
     }
 
     return createCuboidLines(ccsPointArray);
+  }
+
+  // prettier-ignore
+  private multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
+    const b = translationMatrix.toArray();
+    
+    const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;
+
+    return new Vector3(
+      x * b[0] + y * b[4] + z * b[8] + w * b[12],
+      x * b[1] + y * b[5] + z * b[9] + w * b[13],
+      x * b[2] + y * b[6] + z * b[10] + w * b[14],
+    );
   }
 }
