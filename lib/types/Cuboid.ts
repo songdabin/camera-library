@@ -107,26 +107,24 @@ export function getHomogeneousTransformMatrix({
   return transformMatrix;
 }
 
-// prettier-ignore
 export function multiplyMatrix4(a: number[], b: Matrix4): Vector3[] {
   const bArray = b.toArray();
 
-  const buffer = new Float32BufferAttribute(a, 4);
-  
-  const b11 = bArray[0], b12 = bArray[1], b13 = bArray[2], b14 = bArray[3];
-  const b21 = bArray[4], b22 = bArray[5], b23 = bArray[6], b24 = bArray[7];
-  const b31 = bArray[8], b32 = bArray[9], b33 = bArray[10], b34 = bArray[11];
-  const b41 = bArray[12], b42 = bArray[13], b43 = bArray[14], b44 = bArray[15];
+  const points = new Float32BufferAttribute(a, 4);
 
   const result: Vector3[] = [];
-  for (let i = 0; i < a.length; i += 4) {
-    const a11 = a[i], a12 = a[i + 1], a13 = a[i + 2], a14 = a[i + 3];
 
-    result.push(new Vector3(
-      a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41,
-      a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42,
-      a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43
-    ));
+  for (let i = 0; i < points.count; i++) {
+    // prettier-ignore
+    const x = points.getX(i), y = points.getY(i), z = points.getZ(i), w = points.getW(i);
+
+    result.push(
+      new Vector3(
+        x * bArray[0] + y * bArray[4] + z * bArray[8] + w * bArray[12],
+        x * bArray[1] + y * bArray[5] + z * bArray[9] + w * bArray[13],
+        x * bArray[2] + y * bArray[6] + z * bArray[10] + w * bArray[14]
+      )
+    );
   }
 
   return result;
