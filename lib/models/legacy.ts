@@ -306,6 +306,7 @@ export function undistortPointStandardCam(
  */
 export function icsToVcsPoints(points: number[], calibration: CameraModelType) {
   const ccsPoints = icsToCcsPoints(points, calibration.intrinsic);
+
   const vcsPoints = ccsToVcsPoints(ccsPoints, calibration.vcsExtrinsic);
 
   return vcsPoints;
@@ -333,6 +334,7 @@ export function icsToCcsPoints(icsPoints: number[], intrinsic: Intrinsic) {
     .elements();
 
   const undistortedIcsPoints = undistortIcsPoints(icsPoints, intrinsic);
+
   for (let i = 0; i < undistortedIcsPoints.length; i += 3) {
     const z = undistortedIcsPoints[i + 2];
     undistortedIcsPoints[i] *= z;
@@ -368,6 +370,7 @@ export function ccsToVcsPoints(points: number[], extrinsic: Extrinsic) {
     .invert()
     .transpose()
     .elements();
+
   const vcsPoints = multiplyMatrix4(toHomogeneous(points), extrinsicInvT);
 
   return matrix4to3(vcsPoints);

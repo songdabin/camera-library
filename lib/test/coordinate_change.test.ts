@@ -7,14 +7,6 @@ import {
   projectVcsToCcsTestCase,
   rectilinearProjectCcsToIcsTestCase,
 } from "./testcase";
-import {
-  ccsToVcsPoints,
-  icsToCcsPoints,
-  icsToVcsPoints,
-  legacyProjectVcsToCcs,
-  legacyRectiliniearProjectCcsToIcs,
-  undistortIcsPoints,
-} from "../models/legacy";
 import { Vector3 } from "three";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
@@ -51,11 +43,10 @@ rectilinearProjectCcsToIcsTestCase.forEach(({ input, output }) => {
 
 const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
-// test("icsToVcsPoint", () => {
-//   expect(rectilinearModel?.icsToVcsPoint(new Vector3(100, 10, 1))).toEqual({
-//     x: -1.4721653134837152,
-//     y: -0.4947721228552209,
-//     z: 0.23628394627004135,
-//   });
-// });
-rectilinearModel?.icsToVcsPoint(new Vector3(100, 10, 1));
+test("icsToVcsPoint", () => {
+  expect(rectilinearModel?.icsToVcsPoint(new Vector3(100, 10, 1))).toEqual({
+    x: -1.4721653134837152,
+    y: -0.4947721228552209,
+    z: 0.23628394627004135,
+  });
+});
