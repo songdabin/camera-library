@@ -1,13 +1,14 @@
 import { Matrix4, Quaternion, Vector3 } from "three";
 import {
   getHomogeneousTransformMatrix,
+  LtMatrix4,
   matrix4to3,
   multiplyMatrix4,
   multiplyMatrix4byIntrinsicTranspose,
   toHomogeneous,
   transpose,
 } from "../types/LtMatrix4";
-import { Extrinsic, Intrinsic } from "../types/type";
+import { CameraModelType, Extrinsic, Intrinsic } from "../types/type";
 import { Cuboid } from "../types/Cuboid";
 
 export function legacyProjectVcsToCcs(
@@ -236,6 +237,144 @@ export function legacyVcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
     points,
     transformMatrix.transpose().elements()
   );
+
+  return matrix4to3(vcsPoints);
+}
+
+/**
+ * Undistort ICS points
+ *
+ * @param points distorted N * 3 ICS matrix
+ * @param calibration Calibration
+ * @returns undistorted N * 3 ICS matrix
+ */
+export function undistortIcsPoints(points: number[], intrinsic: Intrinsic) {
+  const { fx, fy, cx, cy } = intrinsic;
+
+  const pointsInPlane: number[] = [];
+  for (let i = 0; i < points.length; i += 3) {
+    pointsInPlane.push(
+      (points[i] - cx) / fx,
+      (points[i + 1] - cy) / fy,
+      points[i + 2]
+    );
+  }
+
+  const undistortedPoints: number[] = [];
+  for (let i = 0; i < pointsInPlane.length; i += 3) {
+    const x = pointsInPlane[i];
+    const y = pointsInPlane[i + 1];
+    const z = pointsInPlane[i + 2];
+
+    const [undistortedX, undistortedY] = undistortPointStandardCam(
+      x,
+      y,
+      intrinsic
+    );
+    undistortedPoints.push(undistortedX * fx + cx, undistortedY * fy + cy, z);
+  }
+  return undistortedPoints;
+}
+
+export function undistortPointStandardCam(
+  u: number,
+  v: number,
+  intrinsic: Intrinsic
+) {
+  const { k1, k2, k3, k4, p1, p2 } = intrinsic;
+
+  const x0 = u;
+  const y0 = v;
+  let undistortedU = u;
+  let undistortedY = v;
+  for (let i = 0; i < 5; i += 1) {
+    const r2 = undistortedU ** 2 + undistortedY ** 2;
+    const radialDInv =
+      (1 + k4 * r2) / (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3);
+    const deltaX =
+      2 * p1 * undistortedU * undistortedY + p2 * (r2 + 2 * undistortedU ** 2);
+    const deltaY =
+      p1 * (r2 + 2 * undistortedY ** 2) + 2 * p2 * undistortedU * undistortedY;
+
+    undistortedU = (x0 - deltaX) * radialDInv;
+    undistortedY = (y0 - deltaY) * radialDInv;
+  }
+
+  return [undistortedU, undistortedY];
+}
+
+/**
+ * Convert ICS points to VCS points
+ *
+ * @param points distorted N * 3 ICS matrix
+ * @param calibration Calibration
+ * @returns N * 3 VCS points
+ */
+export function icsToVcsPoints(points: number[], calibration: CameraModelType) {
+  const ccsPoints = icsToCcsPoints(points, calibration.intrinsic);
+  const vcsPoints = ccsToVcsPoints(ccsPoints, calibration.vcsExtrinsic);
+
+  return vcsPoints;
+}
+
+/**
+ * Convert ICS points to CCS points
+ *
+ * @param icsPoints N * 3 ICS matrix
+ * @param calibration Calibration
+ * @returns N * 3 CCS matrix
+ */
+export function icsToCcsPoints(icsPoints: number[], intrinsic: Intrinsic) {
+  // prettier-ignore
+  const intrinsicArray = [
+    intrinsic.fx, 0, intrinsic.cx, 0,
+    0, intrinsic.fy, intrinsic.cy, 0,
+    0, 0, 1, 0,
+  ];
+
+  const intrinsicInvT = new LtMatrix4()
+    .setFromMatrix3by4(intrinsicArray)
+    .invert()
+    .transpose()
+    .elements();
+
+  const undistortedIcsPoints = undistortIcsPoints(icsPoints, intrinsic);
+  for (let i = 0; i < undistortedIcsPoints.length; i += 3) {
+    const z = undistortedIcsPoints[i + 2];
+    undistortedIcsPoints[i] *= z;
+    undistortedIcsPoints[i + 1] *= z;
+  }
+
+  const ccsPoints = multiplyMatrix4(
+    toHomogeneous(undistortedIcsPoints),
+    intrinsicInvT
+  );
+
+  return matrix4to3(ccsPoints);
+}
+
+/**
+ * Convert CCS points to VCS points
+ *
+ * @param points N * 3 CCS matrix
+ * @param calibration Calibration
+ * @returns N * 3 VCS matrix
+ */
+export function ccsToVcsPoints(points: number[], extrinsic: Extrinsic) {
+  const { qw, qx, qy, qz } = extrinsic;
+  const quaternion = new Quaternion(qx, qy, qz, qw);
+
+  const { tx, ty, tz } = extrinsic;
+  const extrinsicMatrix = new Matrix4()
+    .makeRotationFromQuaternion(quaternion)
+    .setPosition(tx, ty, tz)
+    .transpose(); // Matrix4 is column-major order, so need to transpose to set this as LtMatrix4
+
+  const extrinsicInvT = new LtMatrix4(extrinsicMatrix.toArray())
+    .invert()
+    .transpose()
+    .elements();
+  const vcsPoints = multiplyMatrix4(toHomogeneous(points), extrinsicInvT);
 
   return matrix4to3(vcsPoints);
 }
