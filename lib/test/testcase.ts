@@ -457,3 +457,23 @@ export const vcsCuboidToCcsPointsTestCase = [
     z: -8.109074378919056,
   },
 ];
+
+// Rectilinear Ics To Vcs
+export const rectilinearIcsToVcsTestCase = [
+  {
+    input: new Vector3(100, 10, 1),
+    output: {
+      x: -1.4721653134837152,
+      y: -0.4947721228552209,
+      z: 0.23628394627004135,
+    },
+  },
+  {
+    input: new Vector3(3.3333, 1.1111, 2.2222),
+    output: {
+      x: -3.4679957366522074,
+      y: -2.7020149991124547,
+      z: 1.7633315398786826,
+    },
+  },
+];
