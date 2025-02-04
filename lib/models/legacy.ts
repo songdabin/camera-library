@@ -25,7 +25,7 @@ export function legacyProjectVcsToCcs(
     .makeRotationFromQuaternion(quaternion)
     .setPosition(tx, ty, tz);
 
-  const extrinsicT = extrinsicMatrix.transpose();
+  const extrinsicT = extrinsicMatrix;
   const ccsPoints = multiplyMatrix4(homoVcsPoints, extrinsicT.toArray());
 
   return matrix4to3(ccsPoints);
@@ -85,7 +85,6 @@ export function legacyFisheyeProjectCcsToIcs(
 
 // https://darkpgmr.tistory.com/31
 // https://carstart.tistory.com/181
-// 접선왜곡 p1, p2
 // x_corrected = x[2*p1*y + p2(r^2 + 2*x^2)]
 // y_corrected = y[2*p2*x + p2(r^2 + 2*y^2)]
 export function legacyRectiliniearProjectCcsToIcs(
@@ -248,31 +247,28 @@ export function legacyVcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
  * @param calibration Calibration
  * @returns undistorted N * 3 ICS matrix
  */
-export function undistortIcsPoints(points: number[], intrinsic: Intrinsic) {
+export function undistortIcsPoints(point: number[], intrinsic: Intrinsic) {
   const { fx, fy, cx, cy } = intrinsic;
 
-  const pointsInPlane: number[] = [];
-  for (let i = 0; i < points.length; i += 3) {
-    pointsInPlane.push(
-      (points[i] - cx) / fx,
-      (points[i + 1] - cy) / fy,
-      points[i + 2]
-    );
-  }
+  point[0] = (point[0] - cx) / fx;
+  point[1] = (point[1] - cy) / fy;
 
   const undistortedPoints: number[] = [];
-  for (let i = 0; i < pointsInPlane.length; i += 3) {
-    const x = pointsInPlane[i];
-    const y = pointsInPlane[i + 1];
-    const z = pointsInPlane[i + 2];
 
-    const [undistortedX, undistortedY] = undistortPointStandardCam(
-      x,
-      y,
-      intrinsic
-    );
-    undistortedPoints.push(undistortedX * fx + cx, undistortedY * fy + cy, z);
-  }
+  const x = point[0];
+  const y = point[1];
+  const z = point[2];
+
+  const [undistortedX, undistortedY] = undistortPointStandardCam(
+    x,
+    y,
+    intrinsic
+  );
+
+  console.log("legacy", undistortedX, undistortedY);
+
+  undistortedPoints.push(undistortedX * fx + cx, undistortedY * fy + cy, z);
+
   return undistortedPoints;
 }
 
@@ -337,6 +333,8 @@ export function icsToCcsPoints(icsPoints: number[], intrinsic: Intrinsic) {
     .invert()
     .transpose()
     .elements();
+
+  console.log("legacy intrinsicInvT", intrinsicInvT);
 
   const undistortedIcsPoints = undistortIcsPoints(icsPoints, intrinsic);
   for (let i = 0; i < undistortedIcsPoints.length; i += 3) {
