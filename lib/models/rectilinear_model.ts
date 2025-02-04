@@ -3,7 +3,6 @@ import { ICSPoint, Intrinsic } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
 import { distortRectilinear, project, unproject } from "./math_utils";
-import { icsToCcsPoints } from "./legacy";
 
 export class RectilinearModel extends CameraModel {
   private isInImageCheck(x: number, y: number) {
@@ -42,8 +41,6 @@ export class RectilinearModel extends CameraModel {
       0, 0, 1, 0,
       0, 0, 0, 1
     ).invert();
-
-    icsToCcsPoints(icsPoint.toArray(), this.intrinsic);
 
     const undistorted = this.undistortIcsPoint(icsPoint);
 
@@ -103,10 +100,7 @@ export class RectilinearModel extends CameraModel {
   }
 
   private ccsToVcsPoint(ccsPoint: Vector3) {
-    const extrinsicInvT = this.getTransformMatrix()
-      .transpose()
-      .invert()
-      .transpose();
+    const extrinsicInvT = this.getTransformMatrix().invert().transpose();
 
     const vcsPoint = this.multiplyMatrix4(
       new Vector4(...ccsPoint),
