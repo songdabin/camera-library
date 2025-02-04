@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 
-// projectVcsToCcs
-export const projectVcsToCcsTestCase = [
+// vcs to ccs point
+export const vcsToCcsPointTestCase = [
   {
     input: new Vector3(1, 1, 1),
     output: {
@@ -28,8 +28,8 @@ export const projectVcsToCcsTestCase = [
   },
 ];
 
-// fisheye project ccs to ics
-export const fisheyeProjectCcsToIcsTestCase = [
+// fisheye ccs to ics point
+export const fisheyeCcsToIcsPointTestCase = [
   {
     input: new Vector3(10000, 10000, 10),
     output: {
@@ -64,8 +64,8 @@ export const fisheyeProjectCcsToIcsTestCase = [
   },
 ];
 
-// rectilinear project ccs to ics
-export const rectilinearProjectCcsToIcsTestCase = [
+// rectilinear ccs to ics point
+export const rectilinearCcsToIcsPointTestCase = [
   {
     input: new Vector3(1, 1, 1),
     output: {

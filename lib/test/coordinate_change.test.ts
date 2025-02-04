@@ -3,10 +3,10 @@ import path = require("path");
 import { createModel } from "../services/create_model";
 import { splitData } from "../services/split_data";
 import {
-  fisheyeProjectCcsToIcsTestCase,
-  projectVcsToCcsTestCase,
+  fisheyeCcsToIcsPointTestCase,
+  vcsToCcsPointTestCase,
   rectilinearIcsToVcsTestCase,
-  rectilinearProjectCcsToIcsTestCase,
+  rectilinearCcsToIcsPointTestCase,
   truncatedTestCase,
 } from "./testcase";
 import { getTruncatedLinesInCameraFov } from "../models/legacy";
@@ -19,27 +19,27 @@ const rearFilePath = path.join(process.cwd(), "assets", "svc_rear.yaml");
 const rearFileContent = fs.readFileSync(rearFilePath, "utf8");
 const [rearCameraType, rearCameraParams] = splitData(rearFileContent);
 
-fisheyeProjectCcsToIcsTestCase.forEach(({ input, output }) => {
+fisheyeCcsToIcsPointTestCase.forEach(({ input, output }) => {
   const fisheyeModel = createModel(frontCameraType, frontCameraParams);
 
-  test("Fisheye Model projectCcsToIcs Test", () => {
-    expect(fisheyeModel?.projectCcsToIcs(input)).toEqual(output);
+  test("Fisheye Model ccsToIcsPoint Test", () => {
+    expect(fisheyeModel?.ccsToIcsPoint(input)).toEqual(output);
   });
 });
 
-projectVcsToCcsTestCase.forEach(({ input, output }) => {
+vcsToCcsPointTestCase.forEach(({ input, output }) => {
   const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
-  test("Rectilinear Model projectVcsToCcs Test", () => {
-    expect(rectilinearModel?.projectVcsToCcs(input)).toEqual(output);
+  test("Rectilinear Model vcsToCcsPoint Test", () => {
+    expect(rectilinearModel?.vcsToCcsPoint(input)).toEqual(output);
   });
 });
 
-rectilinearProjectCcsToIcsTestCase.forEach(({ input, output }) => {
+rectilinearCcsToIcsPointTestCase.forEach(({ input, output }) => {
   const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
-  test("Rectilinear Model projectCcsToIcs Test", () => {
-    expect(rectilinearModel?.projectCcsToIcs(input)).toEqual(output);
+  test("Rectilinear Model ccsToIcsPoint Test", () => {
+    expect(rectilinearModel?.ccsToIcsPoint(input)).toEqual(output);
   });
 });
 

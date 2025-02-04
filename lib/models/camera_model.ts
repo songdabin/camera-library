@@ -58,7 +58,7 @@ export abstract class CameraModel {
     return transformMatrix;
   }
 
-  public projectVcsToCcs(vec3: Vector3): Vector3 {
+  public vcsToCcsPoint(vec3: Vector3): Vector3 {
     const homoVcsPoint = new Vector4(vec3.x, vec3.y, vec3.z);
 
     const ccsPoint = this.multiplyMatrix4(
@@ -69,7 +69,7 @@ export abstract class CameraModel {
     return ccsPoint;
   }
 
-  abstract projectCcsToIcs(vec3: Vector3): ICSPoint;
+  abstract ccsToIcsPoint(vec3: Vector3): ICSPoint;
 
   abstract vcsCuboidToIcsCuboidLines(
     vcsCuboid: Cuboid,
@@ -81,7 +81,7 @@ export abstract class CameraModel {
 
     const ccsPointArray = [];
     for (let i = 0; i < 8; i++) {
-      ccsPointArray.push(this.projectVcsToCcs(vcsPoints[i]));
+      ccsPointArray.push(this.vcsToCcsPoint(vcsPoints[i]));
     }
 
     return createCuboidLines(ccsPointArray);

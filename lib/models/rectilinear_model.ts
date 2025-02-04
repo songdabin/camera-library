@@ -14,7 +14,7 @@ export class RectilinearModel extends CameraModel {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 
-  public projectCcsToIcs(vec3: Vector3): ICSPoint {
+  public ccsToIcsPoint(vec3: Vector3): ICSPoint {
     const normalized = vec3.clone().divideScalar(vec3.getComponent(2));
 
     const distorted = distortRectilinear(normalized, this.intrinsic);
@@ -137,8 +137,8 @@ export class RectilinearModel extends CameraModel {
     );
     const icsLines: Array<Line3 | null> = lines.map((line, i) => {
       if (positiveMask[i]) {
-        const start = this.projectCcsToIcs(line.start).point;
-        const end = this.projectCcsToIcs(line.end).point;
+        const start = this.ccsToIcsPoint(line.start).point;
+        const end = this.ccsToIcsPoint(line.end).point;
         return new Line3(start, end);
       } else {
         return null;

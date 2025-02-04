@@ -22,7 +22,7 @@ export class FisheyeModel extends CameraModel {
     return thetaD;
   }
 
-  public projectCcsToIcs(vec3: Vector3): ICSPoint {
+  public ccsToIcsPoint(vec3: Vector3): ICSPoint {
     const uswPoint = vec3.clone().normalize();
     const theta = Math.acos(uswPoint.z);
     const phi = Math.atan2(uswPoint.y, uswPoint.x);
@@ -63,8 +63,8 @@ export class FisheyeModel extends CameraModel {
     const icsLines: Array<Line3 | null> = [];
 
     ccsLines.forEach((ccsLine) => {
-      const icsP1 = this.projectCcsToIcs(ccsLine.start);
-      const icsP2 = this.projectCcsToIcs(ccsLine.end);
+      const icsP1 = this.ccsToIcsPoint(ccsLine.start);
+      const icsP2 = this.ccsToIcsPoint(ccsLine.end);
       if (icsP1.isInImage && icsP2.isInImage)
         icsLines.push(new Line3(icsP1.point, icsP2.point));
       else if (icsP1.isInImage || icsP2.isInImage)
