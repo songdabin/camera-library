@@ -69,21 +69,21 @@ export const rectilinearProjectCcsToIcsTestCase = [
   {
     input: new Vector3(1, 1, 1),
     output: {
-      point: { x: 1543.106710453001, y: 1340.48787091835, z: 0 },
+      point: { x: 1543.106710453001, y: 1340.48787091835, z: 1 },
       isInImage: true,
     },
   },
   {
     input: new Vector3(10000, 1000, 100),
     output: {
-      point: { x: -911978279005498, y: -90989372227315.56, z: 0 },
+      point: { x: -911978279005498, y: -90989372227315.56, z: 1 },
       isInImage: false,
     },
   },
   {
     input: new Vector3(3.333333, 5.5555555, 7.7777777),
     output: {
-      point: { x: 1200.2838883148725, y: 1154.1131530339776, z: 0 },
+      point: { x: 1200.2838883148725, y: 1154.1131530339776, z: 1 },
       isInImage: true,
     },
   },
