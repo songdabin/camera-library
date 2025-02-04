@@ -71,7 +71,10 @@ export abstract class CameraModel {
 
   abstract projectCcsToIcs(vec3: Vector3): ICSPoint;
 
-  abstract vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[];
+  abstract vcsCuboidToIcsCuboidLines(
+    vcsCuboid: Cuboid,
+    order: "zyx"
+  ): Array<Line3 | null>;
 
   public getCcsLinesFromCuboid(cuboid: Cuboid, order: "zyx"): Line3[] {
     const vcsPoints = vcsCuboidToVcsPoints(cuboid, order);
@@ -85,7 +88,7 @@ export abstract class CameraModel {
   }
 
   // prettier-ignore
-  private multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
+  public multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
     const b = translationMatrix.toArray();
     
     const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;

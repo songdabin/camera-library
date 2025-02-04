@@ -48,7 +48,7 @@ export class FisheyeModel extends CameraModel {
     return { point: icsPoint, isInImage };
   }
 
-  public icsToVcsPoints(icsPoint: Vector3) {}
+  public icsToVcsPoint(icsPoint: Vector3) {}
 
   public vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[] {
     const ccsLines = this.getCcsLinesFromCuboid(vcsCuboid, order);
