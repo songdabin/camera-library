@@ -2,7 +2,12 @@ import { Line3, Matrix4, Vector3, Vector4 } from "three";
 import { ICSPoint, Intrinsic } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
-import { distortRectilinear, project, unproject } from "./math_utils";
+import {
+  distortRectilinear,
+  getTruncatedLinesInCameraFov,
+  project,
+  unproject,
+} from "./math_utils";
 
 export class RectilinearModel extends CameraModel {
   private isInImageCheck(x: number, y: number) {
@@ -118,13 +123,6 @@ export class RectilinearModel extends CameraModel {
     return vcsPoint;
   }
 
-  private getTruncatedLinesInCameraFov(
-    ccsLines: Line3[],
-    angle: number
-  ): { lines: Line3[]; positiveMask: boolean[] } {
-    return { lines: [new Line3()], positiveMask: [true] };
-  }
-
   private ccsLinesToIcsLines(ccsLines: Line3[]) {
     const { width, height, hfov } = this;
     const v1 = this.icsToVcsPoint(new Vector3(0, height / 2, 150));
@@ -133,7 +131,7 @@ export class RectilinearModel extends CameraModel {
     const angle =
       Math.acos(dotProduct / (v1.length() * v2.length())) * (180 / Math.PI);
 
-    const { lines, positiveMask } = this.getTruncatedLinesInCameraFov(
+    const { lines, positiveMask } = getTruncatedLinesInCameraFov(
       ccsLines,
       hfov
     );

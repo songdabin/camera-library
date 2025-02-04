@@ -7,9 +7,11 @@ import {
   projectVcsToCcsTestCase,
   rectilinearIcsToVcsTestCase,
   rectilinearProjectCcsToIcsTestCase,
+  truncatedTestCaseInput,
+  truncatedTestCaseInput2,
 } from "./testcase";
 import { Vector3 } from "three";
-import { icsToVcsPoints } from "../models/legacy";
+import { getTruncatedLinesInCameraFov, icsToVcsPoints } from "../models/legacy";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
 const frontFileContent = fs.readFileSync(frontFilePath, "utf8");
@@ -50,3 +52,13 @@ rectilinearIcsToVcsTestCase.forEach(({ input, output }) => {
     expect(rectilinearModel?.icsToVcsPoint(input)).toEqual(output);
   });
 });
+
+console.log(
+  getTruncatedLinesInCameraFov(truncatedTestCaseInput, rearCameraParams.hfov)
+    .lines
+);
+
+console.log(
+  getTruncatedLinesInCameraFov(truncatedTestCaseInput2, rearCameraParams.hfov)
+    .lines
+);
