@@ -1,8 +1,9 @@
-import { Line3, Matrix4, Quaternion, Vector3, Vector4 } from "three";
+import { Line3, Matrix4, Vector3, Vector4 } from "three";
 import { ICSPoint, Intrinsic } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
 import { distortRectilinear, project, unproject } from "./math_utils";
+import { icsToCcsPoints } from "./legacy";
 
 export class RectilinearModel extends CameraModel {
   private isInImageCheck(x: number, y: number) {
@@ -35,12 +36,14 @@ export class RectilinearModel extends CameraModel {
     const { fx, fy, cx, cy } = this.intrinsic;
 
     // prettier-ignore
-    const intriniscInvertTransposed = new Matrix4(
+    const intrinsicInvertTransposed = new Matrix4(
       fx, 0, cx, 0,
       0, fy, cy, 0,
       0, 0, 1, 0,
       0, 0, 0, 1
     ).invert();
+
+    icsToCcsPoints(icsPoint.toArray(), this.intrinsic);
 
     const undistorted = this.undistortIcsPoint(icsPoint);
 
@@ -52,7 +55,7 @@ export class RectilinearModel extends CameraModel {
 
     const ccsPoint = this.multiplyMatrix4(
       new Vector4(...undistorted),
-      intriniscInvertTransposed
+      intrinsicInvertTransposed
     );
 
     return ccsPoint;
@@ -75,17 +78,26 @@ export class RectilinearModel extends CameraModel {
     const { k1, k2, k3, k4, p1, p2 } = intrinsic;
     const { x, y } = point;
 
+    const x0 = x;
+    const y0 = y;
+    let undistortedU = x;
+    let undistortedY = y;
     for (let i = 0; i < 5; i += 1) {
-      const r2 = x ** 2 + y ** 2;
+      const r2 = undistortedU ** 2 + undistortedY ** 2;
       const radialDInv =
         (1 + k4 * r2) / (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3);
-      const deltaX = 2 * p1 * x * y + p2 * (r2 + 2 * x ** 2);
-      const deltaY = p1 * (r2 + 2 * y ** 2) + 2 * p2 * x * y;
+      const deltaX =
+        2 * p1 * undistortedU * undistortedY +
+        p2 * (r2 + 2 * undistortedU ** 2);
+      const deltaY =
+        p1 * (r2 + 2 * undistortedY ** 2) +
+        2 * p2 * undistortedU * undistortedY;
 
-      point.set((x - deltaX) * radialDInv, (y - deltaY) * radialDInv, point.z);
+      undistortedU = (x0 - deltaX) * radialDInv;
+      undistortedY = (y0 - deltaY) * radialDInv;
     }
 
-    return point;
+    return point.set(undistortedU, undistortedY, point.z);
   }
 
   private ccsToVcsPoint(ccsPoint: Vector3) {
@@ -102,7 +114,7 @@ export class RectilinearModel extends CameraModel {
     return vcsPoint;
   }
 
-  public icsToVcsPoint(icsPoint: Vector3) {
+  public icsToVcsPoint(icsPoint: Vector3): Vector3 {
     const ccsPoint = this.icsToCcsPoint(icsPoint);
 
     const vcsPoint = this.ccsToVcsPoint(ccsPoint);

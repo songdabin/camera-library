@@ -265,8 +265,6 @@ export function undistortIcsPoints(point: number[], intrinsic: Intrinsic) {
     intrinsic
   );
 
-  console.log("legacy", undistortedX, undistortedY);
-
   undistortedPoints.push(undistortedX * fx + cx, undistortedY * fy + cy, z);
 
   return undistortedPoints;
@@ -333,8 +331,6 @@ export function icsToCcsPoints(icsPoints: number[], intrinsic: Intrinsic) {
     .invert()
     .transpose()
     .elements();
-
-  console.log("legacy intrinsicInvT", intrinsicInvT);
 
   const undistortedIcsPoints = undistortIcsPoints(icsPoints, intrinsic);
   for (let i = 0; i < undistortedIcsPoints.length; i += 3) {
