@@ -2,7 +2,10 @@ import * as fs from "fs";
 import path = require("path");
 import { createModel } from "../services/create_model";
 import { splitData } from "../services/split_data";
-import { getCcsLinesFromCuboidTestCase } from "./testcase";
+import {
+  getCcsLinesFromCuboidTestCase,
+  vcsToIcsCuboidLinesTestCase,
+} from "./testcase";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
 const frontFileContent = fs.readFileSync(frontFilePath, "utf8");
@@ -21,3 +24,10 @@ getCcsLinesFromCuboidTestCase.forEach(({ input, output }) => {
     );
   });
 });
+
+console.log(
+  rectilinearModel?.vcsCuboidToIcsCuboidLines(
+    vcsToIcsCuboidLinesTestCase,
+    "zyx"
+  )
+);

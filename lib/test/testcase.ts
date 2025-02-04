@@ -568,3 +568,15 @@ export const truncatedTestCase = [
   { input: truncatedTestCaseInput, output: truncatedTestCaseOutput },
   { input: truncatedTestCaseInput2, output: truncatedTestCaseOutput2 },
 ];
+
+export const vcsToIcsCuboidLinesTestCase = {
+  x: 42,
+  y: 230,
+  z: 100,
+  yaw: 10,
+  roll: 13,
+  pitch: 41,
+  width: 800,
+  height: 600,
+  length: 340,
+};
