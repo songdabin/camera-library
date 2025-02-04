@@ -26,8 +26,14 @@ getCcsLinesFromCuboidTestCase.forEach(({ input, output }) => {
 });
 
 console.log(
+  "rectilinear vcs to ics cuboid lines",
   rectilinearModel?.vcsCuboidToIcsCuboidLines(
     vcsToIcsCuboidLinesTestCase,
     "zyx"
   )
+);
+
+console.log(
+  "fisheye vcs to ics cuboid lines",
+  fisheyeModel?.vcsCuboidToIcsCuboidLines(vcsToIcsCuboidLinesTestCase, "zyx")
 );
