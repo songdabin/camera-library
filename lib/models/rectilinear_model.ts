@@ -80,24 +80,26 @@ export class RectilinearModel extends CameraModel {
 
     const x0 = x;
     const y0 = y;
-    let undistortedU = x;
+
+    let undistortedX = x;
     let undistortedY = y;
+
     for (let i = 0; i < 5; i += 1) {
-      const r2 = undistortedU ** 2 + undistortedY ** 2;
+      const r2 = undistortedX ** 2 + undistortedY ** 2;
       const radialDInv =
         (1 + k4 * r2) / (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3);
       const deltaX =
-        2 * p1 * undistortedU * undistortedY +
-        p2 * (r2 + 2 * undistortedU ** 2);
+        2 * p1 * undistortedX * undistortedY +
+        p2 * (r2 + 2 * undistortedX ** 2);
       const deltaY =
         p1 * (r2 + 2 * undistortedY ** 2) +
-        2 * p2 * undistortedU * undistortedY;
+        2 * p2 * undistortedX * undistortedY;
 
-      undistortedU = (x0 - deltaX) * radialDInv;
+      undistortedX = (x0 - deltaX) * radialDInv;
       undistortedY = (y0 - deltaY) * radialDInv;
     }
 
-    return point.set(undistortedU, undistortedY, point.z);
+    return point.set(undistortedX, undistortedY, point.z);
   }
 
   private ccsToVcsPoint(ccsPoint: Vector3) {
