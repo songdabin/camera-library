@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Line3, Vector3 } from "three";
 
 // vcs to ccs point
 export const vcsToCcsPointTestCase = [
@@ -479,89 +479,90 @@ export const rectilinearIcsToVcsTestCase = [
 ];
 
 // prettier-ignore
-export const truncatedTestCaseInput: [number[], number[]][] = [
-  [[2, 2, 2], [3, 2, 2]],
-  [[3, 2, 2], [3, 3, 2]],
-  [[3, 3, 2], [2, 3, 2]],
-  [[2, 3, 2], [2, 2, 2]],
+export const truncatedTestCaseInput = [
+  new Line3(new Vector3(2, 2, 2), new Vector3(3, 2, 2)),
+  new Line3(new Vector3(3, 2, 2), new Vector3(3, 3, 2)),
+  new Line3(new Vector3(3, 3, 2), new Vector3(2, 3, 2)),
+  new Line3(new Vector3(2, 3, 2), new Vector3(2, 2, 2)),
 
-  [[2, 2, 3], [3, 2, 3]],
-  [[3, 2, 3], [3, 3, 3]],
-  [[3, 3, 3], [2, 3, 3]],
-  [[2, 3, 3], [2, 2, 3]],
+  new Line3(new Vector3(2, 2, 3), new Vector3(3, 2, 3)),
+  new Line3(new Vector3(3, 2, 3), new Vector3(3, 3, 3)),
+  new Line3(new Vector3(3, 3, 3), new Vector3(2, 3, 3)),
+  new Line3(new Vector3(2, 3, 3), new Vector3(2, 2, 3)),
 
-  [[2, 2, 2], [2, 2, 3]],
-  [[3, 2, 2], [3, 2, 3]],
-  [[3, 3, 2], [3, 3, 3]],
-  [[2, 3, 2], [2, 3, 3]],
+  new Line3(new Vector3(2, 2, 2), new Vector3(2, 2, 3)),
+  new Line3(new Vector3(3, 2, 2), new Vector3(3, 2, 3)),
+  new Line3(new Vector3(3, 3, 2), new Vector3(3, 3, 3)),
+  new Line3(new Vector3(2, 3, 2), new Vector3(2, 3, 3)),
 ];
 
 // prettier-ignore
-export const truncatedTestCaseInput2: [number[], number[]][] = [
-  [[0, 0, 0], [1000, 0, 0]],
-  [[0, 0, 1000], [1000, 0, 1000]],
-  [[0, 1000, 0], [1000, 1000, 0]],
-  [[0, 1000, 1000], [1000, 1000, 1000]],
+export const truncatedTestCaseInput2 = [
+  new Line3(new Vector3(0, 0, 0), new Vector3(1000, 0, 0)),
+  new Line3(new Vector3(0, 0, 1000), new Vector3(1000, 0, 1000)),
+  new Line3(new Vector3(0, 1000, 0), new Vector3(1000, 1000, 0)),
+  new Line3(new Vector3(0, 1000, 1000), new Vector3(1000, 1000, 1000)),
   
-  [[0, 0, 0], [0, 1000, 0]],
-  [[1000, 0, 0], [1000, 1000, 0]],
-  [[0, 0, 1000], [0, 1000, 1000]],
-  [[1000, 0, 1000], [1000, 1000, 1000]],
+  new Line3(new Vector3(0, 0, 0), new Vector3(0, 1000, 0)),
+  new Line3(new Vector3(1000, 0, 0), new Vector3(1000, 1000, 0)),
+  new Line3(new Vector3(0, 0, 1000), new Vector3(0, 1000, 1000)),
+  new Line3(new Vector3(1000, 0, 1000), new Vector3(1000, 1000, 1000)),
   
-  [[0, 0, 0], [0, 0, 1000]],
-  [[1000, 0, 0], [1000, 0, 1000]],
-  [[0, 1000, 0], [0, 1000, 1000]],
-  [[1000, 1000, 0], [1000, 1000, 1000]]
+  new Line3(new Vector3(0, 0, 0), new Vector3(0, 0, 1000)),
+  new Line3(new Vector3(1000, 0, 0), new Vector3(1000, 0, 1000)),
+  new Line3(new Vector3(0, 1000, 0), new Vector3(0, 1000, 1000)),
+  new Line3(new Vector3(1000, 1000, 0), new Vector3(1000, 1000, 1000))
 ];
 
 // prettier-ignore
 export const truncatedTestCaseOutput = {
-  lines:[
-    [[2, 2, 2], [3, 2, 2]],
-    [[3, 2, 2], [3, 3, 2]],
-    [[3, 3, 2], [2, 3, 2]],
-    [[2, 3, 2], [2, 2, 2]],
+  lines: [
+    { start: { x: 2, y: 2, z: 2 }, end: { x: 3, y: 2, z: 2 } },
+    { start: { x: 3, y: 2, z: 2 }, end: { x: 3, y: 3, z: 2 } },
+    { start: { x: 3, y: 3, z: 2 }, end: { x: 2, y: 3, z: 2 } },
+    { start: { x: 2, y: 3, z: 2 }, end: { x: 2, y: 2, z: 2 } },
 
-    [[2, 2, 3], [3, 2, 3]],
-    [[3, 2, 3], [3, 3, 3]],
-    [[3, 3, 3], [2, 3, 3]],
-    [[2, 3, 3], [2, 2, 3]],
+    { start: { x: 2, y: 2, z: 3 }, end: { x: 3, y: 2, z: 3 } },
+    { start: { x: 3, y: 2, z: 3 }, end: { x: 3, y: 3, z: 3 } },
+    { start: { x: 3, y: 3, z: 3 }, end: { x: 2, y: 3, z: 3 } },
+    { start: { x: 2, y: 3, z: 3 }, end: { x: 2, y: 2, z: 3 } },
 
-    [[2, 2, 2], [2, 2, 3]],
-    [[3, 2, 2], [3, 2, 3]],
-    [[3, 3, 2], [3, 3, 3]],
-    [[2, 3, 2], [2, 3, 3]],
+    { start: { x: 2, y: 2, z: 2 }, end: { x: 2, y: 2, z: 3 } },
+    { start: { x: 3, y: 2, z: 2 }, end: { x: 3, y: 2, z: 3 } },
+    { start: { x: 3, y: 3, z: 2 }, end: { x: 3, y: 3, z: 3 } },
+    { start: { x: 2, y: 3, z: 2 }, end: { x: 2, y: 3, z: 3 } },
   ],
+  // prettier-ignore
   positiveMask: [
     true, true, true,
     true, true, true,
     true, true, true,
     true, true, true
-  ]
+  ],
 };
 
 // prettier-ignore
 export const truncatedTestCaseOutput2 = {
-  lines:[
-    [[0.000001, 0, 0], [1000, 0, 0]],
-    [[0.000001, 0, 1000], [1000, 0, 1000]],
-    [[0.000001, 1000, 0], [1000, 1000, 0]],
-    [[0.000001, 1000, 1000], [1000, 1000, 1000]],
-    [[0.000001, 0, 0], [0.000001, 1000, 0]],
-    [[1000, 0, 0], [1000, 1000, 0]],
-    [[0.000001, 0, 1000], [0.000001, 1000, 1000]],
-    [[1000, 0, 1000], [1000, 1000, 1000]],
-    [[0.000001, 0, 0], [0.000001, 0, 1000]],
-    [[1000, 0, 0], [1000, 0, 1000]],
-    [[0.000001, 1000, 0], [0.000001, 1000, 1000]],
-    [[1000, 1000, 0], [1000, 1000, 1000]]
+  lines: [
+    { start: { x: 0.000001, y: 0, z: 0 }, end: { x: 1000, y: 0, z: 0 } },
+    { start: { x: 0.000001, y: 0, z: 1000 }, end: { x: 1000, y: 0, z: 1000 } },
+    { start: { x: 0.000001, y: 1000, z: 0 }, end: { x: 1000, y: 1000, z: 0 } },
+    { start: { x: 0.000001, y: 1000, z: 1000 }, end: { x: 1000, y: 1000, z: 1000 } },
+    { start: { x: 0.000001, y: 0, z: 0 }, end: { x: 0.000001, y: 1000, z: 0 } },
+    { start: { x: 1000, y: 0, z: 0 }, end: { x: 1000, y: 1000, z: 0 } },
+    { start: { x: 0.000001, y: 0, z: 1000 }, end: { x: 0.000001, y: 1000, z: 1000 } },
+    { start: { x: 1000, y: 0, z: 1000 }, end: { x: 1000, y: 1000, z: 1000 } },
+    { start: { x: 0.000001, y: 0, z: 0 }, end: { x: 0.000001, y: 0, z: 1000 } },
+    { start: { x: 1000, y: 0, z: 0 }, end: { x: 1000, y: 0, z: 1000 } },
+    { start: { x: 0.000001, y: 1000, z: 0 }, end: { x: 0.000001, y: 1000, z: 1000 } },
+    { start: { x: 1000, y: 1000, z: 0 }, end: { x: 1000, y: 1000, z: 1000 } },
   ],
   positiveMask: [
-    false, true,  false,
-    true,  false, false,
-    true,  true,  true,
-    true,  true,  true
-  ]
+    false, true, false,
+    true, false, false,
+    true, true, true,
+    true, true, true,
+  ],
 };
 
 export const truncatedTestCase = [

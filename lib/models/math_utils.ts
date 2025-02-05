@@ -1,6 +1,8 @@
 import { Line3, Vector3 } from "three";
 import { Intrinsic } from "../types/type";
 
+const EPS = 1e-6;
+
 export function project(point: Vector3, intrinsic: Intrinsic): Vector3 {
   const { fx, fy, cx, cy } = intrinsic;
 
@@ -75,9 +77,7 @@ function getIntersections(
   halfHfovTangent: number
 ) {
   const positiveSlopes = xzLineSlopes.map((slope, i) =>
-    Math.abs(halfHfovTangent - slope) < Number.EPSILON
-      ? Number.EPSILON
-      : halfHfovTangent - slope
+    Math.abs(halfHfovTangent - slope) < EPS ? EPS : halfHfovTangent - slope
   );
   const xPositiveIntersections = xzLineIntercepts.map(
     (intercept, i) => intercept / positiveSlopes[i]
@@ -90,9 +90,7 @@ function getIntersections(
   );
 
   const negativeSlopes = xzLineSlopes.map((slope, i) =>
-    Math.abs(-halfHfovTangent - slope) < Number.EPSILON
-      ? Number.EPSILON
-      : -halfHfovTangent - slope
+    Math.abs(-halfHfovTangent - slope) < EPS ? EPS : -halfHfovTangent - slope
   );
   const xNegativeIntersections = xzLineIntercepts.map(
     (intercept, i) => intercept / negativeSlopes[i]
@@ -116,7 +114,6 @@ function getIntersections(
 
 export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const halfHfovTangent = Math.tan((90 - hfov / 2) * (Math.PI / 180));
-  const EPS = Number.EPSILON;
 
   const _lines: Line3[] = [...lines];
   lines.forEach((line) => {

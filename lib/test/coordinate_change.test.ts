@@ -9,7 +9,7 @@ import {
   rectilinearCcsToIcsPointTestCase,
   truncatedTestCase,
 } from "./testcase";
-import { getTruncatedLinesInCameraFov } from "../models/legacy";
+import { getTruncatedLinesInCameraFov } from "../models/math_utils";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
 const frontFileContent = fs.readFileSync(frontFilePath, "utf8");
