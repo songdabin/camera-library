@@ -68,8 +68,8 @@ export function undistortRectilinear(
 }
 
 function getIntersections(
-  xzLineSlopes: number[],
   xyLineSlopes: number[],
+  xzLineSlopes: number[],
   xyLineIntercepts: number[],
   xzLineIntercepts: number[],
   halfHfovTangent: number
@@ -193,8 +193,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       xPositiveIntersections, zPositiveIntersections, yPositiveIntersections,
       xNegativeIntersections, zNegativeIntersections, yNegativeIntersections,
     ] = getIntersections(
-      xzLineSlopes,
-      xyLineIntercepts,
+      xyLineSlopes,
+      xzLineSlopes,      
       xyLineIntercepts,
       xzLineIntercepts,
       halfHfovTangent
@@ -337,8 +337,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       xIntersections, zIntersections, yIntersections,
       xNegativeIntersections, zNegativeIntersections, yNegativeIntersections,
     ] = getIntersections(
+      xyLineSlopes,
       xzLineSlopes,
-      xyLineIntercepts,
       xyLineIntercepts,
       xzLineIntercepts,
       halfHfovTangent
