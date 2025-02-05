@@ -132,7 +132,6 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     return z0 > -halfHfovTangent * x0 && z0 > halfHfovTangent * x0;
   });
 
-  // isPoint1InFov 계산
   const isPoint1InFovMask = _lines.map((line) => {
     const [x1, , z1] = line.end;
     return z1 > -halfHfovTangent * x1 && z1 > halfHfovTangent * x1;
@@ -177,8 +176,6 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
           ? EPS
           : onePointLine.start.x - onePointLine.end.x;
       const xzLineSlope = (onePointLine.start.z - onePointLine.end.z) / xDiff;
-      // slope * x = ?
-      // z - slope * z = ?
       const xzLineIntercept =
         onePointLine.start.z - xzLineSlope * onePointLine.start.x;
       const xyLineSlope = (onePointLine.start.y - onePointLine.end.y) / xDiff;
