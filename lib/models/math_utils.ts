@@ -72,10 +72,10 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const EPS = Number.EPSILON;
 
   const _lines: Line3[] = [...lines];
-  for (let i = 0; i < lines.length; i += 1) {
-    if (Math.abs(lines[i].start.x) < EPS) lines[i].start.x = EPS;
-    if (Math.abs(lines[i].end.x) < EPS) lines[i].end.x = EPS;
-  }
+  lines.forEach((line) => {
+    if (Math.abs(line.start.x) < EPS) line.start.x = EPS;
+    if (Math.abs(line.end.x) < EPS) line.end.x = EPS;
+  });
 
   const zPositiveMask = _lines.map(
     (line) => line.start.z > 0 || line.end.z > 0
@@ -93,15 +93,15 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
   const atLeastOnePointInFovMask: boolean[] = [];
   const allPointsInFovMask: boolean[] = [];
-  for (let i = 0; i < _lines.length; i += 1) {
+  _lines.forEach((line, i) => {
     atLeastOnePointInFovMask.push(isPoint0InFovMask[i] || isPoint1InFovMask[i]);
     allPointsInFovMask.push(isPoint0InFovMask[i] && isPoint1InFovMask[i]);
-  }
+  });
 
   const positiveMask: boolean[] = [];
   const onePointInFovMask: boolean[] = [];
   const noPointsInFovMask: boolean[] = [];
-  for (let i = 0; i < _lines.length; i += 1) {
+  _lines.forEach((line, i) => {
     positiveMask.push(
       zPositiveMask[i] &&
         (atLeastOnePointInFovMask[i] || _lines[i].start.x * _lines[i].end.x < 0)
@@ -112,27 +112,30 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     noPointsInFovMask.push(
       zPositiveMask[i] &&
         !atLeastOnePointInFovMask[i] &&
+        // ?
         _lines[i].start.x * _lines[i].end.x < 0
     );
-  }
+  });
 
-  const poLines = _lines.filter((_, i) => onePointInFovMask[i]);
-  const pnLines = _lines.filter((_, i) => noPointsInFovMask[i]);
-  if (onePointInFovMask.includes(true) && poLines.length > 0) {
+  const onePointLines = _lines.filter((_, i) => onePointInFovMask[i]);
+  const noPointLines = _lines.filter((_, i) => noPointsInFovMask[i]);
+  if (onePointInFovMask.includes(true) && onePointLines.length > 0) {
     const xzLineSlopes: number[] = [];
     const xzLineIntercepts: number[] = [];
     const xyLineSlopes: number[] = [];
     const xyLineIntercepts: number[] = [];
 
-    poLines.forEach((poLine) => {
+    onePointLines.forEach((onePointLine) => {
       const xDiff =
-        Math.abs(poLine.start.x - poLine.end.x) < EPS
+        Math.abs(onePointLine.start.x - onePointLine.end.x) < EPS
           ? EPS
-          : poLine.start.x - poLine.end.x;
-      const xzLineSlope = (poLine.start.z - poLine.end.z) / xDiff;
-      const xzLineIntercept = poLine.start.z - xzLineSlope * poLine.start.x;
-      const xyLineSlope = (poLine.start.y - poLine.end.y) / xDiff;
-      const xyLineIntercept = poLine.start.y - xyLineSlope * poLine.start.x;
+          : onePointLine.start.x - onePointLine.end.x;
+      const xzLineSlope = (onePointLine.start.z - onePointLine.end.z) / xDiff;
+      const xzLineIntercept =
+        onePointLine.start.z - xzLineSlope * onePointLine.start.x;
+      const xyLineSlope = (onePointLine.start.y - onePointLine.end.y) / xDiff;
+      const xyLineIntercept =
+        onePointLine.start.y - xyLineSlope * onePointLine.start.x;
 
       xzLineSlopes.push(xzLineSlope);
       xzLineIntercepts.push(xzLineIntercept);
@@ -169,8 +172,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     const minXs: number[] = [];
     const maxXs: number[] = [];
 
-    poLines.forEach((poLine) => {
-      const { start, end } = poLine;
+    onePointLines.forEach((onePointLine) => {
+      const { start, end } = onePointLine;
       const minX = Math.min(start.x, end.x);
       const maxX = Math.max(start.x, end.x);
       minXs.push(minX);
@@ -185,17 +188,20 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     );
 
     const pointOutOfFovMask: [boolean, boolean][] = [];
-    for (let i = 0; i < onePointInFovMask.length; i += 1) {
-      if (!onePointInFovMask[i]) continue;
+
+    onePointInFovMask.forEach((onePointInFov, i) => {
+      if (!onePointInFov) return;
       pointOutOfFovMask.push([!isPoint0InFovMask[i], !isPoint1InFovMask[i]]);
-    }
+    });
 
     let _m;
 
     _m = pointOutOfFovMask.filter(
       (_, i) => intersectWithPositiveFovPlaneMask[i]
     );
-    const _l = poLines.filter((_, i) => intersectWithPositiveFovPlaneMask[i]);
+    const _l = onePointLines.filter(
+      (_, i) => intersectWithPositiveFovPlaneMask[i]
+    );
 
     _m.forEach((mask, index) => {
       const i = intersectWithPositiveFovPlaneMask.findIndex(
@@ -217,13 +223,15 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       const i = intersectWithPositiveFovPlaneMask.findIndex(
         (val, idx) => idx >= index && val
       );
-      poLines[i] = line;
+      onePointLines[i] = line;
     });
 
     _m = pointOutOfFovMask.filter(
       (_, i) => intersectWithNegativeFovPlaneMask[i]
     );
-    const _nl = poLines.filter((_, i) => intersectWithNegativeFovPlaneMask[i]);
+    const _nl = onePointLines.filter(
+      (_, i) => intersectWithNegativeFovPlaneMask[i]
+    );
 
     _m.forEach((mask, index) => {
       const i = intersectWithNegativeFovPlaneMask.findIndex(
@@ -245,11 +253,11 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       const i = intersectWithNegativeFovPlaneMask.findIndex(
         (val, idx) => idx >= index && val
       );
-      poLines[i] = line;
+      onePointLines[i] = line;
     });
 
-    for (let i = 0; i < intersectWithPositiveFovPlaneMask.length; i += 1) {
-      if (!intersectWithPositiveFovPlaneMask[i]) continue;
+    intersectWithPositiveFovPlaneMask.forEach((element, i) => {
+      if (!element) return;
 
       const mask = pointOutOfFovMask[i];
       const intersectionX = xPositiveIntersections[i];
@@ -257,13 +265,13 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       const intersectionZ = zPositiveIntersections[i];
 
       if (mask[0])
-        poLines[i].start.set(intersectionX, intersectionY, intersectionZ);
+        onePointLines[i].start.set(intersectionX, intersectionY, intersectionZ);
       if (mask[1])
-        poLines[i].end.set(intersectionX, intersectionY, intersectionZ);
-    }
+        onePointLines[i].end.set(intersectionX, intersectionY, intersectionZ);
+    });
 
-    for (let i = 0; i < intersectWithNegativeFovPlaneMask.length; i += 1) {
-      if (!intersectWithNegativeFovPlaneMask[i]) continue;
+    intersectWithNegativeFovPlaneMask.forEach((element, i) => {
+      if (!element) return;
 
       const mask = pointOutOfFovMask[i];
       const intersectionX = xNegativeIntersections[i];
@@ -271,37 +279,37 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       const intersectionZ = zNegativeIntersections[i];
 
       if (mask[0])
-        poLines[i].start.set(intersectionX, intersectionY, intersectionZ);
+        onePointLines[i].start.set(intersectionX, intersectionY, intersectionZ);
       if (mask[1])
-        poLines[i].end.set(intersectionX, intersectionY, intersectionZ);
-    }
+        onePointLines[i].end.set(intersectionX, intersectionY, intersectionZ);
+    });
 
     // Update real box line
     let positiveIndex = 0;
-    for (let i = 0; i < onePointInFovMask.length; i += 1) {
-      if (!onePointInFovMask[i]) continue;
+    onePointInFovMask.forEach((element, i) => {
+      if (!element) return;
 
-      _lines[i] = poLines[positiveIndex];
-      positiveIndex += 1;
-    }
+      _lines[i] = onePointLines[positiveIndex];
+      positiveIndex++;
+    });
   }
 
   // prettier-ignore
-  if (noPointsInFovMask.some((v) => v) && pnLines.length > 0) {
-    const xDiff = pnLines.map((pnLine) =>
-      Math.abs(pnLine.start.x - pnLine.end.x) < EPS ? EPS : pnLine.start.x - pnLine.end.x
+  if (noPointsInFovMask.some((v) => v) && noPointLines.length > 0) {
+    const xDiff = noPointLines.map((noPointLine) =>
+      Math.abs(noPointLine.start.x - noPointLine.end.x) < EPS ? EPS : noPointLine.start.x - noPointLine.end.x
     );
-    const xzLineSlopes = pnLines.map(
-      (pnLine, i) => (pnLine.start.z - pnLine.end.z) / xDiff[i]
+    const xzLineSlopes = noPointLines.map(
+      (noPointLine, i) => (noPointLine.start.z - noPointLine.end.z) / xDiff[i]
     );
-    const xzLineIntercepts = pnLines.map(
-      (pnLine, i) => pnLine.start.z - xzLineSlopes[i] * pnLine.start.x
+    const xzLineIntercepts = noPointLines.map(
+      (noPointLine, i) => noPointLine.start.z - xzLineSlopes[i] * noPointLine.start.x
     );
-    const xyLineSlopes = pnLines.map(
-      (pnLine, i) => (pnLine.start.y - pnLine.end.y) / xDiff[i]
+    const xyLineSlopes = noPointLines.map(
+      (noPointLine, i) => (noPointLine.start.y - noPointLine.end.y) / xDiff[i]
     );
-    const xyLineIntercepts = pnLines.map(
-      (pnLine, i) => pnLine.start.y - xyLineSlopes[i] * pnLine.start.x
+    const xyLineIntercepts = noPointLines.map(
+      (noPointLine, i) => noPointLine.start.y - xyLineSlopes[i] * noPointLine.start.x
     );
 
     const positiveSlopes = xzLineSlopes.map((slope, i) =>
@@ -330,26 +338,27 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       (slope, i) => slope * xNegativeIntersections[i] + xyLineIntercepts[i]
     );
 
-    const largerMask = pnLines.map((pnLine) => pnLine.start.x > pnLine.end.x);
+    const largerMask = noPointLines.map((noPointLine) => noPointLine.start.x > noPointLine.end.x);
     const smallerMask = largerMask.map((v) => !v);
 
-    for (let i = 0; i < largerMask.length; i += 1) {
-      if (!largerMask[i]) continue;
-      pnLines[i].start.set(xIntersections[i], yIntersections[i], zIntersections[i]);
-    }
-    for (let i = 0; i < smallerMask.length; i += 1) {
-      if (!smallerMask[i]) continue;
-      pnLines[i].end.set(zNegativeIntersections[i], yNegativeIntersections[i], zNegativeIntersections[i]);
-    }
+    largerMask.forEach((element, i) => {
+      if (!element) return;
+      noPointLines[i].start.set(xIntersections[i], yIntersections[i], zIntersections[i]);
+    });
 
+    smallerMask.forEach((element, i) => {
+      if (!element) return;
+      noPointLines[i].end.set(zNegativeIntersections[i], yNegativeIntersections[i], zNegativeIntersections[i]);
+    });
+ 
     // Update real box line
     let negativeIndex = 0;
-    for (let i = 0; i < noPointsInFovMask.length; i += 1) {
-      if (!noPointsInFovMask[i]) continue;
+    noPointsInFovMask.forEach((element, i) => {
+      if (!element) return;
 
-      _lines[i] = pnLines[negativeIndex];
-      negativeIndex += 1;
-    }
+      _lines[i] = noPointLines[negativeIndex];
+      negativeIndex ++;
+    });
   }
 
   return { lines: _lines, positiveMask };
