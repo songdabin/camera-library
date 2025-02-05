@@ -140,15 +140,15 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
   const atLeastOnePointInFovMask: boolean[] = [];
   const allPointsInFovMask: boolean[] = [];
-  _lines.forEach((line, i) => {
-    atLeastOnePointInFovMask.push(isPoint0InFovMask[i] || isPoint1InFovMask[i]);
-    allPointsInFovMask.push(isPoint0InFovMask[i] && isPoint1InFovMask[i]);
-  });
 
   const positiveMask: boolean[] = [];
   const onePointInFovMask: boolean[] = [];
   const noPointsInFovMask: boolean[] = [];
+
   _lines.forEach((line, i) => {
+    atLeastOnePointInFovMask.push(isPoint0InFovMask[i] || isPoint1InFovMask[i]);
+    allPointsInFovMask.push(isPoint0InFovMask[i] && isPoint1InFovMask[i]);
+
     positiveMask.push(
       zPositiveMask[i] &&
         (atLeastOnePointInFovMask[i] || line.start.x * line.end.x < 0)
