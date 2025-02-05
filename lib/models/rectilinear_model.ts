@@ -1,5 +1,5 @@
 import { Line3, Matrix4, Vector3, Vector4 } from "three";
-import { ICSPoint, Intrinsic } from "../types/type";
+import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
 import {
@@ -94,16 +94,9 @@ export class RectilinearModel extends CameraModel {
   }
 
   private ccsLinesToIcsLines(ccsLines: Line3[]) {
-    const { width, height, hfov } = this;
-    const v1 = this.icsToVcsPoint(new Vector3(0, height / 2, 150));
-    const v2 = this.icsToVcsPoint(new Vector3(width, height / 2, 150));
-    const dotProduct = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-    const angle =
-      Math.acos(dotProduct / (v1.length() * v2.length())) * (180 / Math.PI);
-
     const { lines, positiveMask } = getTruncatedLinesInCameraFov(
       ccsLines,
-      hfov
+      this.hfov
     );
     const icsLines: Array<Line3 | null> = lines.map((line, i) => {
       if (positiveMask[i]) {
