@@ -3,8 +3,10 @@ import path = require("path");
 import { createModel } from "../services/create_model";
 import { splitData } from "../services/split_data";
 import {
+  fishVcsToIcsCuboidLinesOutput,
   getCcsLinesFromCuboidTestCase,
-  vcsToIcsCuboidLinesTestCase,
+  rectVcsToIcsCuboidLinesOutput,
+  vcsToIcsCuboidLinesInput,
 } from "./testcase";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
@@ -25,15 +27,14 @@ getCcsLinesFromCuboidTestCase.forEach(({ input, output }) => {
   });
 });
 
-console.log(
-  "rectilinear vcs to ics cuboid lines",
-  rectilinearModel?.vcsCuboidToIcsCuboidLines(
-    vcsToIcsCuboidLinesTestCase,
-    "zyx"
-  )
-);
+test("rectilinear vcs to ics cuboid lines Test", () => {
+  expect(
+    rectilinearModel?.vcsCuboidToIcsCuboidLines(vcsToIcsCuboidLinesInput, "zyx")
+  ).toEqual(rectVcsToIcsCuboidLinesOutput);
+});
 
-console.log(
-  "fisheye vcs to ics cuboid lines",
-  fisheyeModel?.vcsCuboidToIcsCuboidLines(vcsToIcsCuboidLinesTestCase, "zyx")
-);
+test("fisheye vcs to ics cuboid lines Test", () => {
+  expect(
+    fisheyeModel?.vcsCuboidToIcsCuboidLines(vcsToIcsCuboidLinesInput, "zyx")
+  ).toEqual(fishVcsToIcsCuboidLinesOutput);
+});
