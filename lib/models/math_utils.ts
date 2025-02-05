@@ -38,6 +38,35 @@ export function distortRectilinear(
   return new Vector3(distortedX, distortedY, z);
 }
 
+export function undistortRectilinear(
+  point: Vector3,
+  intrinsic: Intrinsic
+): Vector3 {
+  const { k1, k2, k3, k4, p1, p2 } = intrinsic;
+  const { x, y } = point;
+
+  const x0 = x;
+  const y0 = y;
+
+  let undistortedX = x;
+  let undistortedY = y;
+
+  for (let i = 0; i < 5; i += 1) {
+    const r2 = undistortedX ** 2 + undistortedY ** 2;
+    const radialDInv =
+      (1 + k4 * r2) / (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3);
+    const deltaX =
+      2 * p1 * undistortedX * undistortedY + p2 * (r2 + 2 * undistortedX ** 2);
+    const deltaY =
+      p1 * (r2 + 2 * undistortedY ** 2) + 2 * p2 * undistortedX * undistortedY;
+
+    undistortedX = (x0 - deltaX) * radialDInv;
+    undistortedY = (y0 - deltaY) * radialDInv;
+  }
+
+  return point.set(undistortedX, undistortedY, point.z);
+}
+
 export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const halfHfovTangent = Math.tan((90 - hfov / 2) * (Math.PI / 180));
   const EPS = Number.EPSILON;
