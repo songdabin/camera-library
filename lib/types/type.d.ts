@@ -16,3 +16,10 @@ export type Intrinsic = z.infer<typeof intrinsicSchema>;
 export type CameraModelType = z.infer<typeof cameraSchema>;
 
 export type CameraType = z.infer<typeof CameraTypeSchema>;
+
+export type SlopesAndIntercepts = {
+  xyLineSlopes: number[];
+  xzLineSlopes: number[];
+  xyLineIntercepts: number[];
+  xzLineIntercepts: number[];
+};
