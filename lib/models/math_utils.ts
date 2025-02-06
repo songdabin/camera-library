@@ -104,11 +104,11 @@ function getIntersections(
 
   return [
     xPositiveIntersections,
-    zPositiveIntersections,
     yPositiveIntersections,
+    zPositiveIntersections,
     xNegativeIntersections,
-    zNegativeIntersections,
     yNegativeIntersections,
+    zNegativeIntersections,
   ];
 }
 
@@ -194,8 +194,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
     // prettier-ignore
     const [
-      xPositiveIntersections, zPositiveIntersections, yPositiveIntersections,
-      xNegativeIntersections, zNegativeIntersections, yNegativeIntersections,
+      xPositiveIntersections, yPositiveIntersections, zPositiveIntersections,
+      xNegativeIntersections, yNegativeIntersections, zNegativeIntersections,
     ] = getIntersections(
       xyLineSlopes,
       xzLineSlopes,      
@@ -327,8 +327,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     );
 
     const [
-      xIntersections, zIntersections, yIntersections,
-      xNegativeIntersections, zNegativeIntersections, yNegativeIntersections,
+      xIntersections, yIntersections, zIntersections,
+      xNegativeIntersections, yNegativeIntersections, zNegativeIntersections,
     ] = getIntersections(
       xyLineSlopes,
       xzLineSlopes,
