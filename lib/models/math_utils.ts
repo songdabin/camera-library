@@ -69,13 +69,20 @@ export function undistortRectilinear(
   return point.set(undistortedX, undistortedY, point.z);
 }
 
+type SlopesAndIntercepts = {
+  xyLineSlopes: number[];
+  xzLineSlopes: number[];
+  xyLineIntercepts: number[];
+  xzLineIntercepts: number[];
+};
+
 function getIntersections(
-  xyLineSlopes: number[],
-  xzLineSlopes: number[],
-  xyLineIntercepts: number[],
-  xzLineIntercepts: number[],
+  slopesAndIntercepts: SlopesAndIntercepts,
   halfHfovTangent: number
 ) {
+  const { xyLineSlopes, xzLineSlopes, xyLineIntercepts, xzLineIntercepts } =
+    slopesAndIntercepts;
+
   const positiveSlopes = xzLineSlopes.map((slope, i) =>
     Math.abs(halfHfovTangent - slope) < EPS ? EPS : halfHfovTangent - slope
   );
@@ -159,50 +166,51 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const onePointLines = lines.filter((_, i) => onePointInFovMask[i]);
   const noPointLines = lines.filter((_, i) => noPointsInFovMask[i]);
 
-  const minXs: number[] = [];
-  const maxXs: number[] = [];
-
-  if (onePointInFovMask.includes(true) && onePointLines.length > 0) {
+  function getSlopesAndIntercepts(pointLines: Line3[]) {
     const xzLineSlopes: number[] = [];
     const xzLineIntercepts: number[] = [];
     const xyLineSlopes: number[] = [];
     const xyLineIntercepts: number[] = [];
 
-    onePointLines.forEach((onePointLine) => {
-      const xDiff =
-        Math.abs(onePointLine.start.x - onePointLine.end.x) < EPS
-          ? EPS
-          : onePointLine.start.x - onePointLine.end.x;
-      const xzLineSlope = (onePointLine.start.z - onePointLine.end.z) / xDiff;
-      const xzLineIntercept =
-        onePointLine.start.z - xzLineSlope * onePointLine.start.x;
-      const xyLineSlope = (onePointLine.start.y - onePointLine.end.y) / xDiff;
-      const xyLineIntercept =
-        onePointLine.start.y - xyLineSlope * onePointLine.start.x;
+    // prettier-ignore
+    pointLines.forEach((pointLine) => {
+      const xDiff = Math.abs(pointLine.start.x - pointLine.end.x) < EPS ? EPS : pointLine.start.x - pointLine.end.x;
+      const xzLineSlope = (pointLine.start.z - pointLine.end.z) / xDiff;
+      const xzLineIntercept = pointLine.start.z - xzLineSlope * pointLine.start.x;
+      const xyLineSlope = (pointLine.start.y - pointLine.end.y) / xDiff;
+      const xyLineIntercept = pointLine.start.y - xyLineSlope * pointLine.start.x;
 
       xzLineSlopes.push(xzLineSlope);
       xzLineIntercepts.push(xzLineIntercept);
       xyLineSlopes.push(xyLineSlope);
       xyLineIntercepts.push(xyLineIntercept);
+    });
 
+    return { xyLineSlopes, xzLineSlopes, xyLineIntercepts, xzLineIntercepts };
+  }
+
+  // prettier-ignore
+  function updateOnePointLines() {
+    const slopesAndIntercepts = getSlopesAndIntercepts(onePointLines);
+
+    const [
+      xPositiveIntersections, yPositiveIntersections, zPositiveIntersections,
+      xNegativeIntersections, yNegativeIntersections, zNegativeIntersections,
+    ] = getIntersections(
+      slopesAndIntercepts,
+      halfHfovTangent
+    );
+
+    const minXs: number[] = [];
+    const maxXs: number[] = [];
+
+    onePointLines.forEach((onePointLine) => {
       const { start, end } = onePointLine;
       const minX = Math.min(start.x, end.x);
       const maxX = Math.max(start.x, end.x);
       minXs.push(minX);
       maxXs.push(maxX);
     });
-
-    // prettier-ignore
-    const [
-      xPositiveIntersections, yPositiveIntersections, zPositiveIntersections,
-      xNegativeIntersections, yNegativeIntersections, zNegativeIntersections,
-    ] = getIntersections(
-      xyLineSlopes,
-      xzLineSlopes,      
-      xyLineIntercepts,
-      xzLineIntercepts,
-      halfHfovTangent
-    );
 
     const intersectWithPositiveFovPlaneMask = xPositiveIntersections.map(
       (x, i) => x >= 0 && minXs[i] <= x && x < maxXs[i]
@@ -227,7 +235,6 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       (_, i) => intersectWithPositiveFovPlaneMask[i]
     );
 
-    // prettier-ignore
     _m.forEach((mask, index) => {
       const i = intersectWithPositiveFovPlaneMask.findIndex(
         (val, idx) => idx >= index && val
@@ -254,7 +261,6 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       (_, i) => intersectWithNegativeFovPlaneMask[i]
     );
 
-    // prettier-ignore
     _m.forEach((mask, index) => {
       const i = intersectWithNegativeFovPlaneMask.findIndex(
         (val, idx) => idx >= index && val
@@ -274,7 +280,6 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       onePointLines[i] = line;
     });
 
-    // prettier-ignore
     intersectWithPositiveFovPlaneMask.forEach((positiveMask, i) => {
       if (!positiveMask) return;
 
@@ -286,7 +291,6 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
         onePointLines[i].end.set(xPositiveIntersections[i], yPositiveIntersections[i], zPositiveIntersections[i]);
     });
 
-    // prettier-ignore
     intersectWithNegativeFovPlaneMask.forEach((negativeMask, i) => {
       if (!negativeMask) return;
 
@@ -309,31 +313,14 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   }
 
   // prettier-ignore
-  if (noPointsInFovMask.some((v) => v) && noPointLines.length > 0) {
-    const xDiff = noPointLines.map((noPointLine) =>
-      Math.abs(noPointLine.start.x - noPointLine.end.x) < EPS ? EPS : noPointLine.start.x - noPointLine.end.x
-    );
-    const xzLineSlopes = noPointLines.map(
-      (noPointLine, i) => (noPointLine.start.z - noPointLine.end.z) / xDiff[i]
-    );
-    const xzLineIntercepts = noPointLines.map(
-      (noPointLine, i) => noPointLine.start.z - xzLineSlopes[i] * noPointLine.start.x
-    );
-    const xyLineSlopes = noPointLines.map(
-      (noPointLine, i) => (noPointLine.start.y - noPointLine.end.y) / xDiff[i]
-    );
-    const xyLineIntercepts = noPointLines.map(
-      (noPointLine, i) => noPointLine.start.y - xyLineSlopes[i] * noPointLine.start.x
-    );
+  function updateNoPointsLines() {
+    const slopesAndIntercepts = getSlopesAndIntercepts(noPointLines);
 
     const [
       xIntersections, yIntersections, zIntersections,
       xNegativeIntersections, yNegativeIntersections, zNegativeIntersections,
     ] = getIntersections(
-      xyLineSlopes,
-      xzLineSlopes,
-      xyLineIntercepts,
-      xzLineIntercepts,
+      slopesAndIntercepts,
       halfHfovTangent
     );
 
@@ -358,6 +345,14 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       lines[i] = noPointLines[negativeIndex];
       negativeIndex ++;
     });
+  }
+
+  if (onePointInFovMask.includes(true) && onePointLines.length > 0) {
+    updateOnePointLines();
+  }
+
+  if (noPointsInFovMask.some((v) => v) && noPointLines.length > 0) {
+    updateNoPointsLines();
   }
 
   return { lines: lines, positiveMask };
