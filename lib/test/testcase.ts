@@ -1,7 +1,7 @@
-import { Vector3 } from "three";
+import { Line3, Vector3 } from "three";
 
-// projectVcsToCcs
-export const projectVcsToCcsTestCase = [
+// vcs to ccs point
+export const vcsToCcsPointTestCase = [
   {
     input: new Vector3(1, 1, 1),
     output: {
@@ -28,8 +28,8 @@ export const projectVcsToCcsTestCase = [
   },
 ];
 
-// fisheye project ccs to ics
-export const fisheyeProjectCcsToIcsTestCase = [
+// fisheye ccs to ics point
+export const fisheyeCcsToIcsPointTestCase = [
   {
     input: new Vector3(10000, 10000, 10),
     output: {
@@ -64,26 +64,26 @@ export const fisheyeProjectCcsToIcsTestCase = [
   },
 ];
 
-// rectilinear project ccs to ics
-export const rectilinearProjectCcsToIcsTestCase = [
+// rectilinear ccs to ics point
+export const rectilinearCcsToIcsPointTestCase = [
   {
     input: new Vector3(1, 1, 1),
     output: {
-      point: { x: 1543.106710453001, y: 1340.48787091835, z: 0 },
+      point: { x: 1543.106710453001, y: 1340.48787091835, z: 1 },
       isInImage: true,
     },
   },
   {
     input: new Vector3(10000, 1000, 100),
     output: {
-      point: { x: -911978279005498, y: -90989372227315.56, z: 0 },
+      point: { x: -911978279005498, y: -90989372227315.56, z: 1 },
       isInImage: false,
     },
   },
   {
     input: new Vector3(3.333333, 5.5555555, 7.7777777),
     output: {
-      point: { x: 1200.2838883148725, y: 1154.1131530339776, z: 0 },
+      point: { x: 1200.2838883148725, y: 1154.1131530339776, z: 1 },
       isInImage: true,
     },
   },
@@ -456,4 +456,222 @@ export const vcsCuboidToCcsPointsTestCase = [
     y: -10.510368015126636,
     z: -8.109074378919056,
   },
+];
+
+// Rectilinear Ics To Vcs
+export const rectilinearIcsToVcsTestCase = [
+  {
+    input: new Vector3(100, 10, 1),
+    output: {
+      x: -1.4721653134837152,
+      y: -0.4947721228552209,
+      z: 0.23628394627004135,
+    },
+  },
+  {
+    input: new Vector3(3.3333, 1.1111, 2.2222),
+    output: {
+      x: -3.4679957366522074,
+      y: -2.7020149991124547,
+      z: 1.7633315398786826,
+    },
+  },
+];
+
+// prettier-ignore
+export const truncatedTestCaseInput = [
+  new Line3(new Vector3(2, 2, 2), new Vector3(3, 2, 2)),
+  new Line3(new Vector3(3, 2, 2), new Vector3(3, 3, 2)),
+  new Line3(new Vector3(3, 3, 2), new Vector3(2, 3, 2)),
+  new Line3(new Vector3(2, 3, 2), new Vector3(2, 2, 2)),
+
+  new Line3(new Vector3(2, 2, 3), new Vector3(3, 2, 3)),
+  new Line3(new Vector3(3, 2, 3), new Vector3(3, 3, 3)),
+  new Line3(new Vector3(3, 3, 3), new Vector3(2, 3, 3)),
+  new Line3(new Vector3(2, 3, 3), new Vector3(2, 2, 3)),
+
+  new Line3(new Vector3(2, 2, 2), new Vector3(2, 2, 3)),
+  new Line3(new Vector3(3, 2, 2), new Vector3(3, 2, 3)),
+  new Line3(new Vector3(3, 3, 2), new Vector3(3, 3, 3)),
+  new Line3(new Vector3(2, 3, 2), new Vector3(2, 3, 3)),
+];
+
+// prettier-ignore
+export const truncatedTestCaseInput2 = [
+  new Line3(new Vector3(0, 0, 0), new Vector3(1000, 0, 0)),
+  new Line3(new Vector3(0, 0, 1000), new Vector3(1000, 0, 1000)),
+  new Line3(new Vector3(0, 1000, 0), new Vector3(1000, 1000, 0)),
+  new Line3(new Vector3(0, 1000, 1000), new Vector3(1000, 1000, 1000)),
+  
+  new Line3(new Vector3(0, 0, 0), new Vector3(0, 1000, 0)),
+  new Line3(new Vector3(1000, 0, 0), new Vector3(1000, 1000, 0)),
+  new Line3(new Vector3(0, 0, 1000), new Vector3(0, 1000, 1000)),
+  new Line3(new Vector3(1000, 0, 1000), new Vector3(1000, 1000, 1000)),
+  
+  new Line3(new Vector3(0, 0, 0), new Vector3(0, 0, 1000)),
+  new Line3(new Vector3(1000, 0, 0), new Vector3(1000, 0, 1000)),
+  new Line3(new Vector3(0, 1000, 0), new Vector3(0, 1000, 1000)),
+  new Line3(new Vector3(1000, 1000, 0), new Vector3(1000, 1000, 1000))
+];
+
+// prettier-ignore
+export const truncatedTestCaseOutput = {
+  lines: [
+    { start: { x: 2, y: 2, z: 2 }, end: { x: 3, y: 2, z: 2 } },
+    { start: { x: 3, y: 2, z: 2 }, end: { x: 3, y: 3, z: 2 } },
+    { start: { x: 3, y: 3, z: 2 }, end: { x: 2, y: 3, z: 2 } },
+    { start: { x: 2, y: 3, z: 2 }, end: { x: 2, y: 2, z: 2 } },
+
+    { start: { x: 2, y: 2, z: 3 }, end: { x: 3, y: 2, z: 3 } },
+    { start: { x: 3, y: 2, z: 3 }, end: { x: 3, y: 3, z: 3 } },
+    { start: { x: 3, y: 3, z: 3 }, end: { x: 2, y: 3, z: 3 } },
+    { start: { x: 2, y: 3, z: 3 }, end: { x: 2, y: 2, z: 3 } },
+
+    { start: { x: 2, y: 2, z: 2 }, end: { x: 2, y: 2, z: 3 } },
+    { start: { x: 3, y: 2, z: 2 }, end: { x: 3, y: 2, z: 3 } },
+    { start: { x: 3, y: 3, z: 2 }, end: { x: 3, y: 3, z: 3 } },
+    { start: { x: 2, y: 3, z: 2 }, end: { x: 2, y: 3, z: 3 } },
+  ],
+  // prettier-ignore
+  positiveMask: [
+    true, true, true,
+    true, true, true,
+    true, true, true,
+    true, true, true
+  ],
+};
+
+// prettier-ignore
+export const truncatedTestCaseOutput2 = {
+  lines: [
+    { start: { x: 0.000001, y: 0, z: 0 }, end: { x: 1000, y: 0, z: 0 } },
+    { start: { x: 0.000001, y: 0, z: 1000 }, end: { x: 1000, y: 0, z: 1000 } },
+    { start: { x: 0.000001, y: 1000, z: 0 }, end: { x: 1000, y: 1000, z: 0 } },
+    { start: { x: 0.000001, y: 1000, z: 1000 }, end: { x: 1000, y: 1000, z: 1000 } },
+    { start: { x: 0.000001, y: 0, z: 0 }, end: { x: 0.000001, y: 1000, z: 0 } },
+    { start: { x: 1000, y: 0, z: 0 }, end: { x: 1000, y: 1000, z: 0 } },
+    { start: { x: 0.000001, y: 0, z: 1000 }, end: { x: 0.000001, y: 1000, z: 1000 } },
+    { start: { x: 1000, y: 0, z: 1000 }, end: { x: 1000, y: 1000, z: 1000 } },
+    { start: { x: 0.000001, y: 0, z: 0 }, end: { x: 0.000001, y: 0, z: 1000 } },
+    { start: { x: 1000, y: 0, z: 0 }, end: { x: 1000, y: 0, z: 1000 } },
+    { start: { x: 0.000001, y: 1000, z: 0 }, end: { x: 0.000001, y: 1000, z: 1000 } },
+    { start: { x: 1000, y: 1000, z: 0 }, end: { x: 1000, y: 1000, z: 1000 } },
+  ],
+  positiveMask: [
+    false, true, false,
+    true, false, false,
+    true, true, true,
+    true, true, true,
+  ],
+};
+
+export const truncatedTestCase = [
+  { input: truncatedTestCaseInput, output: truncatedTestCaseOutput },
+  { input: truncatedTestCaseInput2, output: truncatedTestCaseOutput2 },
+];
+
+export const vcsToIcsCuboidLinesInput = {
+  x: 42,
+  y: 230,
+  z: 100,
+  yaw: 10,
+  roll: 13,
+  pitch: 41,
+  width: 800,
+  height: 600,
+  length: 340,
+};
+
+export const rectVcsToIcsCuboidLinesOutput = [
+  null,
+  {
+    start: {
+      x: 6487371993642766000,
+      y: 2.420172576974183e21,
+      z: 0.9999999999999999,
+    },
+    end: { x: 588.0307554989918, y: 9096.025197102586, z: 1 },
+  },
+  {
+    start: { x: 588.0307554989918, y: 9096.025197102586, z: 1 },
+    end: { x: 1857.348621980459, y: 507.6072826512628, z: 1 },
+  },
+  {
+    start: {
+      x: 5324692.495840576,
+      y: -539359.2705180132,
+      z: 0.9999999999999999,
+    },
+    end: { x: 1857.348621980459, y: 507.6072826512628, z: 1 },
+  },
+  null,
+  {
+    start: { x: 8885518222488672000, y: 2.762526538630985e21, z: 1 },
+    end: {
+      x: -1.2950695098598939e25,
+      y: 2.290644747449599e30,
+      z: 1,
+    },
+  },
+  null,
+  null,
+  null,
+  null,
+  {
+    start: { x: 8885518222488672000, y: 2.762526538630985e21, z: 1 },
+    end: { x: 588.0307554989918, y: 9096.025197102586, z: 1 },
+  },
+  {
+    start: {
+      x: -1.2950695098598939e25,
+      y: 2.290644747449599e30,
+      z: 1,
+    },
+    end: { x: 1857.348621980459, y: 507.6072826512628, z: 1 },
+  },
+];
+
+export const fishVcsToIcsCuboidLinesOutput = [
+  {
+    start: { x: 777.5324851757919, y: 1033.5191455516688, z: 0 },
+    end: { x: 0, y: 751.1750353732236, z: 0 },
+  },
+  {
+    start: { x: 777.5324851757919, y: 1033.5191455516688, z: 0 },
+    end: { x: 999.650498710839, y: 1425.4426123319386, z: 0 },
+  },
+  {
+    start: { x: 999.650498710839, y: 1425.4426123319386, z: 0 },
+    end: { x: 0, y: 1030.3098916859979, z: 0 },
+  },
+  null,
+  {
+    start: { x: 1071.9419027617964, y: 416.6011307975835, z: 0 },
+    end: { x: 315.1094851297181, y: 26.806349560593503, z: 0 },
+  },
+  {
+    start: { x: 1535.4018889151644, y: 357.75584942419664, z: 0 },
+    end: { x: 788.4634953979754, y: 0, z: 0 },
+  },
+  {
+    start: { x: 1071.9419027617964, y: 416.6011307975835, z: 0 },
+    end: { x: 1535.4018889151644, y: 357.75584942419664, z: 0 },
+  },
+  {
+    start: { x: 315.1094851297181, y: 26.806349560593503, z: 0 },
+    end: { x: 313.2949026663144, y: 0, z: 0 },
+  },
+  {
+    start: { x: 1071.9419027617964, y: 416.6011307975835, z: 0 },
+    end: { x: 777.5324851757919, y: 1033.5191455516688, z: 0 },
+  },
+  {
+    start: { x: 315.1094851297181, y: 26.806349560593503, z: 0 },
+    end: { x: 0, y: 744.8228865012644, z: 0 },
+  },
+  {
+    start: { x: 1535.4018889151644, y: 357.75584942419664, z: 0 },
+    end: { x: 999.650498710839, y: 1425.4426123319386, z: 0 },
+  },
+  null,
 ];

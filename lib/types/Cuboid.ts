@@ -1,9 +1,11 @@
-import { Line3, Vector3 } from "three";
 import {
-  getHomogeneousTransformMatrix,
-  matrix4to3,
-  multiplyMatrix4,
-} from "./LtMatrix4";
+  Euler,
+  Float32BufferAttribute,
+  Line3,
+  Matrix4,
+  Vector3,
+  Vector4,
+} from "three";
 
 export type VcsCuboidToCcsPointsArgs = {
   vcsCuboid: Cuboid;
@@ -62,7 +64,7 @@ export function createCuboidLines(cuboidPoint: Vector3[]): Line3[] {
   return lines;
 }
 
-export function vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
+export function vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx"): Vector3[] {
   // prettier-ignore
   const {
       x: tx, y: ty, z: tz,
@@ -77,29 +79,88 @@ export function vcsCuboidToVcsPoints(cuboid: Cuboid, order: "zyx") {
 
   const vcsPoints = multiplyMatrix4(
     getPoints(width, height, length),
-    transformMatrix.transpose().elements()
+    transformMatrix
   );
 
-  return matrix4to3(vcsPoints);
+  return vcsPoints;
+}
+
+/**
+ * Get homogeneous transform matrix from euler angle and translation
+ * column-major matrix
+ *
+ * @param params { angle, translation, order }
+ * @returns Matrix4 that is applied with rotation and translation (column-major matrix)
+ */
+export function getHomogeneousTransformMatrix({
+  angle,
+  translation = { tx: 0, ty: 0, tz: 0 },
+  order = "ZYX",
+}: {
+  angle: { yaw: number; roll: number; pitch: number };
+  translation?: { tx: number; ty: number; tz: number };
+  order?: string;
+}) {
+  const { tx, ty, tz } = translation;
+  const { roll, pitch, yaw } = angle;
+
+  const euler = new Euler(roll, pitch, yaw, "ZYX");
+  const rotationMatrix = new Matrix4().makeRotationFromEuler(euler);
+
+  const transformMatrix = rotationMatrix
+    .clone()
+    .setPosition(new Vector3(tx, ty, tz));
+
+  return transformMatrix;
+}
+
+/**
+ * Get a Vcs Cuboid Point Array
+ *
+ * @param cuboidPoints Cuboid Points Array (Homogeneous)
+ * @param transformMatrix Matrix4 that includes rotation and translation parameters (column-major matrix)
+ * @returns Vector3[] (Vcs Cuboid Points)
+ */
+export function multiplyMatrix4(
+  cuboidPoints: Vector4[],
+  transformMatrix: Matrix4
+): Vector3[] {
+  const bArray = transformMatrix.toArray();
+
+  const result: Vector3[] = [];
+
+  for (let i = 0; i < cuboidPoints.length; i++) {
+    // prettier-ignore
+    const x = cuboidPoints[i].x, y = cuboidPoints[i].y, z = cuboidPoints[i].z, w = cuboidPoints[i].w;
+
+    result.push(
+      new Vector3(
+        x * bArray[0] + y * bArray[4] + z * bArray[8] + w * bArray[12],
+        x * bArray[1] + y * bArray[5] + z * bArray[9] + w * bArray[13],
+        x * bArray[2] + y * bArray[6] + z * bArray[10] + w * bArray[14]
+      )
+    );
+  }
+
+  return result;
 }
 
 export function getPoints(
   width: number,
   height: number,
   length: number
-): number[] {
+): Vector4[] {
   const [y, z, x] = [width / 2, height / 2, length / 2];
 
-  // prettier-ignore
   return [
-    x, y, -z, 1, // front left bottom
-    x, -y, -z, 1, // front right bottom
-    x, -y, z, 1, // front right top
-    x, y, z, 1, // front left top
-    
-    -x, y, -z, 1, // rear left bottom
-    -x, -y, -z, 1, // rear right bottom
-    -x, -y, z, 1, // rear right top
-    -x, y, z, 1, // rear left top
+    new Vector4(x, y, -z, 1), // front left bottom
+    new Vector4(x, -y, -z, 1), // front right bottom
+    new Vector4(x, -y, z, 1), // front right top
+    new Vector4(x, y, z, 1), // front left top
+
+    new Vector4(-x, y, -z, 1), // rear left bottom
+    new Vector4(-x, -y, -z, 1), // rear right bottom
+    new Vector4(-x, -y, z, 1), // rear right top
+    new Vector4(-x, y, z, 1), // rear left top
   ];
 }

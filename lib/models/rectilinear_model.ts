@@ -1,82 +1,113 @@
-import { Line3, Vector3 } from "three";
+import { Line3, Matrix4, Vector3, Vector4 } from "three";
 import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
+import {
+  distortRectilinear,
+  getTruncatedLinesInCameraFov,
+  project,
+  undistortRectilinear,
+  unproject,
+} from "./math_utils";
 
 export class RectilinearModel extends CameraModel {
-  private distort(x: number, y: number) {
-    const { k1, k2, k3, k4, k5, k6, p1, p2 } = this.intrinsic;
-
-    const r2 = x ** 2 + y ** 2;
-    const radialD =
-      (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3) /
-      (1 + k4 * r2 + k5 * r2 ** 2 + k6 * r2 ** 3);
-    const distortedX = x * radialD + 2 * p1 * (x * y) + p2 * (r2 + 2 * x ** 2);
-    const distortedY = y * radialD + p1 * (r2 + 2 * y ** 2) + 2 * p2 * (x * y);
-
-    return [distortedX, distortedY];
-  }
-
-  private project(x: number, y: number) {
-    const { fx, fy, cx, cy } = this.intrinsic;
-
-    const projectedX = x * fx + cx;
-    const projectedY = y * fy + cy;
-
-    return [projectedX, projectedY];
-  }
-
   private isInImageCheck(x: number, y: number) {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 
-  public projectCcsToIcs(vec3: Vector3): ICSPoint {
+  public ccsToIcsPoint(vec3: Vector3): ICSPoint {
     const normalized = vec3.clone().divideScalar(vec3.getComponent(2));
 
-    const [distortedX, distortedY] = this.distort(
-      normalized.getComponent(0),
-      normalized.getComponent(1)
-    );
+    const distorted = distortRectilinear(normalized, this.intrinsic);
 
-    const [projectedX, projectedY] = this.project(distortedX, distortedY);
-
-    const icsPoint = new Vector3(projectedX, projectedY);
+    const projected = project(distorted, this.intrinsic);
 
     return {
-      point: icsPoint,
-      isInImage: this.isInImageCheck(projectedX, projectedY),
+      point: projected,
+      isInImage: this.isInImageCheck(projected.x, projected.y),
     };
   }
 
-  public vcsCuboidToIcsCuboidLines(vcsCuboid: Cuboid, order: "zyx"): Line3[] {
+  public vcsCuboidToIcsCuboidLines(
+    vcsCuboid: Cuboid,
+    order: "zyx"
+  ): Array<Line3 | null> {
     const ccsLines = this.getCcsLinesFromCuboid(vcsCuboid, order);
     const icsLines = this.ccsLinesToIcsLines(ccsLines);
     return icsLines;
   }
 
-  public icsToVcsPoints(icsPoint: Vector3) {
-    const { tx, ty, tz } = this.vcsExtrinsic;
-    const translationVector = new Vector3(tx, ty, tz);
-
-    const denormalized = icsPoint.clone().multiplyScalar(icsPoint.z);
-
+  public icsToCcsPoint(icsPoint: Vector3): Vector3 {
     const { fx, fy, cx, cy } = this.intrinsic;
 
-    const undistorted = new Vector3(
-      (denormalized.x - cx) / fx,
-      (denormalized.y - cy) / fy,
-      denormalized.z
+    // prettier-ignore
+    const intrinsicInvertTransposed = new Matrix4(
+      fx, 0, cx, 0,
+      0, fy, cy, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ).invert();
+
+    const undistorted = this.undistortIcsPoint(icsPoint);
+
+    undistorted.set(
+      undistorted.x * undistorted.z,
+      undistorted.y * undistorted.z,
+      undistorted.z
     );
 
-    const rotationMatrix = this.getRotationMatrix();
+    const ccsPoint = this.multiplyMatrix4(
+      new Vector4(...undistorted),
+      intrinsicInvertTransposed
+    );
 
-    const vcsPoint = undistorted.sub(translationVector);
-    // divide vcsPoint by rotation Matrix?
+    return ccsPoint;
+  }
 
-    return icsPoint;
+  private undistortIcsPoint(point: Vector3) {
+    point = unproject(point, this.intrinsic);
+
+    const undistorted = undistortRectilinear(point, this.intrinsic);
+
+    point = project(undistorted, this.intrinsic);
+
+    return point;
+  }
+
+  private ccsToVcsPoint(ccsPoint: Vector3) {
+    const extrinsicInvT = this.getTransformMatrix().invert().transpose();
+
+    const vcsPoint = this.multiplyMatrix4(
+      new Vector4(...ccsPoint),
+      extrinsicInvT
+    );
+
+    return vcsPoint;
+  }
+
+  public icsToVcsPoint(icsPoint: Vector3): Vector3 {
+    const ccsPoint = this.icsToCcsPoint(icsPoint);
+
+    const vcsPoint = this.ccsToVcsPoint(ccsPoint);
+
+    return vcsPoint;
   }
 
   private ccsLinesToIcsLines(ccsLines: Line3[]) {
-    return [new Line3(new Vector3(0, 0, 0), new Vector3(2, 3, 4))];
+    const { lines, positiveMask } = getTruncatedLinesInCameraFov(
+      ccsLines,
+      this.hfov
+    );
+    const icsLines: Array<Line3 | null> = lines.map((line, i) => {
+      if (positiveMask[i]) {
+        const start = this.ccsToIcsPoint(line.start).point;
+        const end = this.ccsToIcsPoint(line.end).point;
+        return new Line3(start, end);
+      } else {
+        return null;
+      }
+    });
+
+    return icsLines;
   }
 }

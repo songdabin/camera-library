@@ -12,3 +12,9 @@ export const channelSchema = z.enum([
 export const frameFromSchema = z.enum(["vcs", "lidar", "mvcs"]);
 
 export const CameraTypeSchema = z.enum(["standard", "fisheye"]);
+
+export const EPS = 1e-6;
+
+export const UndistortCount = 5;
+
+export const CuboidPointCount = 8;

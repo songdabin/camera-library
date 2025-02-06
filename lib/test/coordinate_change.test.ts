@@ -3,10 +3,13 @@ import path = require("path");
 import { createModel } from "../services/create_model";
 import { splitData } from "../services/split_data";
 import {
-  fisheyeProjectCcsToIcsTestCase,
-  projectVcsToCcsTestCase,
-  rectilinearProjectCcsToIcsTestCase,
+  fisheyeCcsToIcsPointTestCase,
+  vcsToCcsPointTestCase,
+  rectilinearIcsToVcsTestCase,
+  rectilinearCcsToIcsPointTestCase,
+  truncatedTestCase,
 } from "./testcase";
+import { getTruncatedLinesInCameraFov } from "../models/math_utils";
 
 const frontFilePath = path.join(process.cwd(), "assets", "svc_front.yaml");
 const frontFileContent = fs.readFileSync(frontFilePath, "utf8");
@@ -16,26 +19,42 @@ const rearFilePath = path.join(process.cwd(), "assets", "svc_rear.yaml");
 const rearFileContent = fs.readFileSync(rearFilePath, "utf8");
 const [rearCameraType, rearCameraParams] = splitData(rearFileContent);
 
-fisheyeProjectCcsToIcsTestCase.forEach(({ input, output }) => {
+fisheyeCcsToIcsPointTestCase.forEach(({ input, output }) => {
   const fisheyeModel = createModel(frontCameraType, frontCameraParams);
 
-  test("Fisheye Model projectCcsToIcs Test", () => {
-    expect(fisheyeModel?.projectCcsToIcs(input)).toEqual(output);
+  test("Fisheye Model ccsToIcsPoint Test", () => {
+    expect(fisheyeModel?.ccsToIcsPoint(input)).toEqual(output);
   });
 });
 
-projectVcsToCcsTestCase.forEach(({ input, output }) => {
+vcsToCcsPointTestCase.forEach(({ input, output }) => {
   const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
-  test("Rectilinear Model projectVcsToCcs Test", () => {
-    expect(rectilinearModel?.projectVcsToCcs(input)).toEqual(output);
+  test("Rectilinear Model vcsToCcsPoint Test", () => {
+    expect(rectilinearModel?.vcsToCcsPoint(input)).toEqual(output);
   });
 });
 
-rectilinearProjectCcsToIcsTestCase.forEach(({ input, output }) => {
+rectilinearCcsToIcsPointTestCase.forEach(({ input, output }) => {
   const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
-  test("Rectilinear Model projectCcsToIcs Test", () => {
-    expect(rectilinearModel?.projectCcsToIcs(input)).toEqual(output);
+  test("Rectilinear Model ccsToIcsPoint Test", () => {
+    expect(rectilinearModel?.ccsToIcsPoint(input)).toEqual(output);
+  });
+});
+
+rectilinearIcsToVcsTestCase.forEach(({ input, output }) => {
+  const rectilinearModel = createModel(rearCameraType, rearCameraParams);
+
+  test("icsToVcsPoint", () => {
+    expect(rectilinearModel?.icsToVcsPoint(input)).toEqual(output);
+  });
+});
+
+truncatedTestCase.forEach(({ input, output }) => {
+  test("truncatedTest", () => {
+    expect(getTruncatedLinesInCameraFov(input, rearCameraParams.hfov)).toEqual(
+      output
+    );
   });
 });
