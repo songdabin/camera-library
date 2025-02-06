@@ -219,53 +219,35 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
     let _m;
 
-    _m = pointOutOfFovMask.filter(
-      (_, i) => intersectWithPositiveFovPlaneMask[i]
-    );
-    const _l = onePointLines.filter(
-      (_, i) => intersectWithPositiveFovPlaneMask[i]
-    );
+    function intersect(fovPlaneMask: boolean[], xIntersections: number[], yIntersections: number[], zIntersections: number[]) {
+      _m = pointOutOfFovMask.filter((_, i) => fovPlaneMask[i]);
+      const line = onePointLines.filter((_, i) => fovPlaneMask[i]);
 
-    _m.forEach((mask, index) => {
-      const i = intersectWithPositiveFovPlaneMask.findIndex(
-        (val, idx) => idx >= index && val
-      );
-      if (mask[0]) {
-        _l[index].start.set(xPositiveIntersections[i], yPositiveIntersections[i], zPositiveIntersections[i]);
-      }
-      if (mask[1]) {
-        _l[index].end.set(xPositiveIntersections[i], yPositiveIntersections[i], zPositiveIntersections[i]);
-      }
-    });
+      _m.forEach((mask, index) => {
+        const i = fovPlaneMask.findIndex(
+          (val, idx) => idx >= index && val
+        );
+        if (mask[0]) {
+          line[index].start.set(xIntersections[i], yIntersections[i], zIntersections[i]);
+        }
+        if (mask[1]) {
+          line[index].end.set(xIntersections[i], yIntersections[i], zIntersections[i]);
+        }
+      });
 
-    _l.forEach((line, index) => {
-      const i = intersectWithPositiveFovPlaneMask.findIndex(
-        (val, idx) => idx >= index && val
-      );
-      onePointLines[i] = line;
-    });
+      line.forEach((line, index) => {
+        const i = fovPlaneMask.findIndex(
+          (val, idx) => idx >= index && val
+        );
+        onePointLines[i] = line;
+      });
 
-    _m = pointOutOfFovMask.filter((_, i) => intersectWithNegativeFovPlaneMask[i]);
-    const _nl = onePointLines.filter((_, i) => intersectWithNegativeFovPlaneMask[i]);
+      return { line }
+    }
 
-    _m.forEach((mask, index) => {
-      const i = intersectWithNegativeFovPlaneMask.findIndex(
-        (val, idx) => idx >= index && val
-      );
-      if (mask[0]) {
-        _nl[index].start.set(xNegativeIntersections[i], yNegativeIntersections[i], zNegativeIntersections[i])
-      }
-      if (mask[1]) {
-        _nl[index].end.set(xNegativeIntersections[i], yNegativeIntersections[i], zNegativeIntersections[i])
-      }
-    });
-
-    _nl.forEach((line, index) => {
-      const i = intersectWithNegativeFovPlaneMask.findIndex(
-        (val, idx) => idx >= index && val
-      );
-      onePointLines[i] = line;
-    });
+    intersect(intersectWithPositiveFovPlaneMask, xPositiveIntersections, yPositiveIntersections, zPositiveIntersections);
+    
+    intersect(intersectWithNegativeFovPlaneMask, xNegativeIntersections, yNegativeIntersections, zNegativeIntersections);
 
     intersectWithPositiveFovPlaneMask.forEach((positiveMask, i) => {
       if (!positiveMask) return;
