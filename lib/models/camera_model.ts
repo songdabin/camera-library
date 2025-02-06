@@ -5,6 +5,7 @@ import {
   Cuboid,
   vcsCuboidToVcsPoints,
 } from "../types/Cuboid";
+import { CuboidPointCount } from "../types/schema";
 
 export abstract class CameraModel {
   channel: string;
@@ -80,7 +81,7 @@ export abstract class CameraModel {
     const vcsPoints = vcsCuboidToVcsPoints(cuboid, order);
 
     const ccsPointArray = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < CuboidPointCount; i++) {
       ccsPointArray.push(this.vcsToCcsPoint(vcsPoints[i]));
     }
 

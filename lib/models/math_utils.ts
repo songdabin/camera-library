@@ -1,7 +1,6 @@
 import { Line3, Vector3 } from "three";
-import { Intrinsic } from "../types/type";
-
-const EPS = 1e-6;
+import { Intrinsic, SlopesAndIntercepts } from "../types/type";
+import { EPS, UndistortCount } from "../types/schema";
 
 export function project(point: Vector3, intrinsic: Intrinsic): Vector3 {
   const { fx, fy, cx, cy } = intrinsic;
@@ -53,7 +52,7 @@ export function undistortRectilinear(
   let undistortedX = x;
   let undistortedY = y;
 
-  for (let i = 0; i < 5; i += 1) {
+  for (let i = 0; i < UndistortCount; i += 1) {
     const r2 = undistortedX ** 2 + undistortedY ** 2;
     const radialDInv =
       (1 + k4 * r2) / (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3);
