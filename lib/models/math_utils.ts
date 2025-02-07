@@ -159,6 +159,14 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       (slope, i) => slope * xPositiveIntersections[i] + xyLineIntercepts[i]
     );
 
+    const posIntersections: Vector3[] = xPositiveIntersections.map((_, i) => {
+      return new Vector3(
+        xPositiveIntersections[i],
+        yPositiveIntersections[i],
+        zPositiveIntersections[i]
+      );
+    });
+
     const negativeSlopes = xzLineSlopes.map((slope, i) =>
       Math.abs(-halfHfovTangent - slope) < EPS ? EPS : -halfHfovTangent - slope
     );
@@ -172,23 +180,11 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       (slope, i) => slope * xNegativeIntersections[i] + xyLineIntercepts[i]
     );
 
-    const posIntersections: Vector3[] = [];
-    const negIntersections: Vector3[] = [];
-
-    xPositiveIntersections.forEach((_, i) => {
-      posIntersections.push(
-        new Vector3(
-          xPositiveIntersections[i],
-          yPositiveIntersections[i],
-          zPositiveIntersections[i]
-        )
-      );
-      negIntersections.push(
-        new Vector3(
-          xNegativeIntersections[i],
-          yNegativeIntersections[i],
-          zNegativeIntersections[i]
-        )
+    const negIntersections: Vector3[] = xNegativeIntersections.map((_, i) => {
+      return new Vector3(
+        xNegativeIntersections[i],
+        yNegativeIntersections[i],
+        zNegativeIntersections[i]
       );
     });
 
@@ -211,19 +207,11 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       maxXs.push(Math.max(start.x, end.x));
     });
 
-    const pMask: boolean[] = [];
-    const nMask: boolean[] = [];
-
-    intersections.positive.forEach((positive, i) => {
-      pMask.push(
-        positive.x >= 0 && minXs[i] <= positive.x && positive.x < maxXs[i]
-      );
+    const pMask: boolean[] = intersections.positive.map((positive, i) => {
+      return positive.x >= 0 && minXs[i] <= positive.x && positive.x < maxXs[i];
     });
-
-    intersections.negative.forEach((negative, i) => {
-      nMask.push(
-        negative.x <= 0 && minXs[i] <= negative.x && negative.x < maxXs[i]
-      );
+    const nMask: boolean[] = intersections.negative.map((negative, i) => {
+      return negative.x <= 0 && minXs[i] <= negative.x && negative.x < maxXs[i];
     });
 
     const pointOutOfFovMask: [boolean, boolean][] = [];
