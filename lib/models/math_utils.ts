@@ -1,10 +1,5 @@
 import { Line3, Vector3 } from "three";
-import {
-  Intersection,
-  Intersections,
-  Intrinsic,
-  SlopesAndIntercepts,
-} from "../types/type";
+import { Intersections, Intrinsic, SlopesAndIntercepts } from "../types/type";
 import { EPS, UndistortCount } from "../types/schema";
 
 export function project(point: Vector3, intrinsic: Intrinsic): Vector3 {
@@ -177,23 +172,27 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       (slope, i) => slope * xNegativeIntersections[i] + xyLineIntercepts[i]
     );
 
-    const intersections: Intersections = [];
+    const posIntersections: Vector3[] = [];
+    const negIntersections: Vector3[] = [];
+
     xPositiveIntersections.forEach((_, i) => {
-      intersections.push({
-        positive: new Vector3(
+      posIntersections.push(
+        new Vector3(
           xPositiveIntersections[i],
           yPositiveIntersections[i],
           zPositiveIntersections[i]
-        ),
-        negative: new Vector3(
+        )
+      );
+      negIntersections.push(
+        new Vector3(
           xNegativeIntersections[i],
           yNegativeIntersections[i],
           zNegativeIntersections[i]
-        ),
-      });
+        )
+      );
     });
 
-    return intersections;
+    return { positive: posIntersections, negative: negIntersections };
   }
 
   const onePointLines = _lines.filter((_, i) => onePointInFovMasks[i]);
@@ -214,18 +213,17 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
     const pMask: boolean[] = [];
     const nMask: boolean[] = [];
-    const pIntersections: Vector3[] = [];
-    const nIntersections: Vector3[] = [];
 
-    intersections.forEach(({ positive, negative }, i) => {
+    intersections.positive.forEach((positive, i) => {
       pMask.push(
         positive.x >= 0 && minXs[i] <= positive.x && positive.x < maxXs[i]
       );
+    });
+
+    intersections.negative.forEach((negative, i) => {
       nMask.push(
         negative.x <= 0 && minXs[i] <= negative.x && negative.x < maxXs[i]
       );
-      pIntersections.push(positive);
-      nIntersections.push(negative);
     });
 
     const pointOutOfFovMask: [boolean, boolean][] = [];
@@ -283,8 +281,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       });
     }
 
-    setLines(pMask, pIntersections);
-    setLines(nMask, nIntersections);
+    setLines(pMask, intersections.positive);
+    setLines(nMask, intersections.negative);
 
     // Update real box line
     let positiveIndex = 0;
@@ -308,7 +306,7 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       if (!largerMask) return;
       // prettier-ignore
       noPointLines[i].start.set(
-        intersections[i].positive.x, intersections[i].positive.y, intersections[i].positive.z
+        intersections.positive[i].x, intersections.positive[i].y, intersections.positive[i].z
       );
     });
 
@@ -316,7 +314,7 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       if (!smallerMask) return;
       // prettier-ignore
       noPointLines[i].end.set(
-        intersections[i].negative.z, intersections[i].negative.y, intersections[i].negative.z
+        intersections.negative[i].z, intersections.negative[i].y, intersections.negative[i].z
       );
     });
 
