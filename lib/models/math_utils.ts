@@ -236,12 +236,12 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
     let _m;
 
-    function intersect(mask: boolean[], intersections: Vector3[]) {
-      _m = pointOutOfFovMask.filter((_, i) => mask[i]);
-      const _l = onePointLines.filter((_, i) => mask[i]);
+    function setLines(masks: boolean[], intersections: Vector3[]) {
+      _m = pointOutOfFovMask.filter((_, i) => masks[i]);
+      const _l = onePointLines.filter((_, i) => masks[i]);
 
       _m.forEach((mask, index) => {
-        const i = mask.findIndex((val, idx) => idx >= index && val);
+        const i = masks.findIndex((val, idx) => idx >= index && val);
         if (mask[0]) {
           _l[index].start.set(
             intersections[i].x,
@@ -259,15 +259,10 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       });
 
       _l.forEach((line, index) => {
-        const i = mask.findIndex((val, idx) => idx >= index && val);
+        const i = masks.findIndex((val, idx) => idx >= index && val);
         onePointLines[i] = line;
       });
-    }
 
-    intersect(pMask, pIntersections);
-    intersect(nMask, nIntersections);
-
-    function setLines(masks: boolean[], intersections: Vector3[]) {
       masks.forEach((mask, i) => {
         if (!mask) return;
 
