@@ -80,12 +80,12 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const zPositiveMask = _lines.map(
     ({ start, end }) => start.z > 0 || end.z > 0
   );
-  const isPoint0InFovMask = _lines.map((line) => {
+  const startPointInFovMask = _lines.map((line) => {
     const [x0, , z0] = line.start;
     return z0 > -halfHfovTangent * x0 && z0 > halfHfovTangent * x0;
   });
 
-  const isPoint1InFovMask = _lines.map((line) => {
+  const endPointInFovMask = _lines.map((line) => {
     const [x1, , z1] = line.end;
     return z1 > -halfHfovTangent * x1 && z1 > halfHfovTangent * x1;
   });
@@ -98,8 +98,10 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const noPointsInFovMasks: boolean[] = [];
 
   _lines.forEach((line, i) => {
-    atLeastOnePointInFovMask.push(isPoint0InFovMask[i] || isPoint1InFovMask[i]);
-    allPointsInFovMask.push(isPoint0InFovMask[i] && isPoint1InFovMask[i]);
+    atLeastOnePointInFovMask.push(
+      startPointInFovMask[i] || endPointInFovMask[i]
+    );
+    allPointsInFovMask.push(startPointInFovMask[i] && endPointInFovMask[i]);
 
     positiveMask.push(
       zPositiveMask[i] &&
@@ -217,7 +219,7 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     const pointOutOfFovMask: [boolean, boolean][] = [];
     onePointInFovMasks.forEach((onePointInFovMask, i) => {
       if (!onePointInFovMask) return;
-      pointOutOfFovMask.push([!isPoint0InFovMask[i], !isPoint1InFovMask[i]]);
+      pointOutOfFovMask.push([!startPointInFovMask[i], !endPointInFovMask[i]]);
     });
 
     let _m;

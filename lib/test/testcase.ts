@@ -532,7 +532,7 @@ export const truncatedTestCaseOutput = {
     { start: { x: 3, y: 3, z: 2 }, end: { x: 3, y: 3, z: 3 } },
     { start: { x: 2, y: 3, z: 2 }, end: { x: 2, y: 3, z: 3 } },
   ],
-  // prettier-ignore
+  
   positiveMask: [
     true, true, true,
     true, true, true,
