@@ -1,5 +1,5 @@
 import { Line3, Vector3 } from "three";
-import { Intrinsic } from "../types/type";
+import { Intrinsic, SlopesAndIntercepts } from "../types/type";
 import { EPS, UndistortCount } from "../types/schema";
 
 export function project(point: Vector3, intrinsic: Intrinsic): Vector3 {
@@ -93,15 +93,14 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   const atLeastOnePointInFovMask: boolean[] = [];
   const allPointsInFovMask: boolean[] = [];
 
-  _lines.forEach((line, i) => {
-    atLeastOnePointInFovMask.push(isPoint0InFovMask[i] || isPoint1InFovMask[i]);
-    allPointsInFovMask.push(isPoint0InFovMask[i] && isPoint1InFovMask[i]);
-  });
-
   const positiveMask: boolean[] = [];
   const onePointInFovMasks: boolean[] = [];
   const noPointsInFovMasks: boolean[] = [];
+
   _lines.forEach((line, i) => {
+    atLeastOnePointInFovMask.push(isPoint0InFovMask[i] || isPoint1InFovMask[i]);
+    allPointsInFovMask.push(isPoint0InFovMask[i] && isPoint1InFovMask[i]);
+
     positiveMask.push(
       zPositiveMask[i] &&
         (atLeastOnePointInFovMask[i] || line.start.x * line.end.x < 0)
@@ -116,25 +115,36 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     );
   });
 
+  function getSlopesAndIntercepts(pointLines: Line3[]): SlopesAndIntercepts {
+    const xDiff = pointLines.map(({ start, end }) =>
+      Math.abs(start.x - end.x) < EPS ? EPS : start.x - end.x
+    );
+    const xzLineSlopes = pointLines.map(
+      ({ start, end }, i) => (start.z - end.z) / xDiff[i]
+    );
+    const xzLineIntercepts = pointLines.map(
+      ({ start, end }, i) => start.z - xzLineSlopes[i] * start.x
+    );
+    const xyLineSlopes = pointLines.map(
+      ({ start, end }, i) => (start.y - end.y) / xDiff[i]
+    );
+    const xyLineIntercepts = pointLines.map(
+      ({ start, end }, i) => start.y - xyLineSlopes[i] * start.x
+    );
+
+    return {
+      xzLineSlopes,
+      xzLineIntercepts,
+      xyLineSlopes,
+      xyLineIntercepts,
+    };
+  }
+
   const onePointLines = _lines.filter((_, i) => onePointInFovMasks[i]);
   const noPointLines = _lines.filter((_, i) => noPointsInFovMasks[i]);
   if (onePointInFovMasks.includes(true) && onePointLines.length > 0) {
-    const xzLineSlopes: number[] = [];
-    const xzLineIntercepts: number[] = [];
-    const xyLineSlopes: number[] = [];
-    const xyLineIntercepts: number[] = [];
-    for (const { start, end } of onePointLines) {
-      const xDiff = Math.abs(start.x - end.x) < EPS ? EPS : start.x - end.x;
-      const xzLineSlope = (start.z - end.z) / xDiff;
-      const xzLineIntercept = start.z - xzLineSlope * start.x;
-      const xyLineSlope = (start.y - end.y) / xDiff;
-      const xyLineIntercept = start.y - xyLineSlope * start.x;
-
-      xzLineSlopes.push(xzLineSlope);
-      xzLineIntercepts.push(xzLineIntercept);
-      xyLineSlopes.push(xyLineSlope);
-      xyLineIntercepts.push(xyLineIntercept);
-    }
+    const { xzLineSlopes, xzLineIntercepts, xyLineSlopes, xyLineIntercepts } =
+      getSlopesAndIntercepts(onePointLines);
 
     const positiveSlopes = xzLineSlopes.map((slope, i) =>
       Math.abs(halfHfovTangent - slope) < EPS ? EPS : halfHfovTangent - slope
@@ -304,21 +314,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
   }
 
   if (noPointsInFovMasks.some((v) => v) && noPointLines.length > 0) {
-    const xDiff = noPointLines.map(({ start, end }) =>
-      Math.abs(start.x - end.x) < EPS ? EPS : start.x - end.x
-    );
-    const xzLineSlopes = noPointLines.map(
-      ({ start, end }, i) => (start.z - end.z) / xDiff[i]
-    );
-    const xzLineIntercepts = noPointLines.map(
-      ({ start, end }, i) => start.z - xzLineSlopes[i] * start.x
-    );
-    const xyLineSlopes = noPointLines.map(
-      ({ start, end }, i) => (start.y - end.y) / xDiff[i]
-    );
-    const xyLineIntercepts = noPointLines.map(
-      ({ start, end }, i) => start.y - xyLineSlopes[i] * start.x
-    );
+    const { xzLineSlopes, xzLineIntercepts, xyLineSlopes, xyLineIntercepts } =
+      getSlopesAndIntercepts(noPointLines);
 
     const positiveSlopes = xzLineSlopes.map((slope, i) =>
       Math.abs(halfHfovTangent - slope) < EPS ? EPS : halfHfovTangent - slope
