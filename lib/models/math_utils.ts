@@ -215,6 +215,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
     const pMask: boolean[] = [];
     const nMask: boolean[] = [];
+    const pIntersections: Vector3[] = [];
+    const nIntersections: Vector3[] = [];
 
     intersections.forEach(({ positive, negative }, i) => {
       pMask.push(
@@ -223,6 +225,8 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       nMask.push(
         negative.x <= 0 && minXs[i] <= negative.x && negative.x < maxXs[i]
       );
+      pIntersections.push(positive);
+      nIntersections.push(negative);
     });
 
     const pointOutOfFovMask: [boolean, boolean][] = [];
@@ -233,57 +237,36 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
 
     let _m;
 
-    _m = pointOutOfFovMask.filter((_, i) => pMask[i]);
-    const _l = onePointLines.filter((_, i) => pMask[i]);
+    function intersect(mask: boolean[], intersections: Vector3[]) {
+      _m = pointOutOfFovMask.filter((_, i) => mask[i]);
+      const _l = onePointLines.filter((_, i) => mask[i]);
 
-    _m.forEach((mask, index) => {
-      const i = pMask.findIndex((val, idx) => idx >= index && val);
-      if (mask[0]) {
-        _l[index].start.set(
-          intersections[i].positive.x,
-          intersections[i].positive.y,
-          intersections[i].positive.z
-        );
-      }
-      if (mask[1]) {
-        _l[index].end.set(
-          intersections[i].positive.x,
-          intersections[i].positive.y,
-          intersections[i].positive.z
-        );
-      }
-    });
+      _m.forEach((mask, index) => {
+        const i = mask.findIndex((val, idx) => idx >= index && val);
+        if (mask[0]) {
+          _l[index].start.set(
+            intersections[i].x,
+            intersections[i].y,
+            intersections[i].z
+          );
+        }
+        if (mask[1]) {
+          _l[index].end.set(
+            intersections[i].x,
+            intersections[i].y,
+            intersections[i].z
+          );
+        }
+      });
 
-    _l.forEach((line, index) => {
-      const i = pMask.findIndex((val, idx) => idx >= index && val);
-      onePointLines[i] = line;
-    });
+      _l.forEach((line, index) => {
+        const i = mask.findIndex((val, idx) => idx >= index && val);
+        onePointLines[i] = line;
+      });
+    }
 
-    _m = pointOutOfFovMask.filter((_, i) => nMask[i]);
-    const _nl = onePointLines.filter((_, i) => nMask[i]);
-
-    _m.forEach((mask, index) => {
-      const i = nMask.findIndex((val, idx) => idx >= index && val);
-      if (mask[0]) {
-        _nl[index].start.set(
-          intersections[i].negative.x,
-          intersections[i].negative.y,
-          intersections[i].negative.z
-        );
-      }
-      if (mask[1]) {
-        _nl[index].end.set(
-          intersections[i].negative.x,
-          intersections[i].negative.y,
-          intersections[i].negative.z
-        );
-      }
-    });
-
-    _nl.forEach((line, index) => {
-      const i = nMask.findIndex((val, idx) => idx >= index && val);
-      onePointLines[i] = line;
-    });
+    intersect(pMask, pIntersections);
+    intersect(nMask, nIntersections);
 
     pMask.forEach((positivePlaneMask, i) => {
       if (!positivePlaneMask) return;
