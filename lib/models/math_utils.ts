@@ -207,10 +207,9 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     const maxXs: number[] = [];
     onePointLines.forEach((onePointLine) => {
       const { start, end } = onePointLine;
-      const minX = Math.min(start.x, end.x);
-      const maxX = Math.max(start.x, end.x);
-      minXs.push(minX);
-      maxXs.push(maxX);
+
+      minXs.push(Math.min(start.x, end.x));
+      maxXs.push(Math.max(start.x, end.x));
     });
 
     const pMask: boolean[] = [];
@@ -268,43 +267,29 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     intersect(pMask, pIntersections);
     intersect(nMask, nIntersections);
 
-    pMask.forEach((positivePlaneMask, i) => {
-      if (!positivePlaneMask) return;
+    function setLines(masks: boolean[], intersections: Vector3[]) {
+      masks.forEach((mask, i) => {
+        if (!mask) return;
 
-      const mask = pointOutOfFovMask[i];
+        const pointMask = pointOutOfFovMask[i];
 
-      if (mask[0])
-        onePointLines[i].start.set(
-          intersections[i].positive.x,
-          intersections[i].positive.y,
-          intersections[i].positive.z
-        );
-      if (mask[1])
-        onePointLines[i].end.set(
-          intersections[i].positive.x,
-          intersections[i].positive.y,
-          intersections[i].positive.z
-        );
-    });
+        if (pointMask[0])
+          onePointLines[i].start.set(
+            intersections[i].x,
+            intersections[i].y,
+            intersections[i].z
+          );
+        if (pointMask[1])
+          onePointLines[i].end.set(
+            intersections[i].x,
+            intersections[i].y,
+            intersections[i].z
+          );
+      });
+    }
 
-    nMask.forEach((negativePlaneMask, i) => {
-      if (!negativePlaneMask) return;
-
-      const mask = pointOutOfFovMask[i];
-
-      if (mask[0])
-        onePointLines[i].start.set(
-          intersections[i].negative.x,
-          intersections[i].negative.y,
-          intersections[i].negative.z
-        );
-      if (mask[1])
-        onePointLines[i].end.set(
-          intersections[i].negative.x,
-          intersections[i].negative.y,
-          intersections[i].negative.z
-        );
-    });
+    setLines(pMask, pIntersections);
+    setLines(nMask, nIntersections);
 
     // Update real box line
     let positiveIndex = 0;
