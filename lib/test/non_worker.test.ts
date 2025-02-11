@@ -13,12 +13,6 @@ nonWorkerInput.forEach((input) => {
   test("Non Worker Test", () => {
     const result = rectilinearModel?.icsToVcsPoint(input);
 
-    fs.appendFile(
-      "non_worker.txt",
-      result!.toArray().toString(),
-      function (err) {
-        if (err) throw err;
-      }
-    );
+    fs.appendFileSync("non_worker.txt", result!.toArray().toString());
   });
 });
