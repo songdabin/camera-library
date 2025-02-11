@@ -675,3 +675,25 @@ export const fishVcsToIcsCuboidLinesOutput = [
   },
   null,
 ];
+
+const InputLength = 50000;
+export const workerInput: number[] = [];
+
+const generateRandomPoint = () => {
+  const x = Math.random() * 2000 - 1000;
+  const y = Math.random() * 2000 - 1000;
+  const z = Math.random() * 2000 - 1000;
+
+  workerInput.push(x, y, z);
+
+  return new Vector3(x, y, z);
+};
+
+export const nonWorkerInput = Array.from(
+  { length: InputLength },
+  generateRandomPoint
+);
+
+for (let i = 0; i < InputLength; i++) {
+  generateRandomPoint();
+}
