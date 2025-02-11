@@ -16,6 +16,6 @@ parentPort?.on("message", (point) => {
     console.log("successfully saved.");
   });
 
-  parentPort?.postMessage(vcsPoints.getX(0));
+  parentPort?.postMessage(vcsPoints);
   parentPort?.close();
 });

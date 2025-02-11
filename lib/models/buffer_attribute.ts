@@ -89,6 +89,28 @@ export function unproject(
   return points;
 }
 
+export function distortRectilinear(
+  point: Float32BufferAttribute,
+  intrinsic: Intrinsic
+): Float32BufferAttribute {
+  for (let i = 0; i < point.count; i++) {
+    const x = point.getX(i);
+    const y = point.getY(i);
+    const { k1, k2, k3, k4, k5, k6, p1, p2 } = intrinsic;
+
+    const r2 = x ** 2 + y ** 2;
+    const radialD =
+      (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3) /
+      (1 + k4 * r2 + k5 * r2 ** 2 + k6 * r2 ** 3);
+    const distortedX = x * radialD + 2 * p1 * (x * y) + p2 * (r2 + 2 * x ** 2);
+    const distortedY = y * radialD + p1 * (r2 + 2 * y ** 2) + 2 * p2 * (x * y);
+
+    point.setXY(i, distortedX, distortedY);
+  }
+
+  return point;
+}
+
 export function undistortRectilinear(
   points: Float32BufferAttribute,
   intrinsic: Intrinsic
@@ -164,4 +186,35 @@ export function getTransformMatrix(extrinsic: Extrinsic): Matrix4 {
   const transformMatrix = rotationMatrix.setPosition(tx, ty, tz).transpose();
 
   return transformMatrix;
+}
+
+export function vcsToCcsPoints(
+  extrinsic: Extrinsic,
+  points: Float32BufferAttribute
+): Float32BufferAttribute {
+  for (let i = 0; i < points.count; i++) {
+    points.setW(i, 1);
+  }
+
+  const ccsPoints = multiplyMatrix4(points, getTransformMatrix(extrinsic));
+
+  return ccsPoints;
+}
+
+export function ccsToIcsPoints(
+  intrinsic: Intrinsic,
+  points: Float32BufferAttribute
+): Float32BufferAttribute {
+  for (let i = 0; i < points.count; i++) {
+    const x = points.getX(i);
+    const y = points.getY(i);
+    const z = points.getZ(i);
+
+    points.setXY(i, x / z, y / z);
+
+    distortRectilinear(points, intrinsic);
+
+    project(points, intrinsic);
+  }
+  return points;
 }
