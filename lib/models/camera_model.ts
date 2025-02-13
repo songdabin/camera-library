@@ -1,5 +1,5 @@
 import { Extrinsic, ICSPoint, Intrinsic } from "../types/type";
-import { Line3, Matrix4, Quaternion, Vector3, Vector4 } from "three";
+import { Line3, Vector3, Vector4 } from "three";
 import {
   createCuboidLines,
   Cuboid,
