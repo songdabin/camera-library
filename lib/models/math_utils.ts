@@ -1,4 +1,4 @@
-import { Line3, Matrix4, Quaternion, Vector3 } from "three";
+import { Line3, Matrix4, Quaternion, Vector3, Vector4 } from "three";
 import {
   Extrinsic,
   Intersections,
@@ -6,6 +6,19 @@ import {
   SlopesAndIntercepts,
 } from "../types/type";
 import { EPS, UndistortCount } from "../types/schema";
+
+// prettier-ignore
+export function multiplyMatrix4(vec4: Vector4, multiplierMatrix4: Matrix4): Vector3 {
+  const multiplier = multiplierMatrix4.toArray();
+
+  const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;
+
+  return new Vector3(
+    x * multiplier[0] + y * multiplier[4] + z * multiplier[8] + w * multiplier[12],
+    x * multiplier[1] + y * multiplier[5] + z * multiplier[9] + w * multiplier[13],
+    x * multiplier[2] + y * multiplier[6] + z * multiplier[10] + w * multiplier[14]
+  );
+}
 
 export function getTransformMatrix(vcsExtrinsic: Extrinsic): Matrix4 {
   const { qw, qx, qy, qz, tx, ty, tz } = vcsExtrinsic;

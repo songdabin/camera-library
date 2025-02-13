@@ -6,7 +6,7 @@ import {
   vcsCuboidToVcsPoints,
 } from "../types/Cuboid";
 import { CuboidPointCount } from "../types/schema";
-import { getTransformMatrix } from "./math_utils";
+import { getTransformMatrix, multiplyMatrix4 } from "./math_utils";
 
 export abstract class CameraModel {
   channel: string;
@@ -52,7 +52,7 @@ export abstract class CameraModel {
   public vcsToCcsPoint(vec3: Vector3): Vector3 {
     const homoVcsPoint = new Vector4(vec3.x, vec3.y, vec3.z);
 
-    const ccsPoint = this.multiplyMatrix4(
+    const ccsPoint = multiplyMatrix4(
       homoVcsPoint,
       getTransformMatrix(this.vcsExtrinsic)
     );
@@ -79,15 +79,15 @@ export abstract class CameraModel {
   }
 
   // prettier-ignore
-  public multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
-    const b = translationMatrix.toArray();
-    
-    const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;
+  // public multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
+  //   const b = translationMatrix.toArray();
 
-    return new Vector3(
-      x * b[0] + y * b[4] + z * b[8] + w * b[12],
-      x * b[1] + y * b[5] + z * b[9] + w * b[13],
-      x * b[2] + y * b[6] + z * b[10] + w * b[14],
-    );
-  }
+  //   const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;
+
+  //   return new Vector3(
+  //     x * b[0] + y * b[4] + z * b[8] + w * b[12],
+  //     x * b[1] + y * b[5] + z * b[9] + w * b[13],
+  //     x * b[2] + y * b[6] + z * b[10] + w * b[14],
+  //   );
+  // }
 }

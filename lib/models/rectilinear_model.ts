@@ -6,6 +6,7 @@ import {
   distortRectilinear,
   getTransformMatrix,
   getTruncatedLinesInCameraFov,
+  multiplyMatrix4,
   project,
   undistortRectilinear,
   unproject,
@@ -57,7 +58,7 @@ export class RectilinearModel extends CameraModel {
       undistorted.z
     );
 
-    const ccsPoint = this.multiplyMatrix4(
+    const ccsPoint = multiplyMatrix4(
       new Vector4(...undistorted),
       intrinsicInvertTransposed
     );
@@ -80,10 +81,7 @@ export class RectilinearModel extends CameraModel {
       .invert()
       .transpose();
 
-    const vcsPoint = this.multiplyMatrix4(
-      new Vector4(...ccsPoint),
-      extrinsicInvT
-    );
+    const vcsPoint = multiplyMatrix4(new Vector4(...ccsPoint), extrinsicInvT);
 
     return vcsPoint;
   }
