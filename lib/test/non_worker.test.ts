@@ -11,8 +11,9 @@ const rectilinearModel = createModel(rearCameraType, rearCameraParams);
 
 nonWorkerInput.forEach((input) => {
   test("Non Worker Test", () => {
-    const result = rectilinearModel?.icsToVcsPoint(input);
+    const result =
+      rectilinearModel?.icsToVcsPoint(input)!.toArray().toString() + " / ";
 
-    fs.appendFileSync("non_worker.txt", result!.toArray().toString());
+    fs.appendFileSync("non_worker.txt", result);
   });
 });

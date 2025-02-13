@@ -24,9 +24,10 @@ class WorkerSetup {
     const rearFileContent = fs.readFileSync(rearFilePath, "utf8");
     const [rearCameraType, rearCameraParams] = splitData(rearFileContent);
 
-    const vcsPoints = icsToVcsPoints(rearCameraParams, point);
+    const vcsPoints =
+      icsToVcsPoints(rearCameraParams, point).array.toString() + " / ";
 
-    fs.writeFile("worker.txt", vcsPoints.array.toString(), function (err) {
+    fs.writeFile("worker.txt", vcsPoints, function (err) {
       if (err) throw err;
     });
   }
