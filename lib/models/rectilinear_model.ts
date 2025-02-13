@@ -6,6 +6,7 @@ import {
   distortRectilinear,
   getTransformMatrix,
   getTruncatedLinesInCameraFov,
+  isInImageCheck,
   multiplyMatrix4,
   project,
   undistortRectilinear,
@@ -13,10 +14,6 @@ import {
 } from "./math_utils";
 
 export class RectilinearModel extends CameraModel {
-  private isInImageCheck(x: number, y: number) {
-    return x >= 0 && x < this.width && y >= 0 && y < this.height;
-  }
-
   public ccsToIcsPoint(vec3: Vector3): ICSPoint {
     const normalized = vec3.clone().divideScalar(vec3.getComponent(2));
 
@@ -24,9 +21,10 @@ export class RectilinearModel extends CameraModel {
 
     const projected = project(distorted, this.intrinsic);
 
+    // prettier-ignore
     return {
       point: projected,
-      isInImage: this.isInImageCheck(projected.x, projected.y),
+      isInImage: isInImageCheck(projected, this.width, this.height),
     };
   }
 

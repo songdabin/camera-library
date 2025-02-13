@@ -8,6 +8,11 @@ import {
 import { EPS, UndistortCount } from "../types/schema";
 
 // prettier-ignore
+export function isInImageCheck(point: Vector3, width: number, height: number) {
+  return point.x >= 0 && point.x < width && point.y >= 0 && point.y < height;
+}
+
+// prettier-ignore
 export function multiplyMatrix4(vec4: Vector4, multiplierMatrix4: Matrix4): Vector3 {
   const multiplier = multiplierMatrix4.toArray();
 

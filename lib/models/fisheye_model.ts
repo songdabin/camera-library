@@ -2,7 +2,7 @@ import { Line3, Vector3 } from "three";
 import { ICSPoint } from "../types/type";
 import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
-import { distortFisheye, project } from "./math_utils";
+import { distortFisheye, isInImageCheck, project } from "./math_utils";
 
 export type CcsToIcsPointsArgs = {
   ccsPoint: Vector3;
@@ -14,11 +14,7 @@ export class FisheyeModel extends CameraModel {
 
     const icsPoint = project(distorted, this.intrinsic);
 
-    const isInImage =
-      icsPoint.x >= 0 &&
-      icsPoint.x < this.width &&
-      icsPoint.y >= 0 &&
-      icsPoint.y < this.height;
+    const isInImage = isInImageCheck(icsPoint, this.width, this.height);
 
     return { point: icsPoint, isInImage };
   }
