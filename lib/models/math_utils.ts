@@ -1,6 +1,7 @@
 import { Line3, Matrix4, Quaternion, Vector3, Vector4 } from "three";
 import {
   Extrinsic,
+  ICSPoint,
   Intersections,
   Intrinsic,
   SlopesAndIntercepts,
@@ -92,6 +93,56 @@ export function distortFisheye(
   const dny = distScale * Math.sin(phi);
 
   return new Vector3(dnx, dny);
+}
+
+export function clipInImage(
+  line: ICSPoint[],
+  width: number,
+  height: number
+): Line3 | null {
+  const [start, end] = line;
+
+  if (start.isInImage && end.isInImage)
+    return new Line3(start.point, end.point);
+  if (!start.isInImage && !end.isInImage) return null;
+
+  const [xMin, yMin, xMax, yMax] = [0, 0, width, height];
+  const dx = end.point.x - start.point.x;
+  const dy = end.point.y - start.point.y;
+  const m = dy / dx;
+
+  const clip = ([pointIn, pointOut]: [Vector3, Vector3]): Vector3 => {
+    let x = pointOut.x;
+    let y = pointOut.y;
+
+    // x = xMin (left 경계)와 교차 여부
+    if (pointOut.x < xMin) {
+      x = xMin;
+      y = pointIn.y + m * (xMin - pointIn.x);
+    }
+    // x = xMax (right 경계)와 교차 여부
+    else if (pointOut.x > xMax) {
+      x = xMax;
+      y = pointIn.y + m * (xMax - pointIn.x);
+    }
+
+    // y = yMin (top 경계)와 교차 여부
+    if (y < yMin) {
+      y = yMin;
+      x = pointIn.x + (yMin - pointIn.y) / m;
+    }
+    // y = yMax (bottom 경계)와 교차 여부
+    else if (y > yMax) {
+      y = yMax;
+      x = pointIn.x + (yMax - pointIn.y) / m;
+    }
+
+    return new Vector3(x, y);
+  };
+
+  if (start.isInImage)
+    return new Line3(start.point, clip([start.point, end.point]));
+  return new Line3(clip([end.point, start.point]), end.point);
 }
 
 export function distortRectilinear(
