@@ -10,7 +10,7 @@ const config: Config = {
   preset: "ts-jest",
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
 
   // A map from regular expressions to paths to transformers
   transform: {
@@ -22,6 +22,9 @@ const config: Config = {
 
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
+
+  // The paths to modules that run some code to configure or set up the testing environment before each test
+  setupFiles: ["<rootDir>/test/worker_setup.ts"],
 
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -143,9 +146,6 @@ const config: Config = {
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
-
-  // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],

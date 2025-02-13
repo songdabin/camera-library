@@ -5,8 +5,9 @@
     "module": "CommonJS",
     "target": "es2019",
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "allowJs": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "services/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "services/*.ts", "test/worker.js"],
   "exclude": ["node_modules", "./dist"]
 }
