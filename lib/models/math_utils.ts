@@ -1,6 +1,22 @@
-import { Line3, Vector3 } from "three";
-import { Intersections, Intrinsic, SlopesAndIntercepts } from "../types/type";
+import { Line3, Matrix4, Quaternion, Vector3 } from "three";
+import {
+  Extrinsic,
+  Intersections,
+  Intrinsic,
+  SlopesAndIntercepts,
+} from "../types/type";
 import { EPS, UndistortCount } from "../types/schema";
+
+export function getTransformMatrix(vcsExtrinsic: Extrinsic): Matrix4 {
+  const { qw, qx, qy, qz, tx, ty, tz } = vcsExtrinsic;
+
+  const quaternion = new Quaternion(qx, qy, qz, qw);
+
+  const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
+  const transformMatrix = rotationMatrix.setPosition(tx, ty, tz).transpose();
+
+  return transformMatrix;
+}
 
 export function project(point: Vector3, intrinsic: Intrinsic): Vector3 {
   const { fx, fy, cx, cy } = intrinsic;

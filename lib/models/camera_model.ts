@@ -6,6 +6,7 @@ import {
   vcsCuboidToVcsPoints,
 } from "../types/Cuboid";
 import { CuboidPointCount } from "../types/schema";
+import { getTransformMatrix } from "./math_utils";
 
 export abstract class CameraModel {
   channel: string;
@@ -48,23 +49,12 @@ export abstract class CameraModel {
     this.mvcsExtrinsic = mvcsExtrinsic;
   }
 
-  public getTransformMatrix(): Matrix4 {
-    const { qw, qx, qy, qz, tx, ty, tz } = this.vcsExtrinsic;
-
-    const quaternion = new Quaternion(qx, qy, qz, qw);
-
-    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
-    const transformMatrix = rotationMatrix.setPosition(tx, ty, tz).transpose();
-
-    return transformMatrix;
-  }
-
   public vcsToCcsPoint(vec3: Vector3): Vector3 {
     const homoVcsPoint = new Vector4(vec3.x, vec3.y, vec3.z);
 
     const ccsPoint = this.multiplyMatrix4(
       homoVcsPoint,
-      this.getTransformMatrix()
+      getTransformMatrix(this.vcsExtrinsic)
     );
 
     return ccsPoint;

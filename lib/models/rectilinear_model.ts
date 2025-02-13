@@ -4,6 +4,7 @@ import { CameraModel } from "./camera_model";
 import { Cuboid } from "../types/Cuboid";
 import {
   distortRectilinear,
+  getTransformMatrix,
   getTruncatedLinesInCameraFov,
   project,
   undistortRectilinear,
@@ -75,7 +76,9 @@ export class RectilinearModel extends CameraModel {
   }
 
   private ccsToVcsPoint(ccsPoint: Vector3) {
-    const extrinsicInvT = this.getTransformMatrix().invert().transpose();
+    const extrinsicInvT = getTransformMatrix(this.vcsExtrinsic)
+      .invert()
+      .transpose();
 
     const vcsPoint = this.multiplyMatrix4(
       new Vector4(...ccsPoint),
