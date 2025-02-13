@@ -77,17 +77,4 @@ export abstract class CameraModel {
 
     return createCuboidLines(ccsPointArray);
   }
-
-  // prettier-ignore
-  // public multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
-  //   const b = translationMatrix.toArray();
-
-  //   const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;
-
-  //   return new Vector3(
-  //     x * b[0] + y * b[4] + z * b[8] + w * b[12],
-  //     x * b[1] + y * b[5] + z * b[9] + w * b[13],
-  //     x * b[2] + y * b[6] + z * b[10] + w * b[14],
-  //   );
-  // }
 }
