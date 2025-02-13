@@ -676,7 +676,7 @@ export const fishVcsToIcsCuboidLinesOutput = [
   null,
 ];
 
-const InputLength = 50000;
+const InputLength = 5;
 export const workerInput: number[] = [];
 
 const generateRandomPoint = () => {

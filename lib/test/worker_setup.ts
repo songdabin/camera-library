@@ -11,7 +11,6 @@ class WorkerSetup {
   constructor(stringUrl: string) {
     this.url = stringUrl;
     this.onmessage = (e) => {
-      console.log(e);
       this.doSomethingComplicated(e);
     };
   }
