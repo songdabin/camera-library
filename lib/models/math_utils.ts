@@ -22,6 +22,44 @@ export function unproject(point: Vector3, intrinsic: Intrinsic): Vector3 {
   return point;
 }
 
+function distortThetas(theta: number, intrinsic: Intrinsic) {
+  const { k1, k2, k3, k4 } = intrinsic;
+
+  const theta2 = theta ** 2;
+  const theta4 = theta ** 4;
+  const theta6 = theta2 * theta4;
+  const theta8 = theta4 * theta4;
+
+  const thetaD =
+    theta * (1 + k1 * theta2 + k2 * theta4 + k3 * theta6 + k4 * theta8);
+
+  return thetaD;
+}
+
+export function distortFisheye(
+  point: Vector3,
+  hfov: number,
+  intrinsic: Intrinsic
+): Vector3 {
+  const normalized = point.clone().normalize();
+  const theta = Math.acos(normalized.z);
+  const phi = Math.atan2(normalized.y, normalized.x);
+
+  const { k1, k2, k3, k4 } = intrinsic;
+  const fov = hfov / 2;
+
+  const thetaSlope =
+    1 + k1 * fov ** 2 + k2 * fov ** 4 + k3 * fov ** 6 + k4 * fov ** 8;
+
+  const distScale =
+    theta < fov ? distortThetas(theta, intrinsic) : theta * thetaSlope;
+
+  const dnx = distScale * Math.cos(phi);
+  const dny = distScale * Math.sin(phi);
+
+  return new Vector3(dnx, dny);
+}
+
 export function distortRectilinear(
   point: Vector3,
   intrinsic: Intrinsic
