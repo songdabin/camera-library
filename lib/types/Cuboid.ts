@@ -1,11 +1,4 @@
-import {
-  Euler,
-  Float32BufferAttribute,
-  Line3,
-  Matrix4,
-  Vector3,
-  Vector4,
-} from "three";
+import { Euler, Line3, Matrix4, Vector3, Vector4 } from "three";
 
 export type VcsCuboidToCcsPointsArgs = {
   vcsCuboid: Cuboid;
