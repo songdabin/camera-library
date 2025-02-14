@@ -23,3 +23,7 @@ export type SlopesAndIntercepts = {
   xyLineIntercepts: number[];
   xzLineIntercepts: number[];
 };
+
+export type Intersections = { positive: Vector3[]; negative: Vector3[] };
+
+export type planeMasks = { positive: boolean[]; negative: boolean[] };

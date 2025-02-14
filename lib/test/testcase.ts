@@ -532,7 +532,7 @@ export const truncatedTestCaseOutput = {
     { start: { x: 3, y: 3, z: 2 }, end: { x: 3, y: 3, z: 3 } },
     { start: { x: 2, y: 3, z: 2 }, end: { x: 2, y: 3, z: 3 } },
   ],
-  // prettier-ignore
+  
   positiveMask: [
     true, true, true,
     true, true, true,
@@ -586,8 +586,8 @@ export const rectVcsToIcsCuboidLinesOutput = [
   null,
   {
     start: {
-      x: 6487371993642766000,
-      y: 2.420172576974183e21,
+      x: -300105278307.1027,
+      y: -1998498579890.1448,
       z: 0.9999999999999999,
     },
     end: { x: 588.0307554989918, y: 9096.025197102586, z: 1 },
@@ -606,27 +606,27 @@ export const rectVcsToIcsCuboidLinesOutput = [
   },
   null,
   {
-    start: { x: 8885518222488672000, y: 2.762526538630985e21, z: 1 },
-    end: {
-      x: -1.2950695098598939e25,
-      y: 2.290644747449599e30,
-      z: 1,
+    start: {
+      x: 424969724.88769513,
+      y: -925753918.0023853,
+      z: 0.9999999999999999,
     },
+    end: { x: 31461164.594487138, y: -520559802.4647439, z: 1 },
   },
   null,
   null,
   null,
   null,
   {
-    start: { x: 8885518222488672000, y: 2.762526538630985e21, z: 1 },
+    start: {
+      x: 424969724.88769513,
+      y: -925753918.0023853,
+      z: 0.9999999999999999,
+    },
     end: { x: 588.0307554989918, y: 9096.025197102586, z: 1 },
   },
   {
-    start: {
-      x: -1.2950695098598939e25,
-      y: 2.290644747449599e30,
-      z: 1,
-    },
+    start: { x: 31461164.594487138, y: -520559802.4647439, z: 1 },
     end: { x: 1857.348621980459, y: 507.6072826512628, z: 1 },
   },
 ];
@@ -675,3 +675,25 @@ export const fishVcsToIcsCuboidLinesOutput = [
   },
   null,
 ];
+
+const InputLength = 5;
+export const workerInput: number[] = [];
+
+const generateRandomPoint = () => {
+  const x = Math.random() * 2000 - 1000;
+  const y = Math.random() * 2000 - 1000;
+  const z = Math.random() * 2000 - 1000;
+
+  workerInput.push(x, y, z);
+
+  return new Vector3(x, y, z);
+};
+
+export const nonWorkerInput = Array.from(
+  { length: InputLength },
+  generateRandomPoint
+);
+
+for (let i = 0; i < InputLength; i++) {
+  generateRandomPoint();
+}

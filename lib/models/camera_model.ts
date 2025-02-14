@@ -1,11 +1,12 @@
 import { Extrinsic, ICSPoint, Intrinsic } from "../types/type";
-import { Line3, Matrix4, Quaternion, Vector3, Vector4 } from "three";
+import { Line3, Vector3, Vector4 } from "three";
 import {
   createCuboidLines,
   Cuboid,
   vcsCuboidToVcsPoints,
 } from "../types/Cuboid";
 import { CuboidPointCount } from "../types/schema";
+import { getTransformMatrix, multiplyMatrix4 } from "./math_utils";
 
 export abstract class CameraModel {
   channel: string;
@@ -48,23 +49,12 @@ export abstract class CameraModel {
     this.mvcsExtrinsic = mvcsExtrinsic;
   }
 
-  public getTransformMatrix(): Matrix4 {
-    const { qw, qx, qy, qz, tx, ty, tz } = this.vcsExtrinsic;
-
-    const quaternion = new Quaternion(qx, qy, qz, qw);
-
-    const rotationMatrix = new Matrix4().makeRotationFromQuaternion(quaternion);
-    const transformMatrix = rotationMatrix.setPosition(tx, ty, tz).transpose();
-
-    return transformMatrix;
-  }
-
   public vcsToCcsPoint(vec3: Vector3): Vector3 {
     const homoVcsPoint = new Vector4(vec3.x, vec3.y, vec3.z);
 
-    const ccsPoint = this.multiplyMatrix4(
+    const ccsPoint = multiplyMatrix4(
       homoVcsPoint,
-      this.getTransformMatrix()
+      getTransformMatrix(this.vcsExtrinsic)
     );
 
     return ccsPoint;
@@ -86,18 +76,5 @@ export abstract class CameraModel {
     }
 
     return createCuboidLines(ccsPointArray);
-  }
-
-  // prettier-ignore
-  public multiplyMatrix4(vec4: Vector4, translationMatrix: Matrix4): Vector3 {
-    const b = translationMatrix.toArray();
-    
-    const x = vec4.x, y = vec4.y, z = vec4.z, w = vec4.w;
-
-    return new Vector3(
-      x * b[0] + y * b[4] + z * b[8] + w * b[12],
-      x * b[1] + y * b[5] + z * b[9] + w * b[13],
-      x * b[2] + y * b[6] + z * b[10] + w * b[14],
-    );
   }
 }
