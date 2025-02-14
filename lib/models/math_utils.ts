@@ -354,18 +354,10 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
       _m.forEach((mask, index) => {
         const i = masks.findIndex((val, idx) => idx >= index && val);
         if (mask[0]) {
-          _l[index].start.set(
-            intersections[i].x,
-            intersections[i].y,
-            intersections[i].z
-          );
+          _l[index].start.fromArray(intersections[i].toArray());
         }
         if (mask[1]) {
-          _l[index].end.set(
-            intersections[i].x,
-            intersections[i].y,
-            intersections[i].z
-          );
+          _l[index].end.fromArray(intersections[i].toArray());
         }
       });
 
@@ -380,17 +372,9 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
         const pointMask = pointOutOfFovMask[i];
 
         if (pointMask[0])
-          onePointLines[i].start.set(
-            intersections[i].x,
-            intersections[i].y,
-            intersections[i].z
-          );
+          onePointLines[i].start.fromArray(intersections[i].toArray());
         if (pointMask[1])
-          onePointLines[i].end.set(
-            intersections[i].x,
-            intersections[i].y,
-            intersections[i].z
-          );
+          onePointLines[i].end.fromArray(intersections[i].toArray());
       });
     }
 
@@ -418,16 +402,16 @@ export function getTruncatedLinesInCameraFov(lines: Line3[], hfov: number) {
     largerMasks.forEach((largerMask, i) => {
       if (!largerMask) return;
       // prettier-ignore
-      noPointLines[i].start.set(
-        intersections.positive[i].x, intersections.positive[i].y, intersections.positive[i].z
+      noPointLines[i].start.fromArray(
+        intersections.positive[i].toArray()
       );
     });
 
     smallerMasks.forEach((smallerMask, i) => {
       if (!smallerMask) return;
       // prettier-ignore
-      noPointLines[i].end.set(
-        intersections.negative[i].z, intersections.negative[i].y, intersections.negative[i].z
+      noPointLines[i].end.fromArray(
+        intersections.negative[i].toArray()
       );
     });
 
